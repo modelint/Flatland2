@@ -45,13 +45,14 @@ class Canvas:
         else:
             self.Size = euro_sheet_A_sizes.get(standard_sheet_name, us_sheet_sizes[default_sheet])
             factor = points_in_cm
-        self.Point_size = Rect_Size(height=int(self.Size[1] * factor), width=int(self.Size[0] * factor))
+        self.Point_size = Rect_Size(height=int(self.Size[0] * factor), width=int(self.Size[1] * factor))
         self.Padding = global_padding
         self.Alignment = global_alignment
         self.Diagram = Diagram(self, diagram_type)
         self.Tablet = Tablet(size=self.Point_size, output_file=drawoutput)
 
     def render(self):
+        self.Diagram.render()
         self.Tablet.render()
 
 
