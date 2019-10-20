@@ -8,4 +8,4 @@ class Node:
         self.content = content
         self.node_type = node_type
         self.Size = Rect_Size(200, 150)  # Placeholder values
-        self.Location = 0 # initializes as unknown
+        self.Cell = None

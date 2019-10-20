@@ -3,8 +3,8 @@ grid.py
 """
 from exceptions import *
 from node import Node
-from collections import namedtuple
-from flatland_types import Position, Line, LineWidth
+# from collections import namedtuple
+from flatland_types import Position, Line, StrokeWidth
 
 # Row = namedtuple('Row', 'position nodes')
 # Column = namedtuple('Col', 'position')
@@ -44,10 +44,10 @@ class Grid:
         #
         self.Origin = Position(x=diagram.Canvas.Padding.left, y=diagram.Canvas.Padding.right)
         self.Cells = []  # No rows or columns yet
-        # self.Heights = []
-        self.Heights = [100, 200, 300, 400] # Diagnostic
-        # self.Widths = []
-        self.Widths = [200, 400, 600, 800]  # Diagnostic
+        self.Heights = []
+        # self.Heights = [100, 200, 300, 400] # Diagnostic
+        self.Widths = []
+        # self.Widths = [200, 400, 600, 800]  # Diagnostic
         self.Diagram = diagram
 
     def render(self):
@@ -59,30 +59,29 @@ class Grid:
         left_extent = self.Origin.x
         right_extent = self.Diagram.Canvas.Point_size.width - self.Diagram.Canvas.Padding.right
         for h in self.Heights:
-            tablet.Lines.append( Line(LineWidth.THIN, Position(left_extent, h), Position(right_extent, h)) )
+            tablet.Lines.append( Line(StrokeWidth.THIN, Position(left_extent, h), Position(right_extent, h)) )
 
         # Draw columns
         bottom_extent = self.Origin.y
         top_extent = self.Diagram.Canvas.Point_size.height - self.Diagram.Canvas.Padding.top
         for w in self.Widths:
-            tablet.Lines.append( Line(LineWidth.THIN, Position(w, bottom_extent), Position(w, top_extent)) )
-
+            tablet.Lines.append( Line(StrokeWidth.THIN, Position(w, bottom_extent), Position(w, top_extent)) )
 
     def add_row(self, height):
         """Adds an empty row upward with the given height"""
         # Add the row height
         if height + sum(self.Heights) > self.Diagram.Size.height:
             raise SheetHeightExceededFE
-        self.Rows.append(height)
+        self.Heights.append(height)
         # Insert an empty node for each column
-        empty_row = [None for _ in range(self.Widths)]
+        empty_row = [None for _ in self.Widths]
         self.Cells.append(empty_row)
 
-    def add_col(self, width):
+    def add_column(self, width):
         """Adds an empty column rightward with the given width"""
         if width + sum(self.Widths) > self.Diagram.Size.width:
             raise SheetWidthExceededFE
-        self.Columns.append(width)
+        self.Widths.append(width)
         # For each row, add a column
         [row.append(None) for row in self.Cells]
 
