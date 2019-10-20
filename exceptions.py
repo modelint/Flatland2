@@ -14,5 +14,7 @@ class SheetWidthExceededFE(FlatlandException):
 class SheetHeightExceededFE(FlatlandException):
     pass
 
+
 class CellOccupiedFE(FlatlandException):
     pass
+

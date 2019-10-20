@@ -4,7 +4,7 @@ grid.py
 from exceptions import *
 from node import Node
 from collections import namedtuple
-from flatland_types import Position
+from flatland_types import Position, Line, LineWidth
 
 # Row = namedtuple('Row', 'position nodes')
 # Column = namedtuple('Col', 'position')
@@ -41,11 +41,32 @@ class Grid:
     Diagram : The Diagram that this Grid is laid out on
     """
     def __init__(self, diagram):
+        #
         self.Origin = Position(x=diagram.Canvas.Padding.left, y=diagram.Canvas.Padding.right)
         self.Cells = []  # No rows or columns yet
-        self.Heights = []
-        self.Widths = []
+        # self.Heights = []
+        self.Heights = [100, 200, 300, 400] # Diagnostic
+        # self.Widths = []
+        self.Widths = [200, 400, 600, 800]  # Diagnostic
         self.Diagram = diagram
+
+    def render(self):
+        """Draw self on tablet for diagnostic purposes"""
+
+        tablet = self.Diagram.Canvas.Tablet
+
+        # Draw rows
+        left_extent = self.Origin.x
+        right_extent = self.Diagram.Canvas.Point_size.width - self.Diagram.Canvas.Padding.right
+        for h in self.Heights:
+            tablet.Lines.append( Line(LineWidth.THIN, Position(left_extent, h), Position(right_extent, h)) )
+
+        # Draw columns
+        bottom_extent = self.Origin.y
+        top_extent = self.Diagram.Canvas.Point_size.height - self.Diagram.Canvas.Padding.top
+        for w in self.Widths:
+            tablet.Lines.append( Line(LineWidth.THIN, Position(w, bottom_extent), Position(w, top_extent)) )
+
 
     def add_row(self, height):
         """Adds an empty row upward with the given height"""
@@ -87,12 +108,12 @@ class Grid:
         padding = self.Diagram.Canvas.Padding
         needed_height = padding.top + padding.bottom + new_node.Size.height
         needed_width = padding.top + padding.bottom + new_node.Size.width
-        if needed_height > self.Rows[-1] and
+        # if needed_height > self.Rows[-1] and
 
 
 
 
-        new_location = new_node
+        # new_location = new_node
 
         # If necessary, resize the row, columno or both
         # and put the node there (up to a maximum size)
