@@ -31,7 +31,6 @@ class Tablet:
             context.rectangle(r.lower_left.x, r.lower_left.y, r.size.width, r.size.height)
             context.stroke()
 
-
     def to_dc(self, tablet_coord):
         """
         To display coordinates – Convert tablet bottom_left origin coordinate to

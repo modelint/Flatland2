@@ -1,26 +1,27 @@
 """
 canvas.py
 
-This is not the flatland (and not the cairo) Canvas class
+This is the Flatland (and not the cairo) Canvas class
 """
 import sys
 from flatland_types import Padding, Alignment, Rect_Size, Position, Rectangle, StrokeWidth
+from sheet import us_sheet_sizes, euro_sheet_A_sizes
 from diagram import Diagram
 from tablet import Tablet
 
 # All sheet and canvas related constants are kept together here for easy review and editing
-us_sheet_sizes = {'letter': (8.5, 11), 'tabloid': (11, 17), 'C': (17, 22), 'D': (22, 34), 'E': (34, 44)}
-euro_sheet_A_sizes = {'A4': (210, 297), 'A3': (297, 420), 'A2': (420, 594), 'A1': (594, 841)}
-default_sheet = 'tabloid'
 points_in_cm = 28.3465
 points_in_inch = 72
-global_padding = Padding(top=10, bottom=10, left=10, right=10)
+default_canvas_margin = Padding(top=10, bottom=10, left=10, right=10)
 global_alignment = Alignment(vertical='center', horizontal='center')
 
 
 class Canvas:
     """
-    A PDF sheet is represented as a Canvas. It represents the full writing surface.
+    You can think of a Canvas as a sheet of paper, typically, not necessarily of a standard size
+    such as A1, Tabloid or 8.5 x 11. It represents the total space where any drawing may occur.
+    Typically, though, a margin is specified to preserve empty space along the edges of the Canvas.
+    The margin can be set to zero all the way around if desired.
 
     Attributes
     ---
@@ -28,14 +29,15 @@ class Canvas:
     Orientation: portrait or landscape
     Size : The size in US or Metric units as a simple tuple (height, width)
     Point_size : The size in points (required by Cairo) as a Rect_Size named tuple
-    Padding : The default amount of space surrounding a Node in a Cell
-    Alignment : The default node alignment within a cell
+    Margin : The default amount of space surrounding a Node in a Cell
     Diagram : Instance of Diagram drawn on this Canvas
+    Tablet : This is a proxy for the graphics framework.  It is the only place in the code
+        where the framework (such as Cairo) is referenced.  Consequently, we can easily swap
+        to alternate graphic or web based display frameworks as necessary
 
     """
 
-    def __init__(self,
-                 diagram_type, standard_sheet_name=default_sheet, orientation='landscape',
+    def __init__(self, diagram_type, standard_sheet_name, orientation,
                  drawoutput=sys.stdout.buffer, show_margin=False):
         self.Sheet_name = standard_sheet_name
         self.Orientation = orientation
@@ -46,17 +48,16 @@ class Canvas:
             self.Size = euro_sheet_A_sizes.get(standard_sheet_name, us_sheet_sizes[default_sheet])
             factor = points_in_cm
         self.Point_size = Rect_Size(height=int(self.Size[0] * factor), width=int(self.Size[1] * factor))
-        self.Padding = global_padding
-        self.Alignment = global_alignment
+        self.Margin = default_canvas_margin
         self.Diagram = Diagram(self, diagram_type)
         self.Tablet = Tablet(size=self.Point_size, output_file=drawoutput)
         self.Show_margin = show_margin
 
     def render(self):
         if self.Show_margin:
-            drawable_origin = Position(x=self.Padding.left, y=self.Padding.bottom)
-            draw_area_height = self.Point_size.height - self.Padding.top - self.Padding.bottom
-            draw_area_width = self.Point_size.width - self.Padding.left - self.Padding.right
+            drawable_origin = Position(x=self.Margin.left, y=self.Margin.bottom)
+            draw_area_height = self.Point_size.height - self.Margin.top - self.Margin.bottom
+            draw_area_width = self.Point_size.width - self.Margin.left - self.Margin.right
             draw_area_size = Rect_Size(height=draw_area_height, width=draw_area_width)
             self.Tablet.Rectangles.append(
                 Rectangle(stroke=StrokeWidth.THIN, lower_left=drawable_origin, size=draw_area_size)
@@ -68,5 +69,4 @@ class Canvas:
         return (
             f"""Canvas size {self.Sheet_name} (W{self.Size[0]} x H{self.Size[1]}) with orientation {self.Orientation}
         and point size {self.Point_size}
-        using global padding: {self.Padding}
-        using global alignment: {self.Alignment}""")
+        using global padding: {self.Margin}""")

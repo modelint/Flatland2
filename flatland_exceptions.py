@@ -1,5 +1,5 @@
 """
-exceptions.py – Flatland specific exceptions
+flatland_exceptions.py – Flatland specific exceptions
 """
 
 
@@ -18,3 +18,6 @@ class SheetHeightExceededFE(FlatlandException):
 class CellOccupiedFE(FlatlandException):
     pass
 
+
+class UnknownNodeType(FlatlandException):
+    pass

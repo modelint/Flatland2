@@ -1,10 +1,12 @@
 """
 grid.py
 """
-from exceptions import *
+import flatland_exceptions
 from node import Node
+from layout_specification import default_cell_alignment, default_cell_padding
 # from collections import namedtuple
 from flatland_types import Position, Line, StrokeWidth
+from diagram_specification import node_types
 
 # Row = namedtuple('Row', 'position nodes')
 # Column = namedtuple('Col', 'position')
@@ -45,6 +47,8 @@ class Grid:
         self.Origin = Position(x=diagram.Canvas.Padding.left, y=diagram.Canvas.Padding.right)
         self.Cells = []  # No rows or columns yet
         self.Heights = []
+        self.Cell_padding = default_cell_padding
+        self.Cell_alignment = default_cell_alignment
         # self.Heights = [100, 200, 300, 400] # Diagnostic
         self.Widths = []
         # self.Widths = [200, 400, 600, 800]  # Diagnostic
@@ -71,7 +75,7 @@ class Grid:
         """Adds an empty row upward with the given height"""
         # Add the row height
         if height + sum(self.Heights) > self.Diagram.Size.height:
-            raise SheetHeightExceededFE
+            raise flatland_exceptions.SheetHeightExceededFE
         self.Heights.append(height)
         # Insert an empty node for each column
         empty_row = [None for _ in self.Widths]
@@ -80,33 +84,39 @@ class Grid:
     def add_column(self, width):
         """Adds an empty column rightward with the given width"""
         if width + sum(self.Widths) > self.Diagram.Size.width:
-            raise SheetWidthExceededFE
+            raise flatland_exceptions.SheetWidthExceededFE
         self.Widths.append(width)
         # For each row, add a column
         [row.append(None) for row in self.Cells]
 
-    def place_node(self, row, column, node_type, content):
+    def place_node(self, row, column, node_type_name, content):
         """Places the node adding any required rows or columns"""
 
-        new_node = Node(node_type, content)
+        new_node = Node(node_type_name, content, self, row, column)
         # If the number of rows or columns is less than the amount already there, don't add anything new
         rows_to_add = max(0, row - len(self.Heights))
         columns_to_add = max(0, column - len(self.Widths))
 
         # If there is already a node at that location, raise an exception
         if not rows_to_add and not columns_to_add and self.Cells[row][column]:
-            raise CellOccupiedFE
+            raise flatland_exceptions.CellOccupiedFE
 
         # Add necessary rows and columns, if any
-        [self.add_row(node_type.max_size.height) for _ in range(rows_to_add)]
-        [self.add_column(node_type.max_size.width) for _ in range(columns_to_add)]
+        node_height = new_node.Size.height + self.Cell_padding.top + self.Cell_padding.bottom
+        node_width = new_node.Size.width + self.Cell_padding.left + self.Cell_padding.right
+        [self.add_row(node_height) for _ in range(rows_to_add)]
+        [self.add_column(node_width) for _ in range(columns_to_add)]
+
+
+
+
 
         # Ensure that the cell is large enough to fit the node
-        cell_height = self.Heights[row]
-        cell_width = self.Widths[column]
-        padding = self.Diagram.Canvas.Padding
-        needed_height = padding.top + padding.bottom + new_node.Size.height
-        needed_width = padding.top + padding.bottom + new_node.Size.width
+        # cell_height = self.Heights[row]
+        # cell_width = self.Widths[column]
+        # padding = self.Diagram.Canvas.Padding
+        # needed_height = padding.top + padding.bottom + new_node.Size.height
+        # needed_width = padding.top + padding.bottom + new_node.Size.width
         # if needed_height > self.Rows[-1] and
 
 
