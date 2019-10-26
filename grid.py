@@ -4,12 +4,7 @@ grid.py
 import flatland_exceptions
 from node import Node
 from layout_specification import default_cell_alignment, default_cell_padding
-# from collections import namedtuple
 from flatland_types import Position, Line, StrokeWidth
-from diagram_specification import node_types
-
-# Row = namedtuple('Row', 'position nodes')
-# Column = namedtuple('Col', 'position')
 
 
 class Grid:
@@ -35,24 +30,21 @@ class Grid:
 
     Attributes
     ---
-    Origin : Position(x,y)
-        The lower left corner of the Grid is positioned here in point coordinates relative to the Sheet
     Cells : 2D array of Nodes
-    Heights : List of Row heights
-    Widths : List of Column widths
+    Row_heights : List of Row heights
+    Col_widths : List of Column widths
     Diagram : The Diagram that this Grid is laid out on
     """
     def __init__(self, diagram):
-        #
-        self.Origin = Position(x=diagram.Canvas.Padding.left, y=diagram.Canvas.Padding.right)
         self.Cells = []  # No rows or columns yet
-        self.Heights = []
+        self.Row_heights = []
         self.Cell_padding = default_cell_padding
         self.Cell_alignment = default_cell_alignment
         # self.Heights = [100, 200, 300, 400] # Diagnostic
-        self.Widths = []
+        self.Col_widths = []
         # self.Widths = [200, 400, 600, 800]  # Diagnostic
         self.Diagram = diagram
+        self.Nodes = []
 
     def render(self):
         """Draw self on tablet for diagnostic purposes"""
@@ -60,32 +52,37 @@ class Grid:
         tablet = self.Diagram.Canvas.Tablet
 
         # Draw rows
-        left_extent = self.Origin.x
-        right_extent = self.Diagram.Canvas.Point_size.width - self.Diagram.Canvas.Padding.right
-        for h in self.Heights:
+        left_extent = self.Diagram.Origin.x
+        right_extent = self.Diagram.Origin.x + self.Diagram.Size.width
+        for h in self.Row_heights:
             tablet.Lines.append( Line(StrokeWidth.THIN, Position(left_extent, h), Position(right_extent, h)) )
 
         # Draw columns
-        bottom_extent = self.Origin.y
-        top_extent = self.Diagram.Canvas.Point_size.height - self.Diagram.Canvas.Padding.top
-        for w in self.Widths:
+        bottom_extent = self.Diagram.Origin.y
+        top_extent = bottom_extent + self.Diagram.Size.height
+        for w in self.Col_widths:
             tablet.Lines.append( Line(StrokeWidth.THIN, Position(w, bottom_extent), Position(w, top_extent)) )
+
+        # Draw nodes
+        [n.render() for n in self.Nodes]
+
+
 
     def add_row(self, height):
         """Adds an empty row upward with the given height"""
         # Add the row height
-        if height + sum(self.Heights) > self.Diagram.Size.height:
+        if height + sum(self.Row_heights) > self.Diagram.Size.height:
             raise flatland_exceptions.SheetHeightExceededFE
-        self.Heights.append(height)
+        self.Row_heights.append(height)
         # Insert an empty node for each column
-        empty_row = [None for _ in self.Widths]
+        empty_row = [None for _ in self.Col_widths]
         self.Cells.append(empty_row)
 
     def add_column(self, width):
         """Adds an empty column rightward with the given width"""
-        if width + sum(self.Widths) > self.Diagram.Size.width:
+        if width + sum(self.Col_widths) > self.Diagram.Size.width:
             raise flatland_exceptions.SheetWidthExceededFE
-        self.Widths.append(width)
+        self.Col_widths.append(width)
         # For each row, add a column
         [row.append(None) for row in self.Cells]
 
@@ -94,8 +91,8 @@ class Grid:
 
         new_node = Node(node_type_name, content, self, row, column)
         # If the number of rows or columns is less than the amount already there, don't add anything new
-        rows_to_add = max(0, row - len(self.Heights))
-        columns_to_add = max(0, column - len(self.Widths))
+        rows_to_add = max(0, row - len(self.Row_heights))
+        columns_to_add = max(0, column - len(self.Col_widths))
 
         # If there is already a node at that location, raise an exception
         if not rows_to_add and not columns_to_add and self.Cells[row][column]:
@@ -107,29 +104,10 @@ class Grid:
         [self.add_row(node_height) for _ in range(rows_to_add)]
         [self.add_column(node_width) for _ in range(columns_to_add)]
 
+        # Place the node in the new location
+        new_node.Row = row
+        new_node.Column = column
+        self.Cells[row][column] = new_node
+        self.Nodes.append(new_node)
 
 
-
-
-        # Ensure that the cell is large enough to fit the node
-        # cell_height = self.Heights[row]
-        # cell_width = self.Widths[column]
-        # padding = self.Diagram.Canvas.Padding
-        # needed_height = padding.top + padding.bottom + new_node.Size.height
-        # needed_width = padding.top + padding.bottom + new_node.Size.width
-        # if needed_height > self.Rows[-1] and
-
-
-
-
-        # new_location = new_node
-
-        # If necessary, resize the row, columno or both
-        # and put the node there (up to a maximum size)
-
-        # If the maximum size is exceeded and no span is specified, raise an exception
-        # If there is a span, but it overlaps other content in adjacent cells, raise an exception
-
-        # If the location does not exist, expand the grid
-
-        # If the grid exceeds the sheet size, raise an exception

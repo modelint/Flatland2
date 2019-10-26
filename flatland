@@ -1,20 +1,11 @@
 #!/usr/bin/env python3
 
-if __name__ == "__main__":
-    import sys
-    import command_line
-    from canvas import Canvas
+import sys
+import command_line
+import flatland
 
+
+if __name__ == "__main__":
     # Parse the command line args
     args = command_line.parse(sys.argv[1:])
-
-    # Create and output the canvas file
-    flatland_canvas = Canvas(
-        diagram_type=args.diagram,
-        standard_sheet_name=args.sheet,
-        orientation=args.orientation,
-        drawoutput=args.file
-    )
-    flatland_canvas.render()
-else:
-    print("Main module invoked indirectly.")
+    flatland.create_canvas(args)
