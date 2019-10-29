@@ -1,7 +1,7 @@
 """
 tablet.py – Flatland draws to this and then the tablet can be drawn using cairo or some other draw framework
 """
-from flatland_types import Rect_Size, Position, Line, Rectangle, StrokeWidth
+from flatland_types import Position, Line, Rectangle
 from typing import List
 
 class Tablet:
@@ -22,12 +22,12 @@ class Tablet:
         context.set_source_rgb(0, 0, 0)
         context.set_line_join(cairo.LINE_JOIN_ROUND)
         for l in self.Lines:
-            context.set_line_width(l.stroke.value)
+            context.set_line_width(l.line_style.width.value)
             context.move_to(*self.to_dc(l.from_here))
             context.line_to(*self.to_dc(l.to_there))
             context.stroke()
         for r in self.Rectangles:
-            context.set_line_width(r.stroke.value)
+            context.set_line_width(r.line_style.width.value)
             context.rectangle(r.lower_left.x, r.lower_left.y, r.size.width, r.size.height)
             context.stroke()
 

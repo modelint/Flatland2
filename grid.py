@@ -4,7 +4,7 @@ grid.py
 import flatland_exceptions
 from node import Node
 from layout_specification import default_cell_alignment, default_cell_padding
-from flatland_types import Position, Line, StrokeWidth
+from flatland_types import Position, Line, Stroke, StrokeStyle, StrokeWidth
 
 
 class Grid:
@@ -54,19 +54,29 @@ class Grid:
         # Draw rows
         left_extent = self.Diagram.Origin.x
         right_extent = self.Diagram.Origin.x + self.Diagram.Size.width
+        this_height = 0
         for h in self.Row_heights:
-            tablet.Lines.append( Line(StrokeWidth.THIN, Position(left_extent, h), Position(right_extent, h)) )
+            this_height += h
+            tablet.Lines.append( Line(
+                    line_style=Stroke(width=StrokeWidth.THIN, pattern=StrokeStyle.SOLID),
+                    from_here=Position(left_extent, this_height), to_there=Position(right_extent, this_height)
+                )
+            )
 
         # Draw columns
         bottom_extent = self.Diagram.Origin.y
         top_extent = bottom_extent + self.Diagram.Size.height
+        this_width = 0
         for w in self.Col_widths:
-            tablet.Lines.append( Line(StrokeWidth.THIN, Position(w, bottom_extent), Position(w, top_extent)) )
+            this_width += w
+            tablet.Lines.append( Line(
+                    line_style=Stroke(width=StrokeWidth.THIN, pattern=StrokeStyle.SOLID),
+                    from_here=Position(this_width, bottom_extent), to_there=Position(this_width, top_extent)
+                )
+            )
 
         # Draw nodes
         [n.render() for n in self.Nodes]
-
-
 
     def add_row(self, height):
         """Adds an empty row upward with the given height"""
@@ -89,13 +99,15 @@ class Grid:
     def place_node(self, row, column, node_type_name, content):
         """Places the node adding any required rows or columns"""
 
+        assert row > 0, "Desired row out of bounds: Less than 1"
+        assert column > 0, "Desired column out of bounds: Less than 1"
         new_node = Node(node_type_name, content, self, row, column)
         # If the number of rows or columns is less than the amount already there, don't add anything new
         rows_to_add = max(0, row - len(self.Row_heights))
         columns_to_add = max(0, column - len(self.Col_widths))
 
         # If there is already a node at that location, raise an exception
-        if not rows_to_add and not columns_to_add and self.Cells[row][column]:
+        if not rows_to_add and not columns_to_add and self.Cells[row-1][column-1]:
             raise flatland_exceptions.CellOccupiedFE
 
         # Add necessary rows and columns, if any
@@ -107,7 +119,7 @@ class Grid:
         # Place the node in the new location
         new_node.Row = row
         new_node.Column = column
-        self.Cells[row][column] = new_node
+        self.Cells[row-1][column-1] = new_node
         self.Nodes.append(new_node)
 
 

@@ -21,3 +21,7 @@ class CellOccupiedFE(FlatlandException):
 
 class UnknownNodeType(FlatlandException):
     pass
+
+
+class CellOutofBounds:
+    pass

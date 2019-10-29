@@ -29,10 +29,11 @@ class HorizAlign(Enum):
     RIGHT = 'right'
 
 
-Line = namedtuple('Line', 'stroke from_here to_there')
-Rectangle = namedtuple('Rectangle', 'stroke lower_left, size')
+Stroke = namedtuple('Stroke', 'width pattern')
+Line = namedtuple('Line', 'line_style from_here to_there')
+Rectangle = namedtuple('Rectangle', 'line_style lower_left, size')
 Position = namedtuple('Position', 'x y')
 Rect_Size = namedtuple('Rect_Size', 'height width')
 Alignment = namedtuple('Alignment', 'vertical horizontal')
 Padding = namedtuple('Padding', 'top bottom left right')
-Node_Type_Attrs = namedtuple('Node_Type_Attrs', 'corner_rounding compartments border_width border_style max_size')
+Node_Type_Attrs = namedtuple('Node_Type_Attrs', 'corner_rounding compartments line_style default_size max_size')

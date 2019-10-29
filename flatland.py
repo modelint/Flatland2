@@ -11,8 +11,8 @@ def create_canvas(args):
         drawoutput=args.file,
         show_margin=True
     )
-    # flatland_canvas.Diagram.Grid.place_node(
-    #    row=1, column=2, node_type_name='class', content='Aircraft')
+    flatland_canvas.Diagram.Grid.place_node(
+        row=1, column=2, node_type_name='class', content='Aircraft')
     flatland_canvas.render()
 
 
