@@ -40,9 +40,7 @@ class Grid:
         self.Row_heights = []
         self.Cell_padding = default_cell_padding
         self.Cell_alignment = default_cell_alignment
-        # self.Heights = [100, 200, 300, 400] # Diagnostic
         self.Col_widths = []
-        # self.Widths = [200, 400, 600, 800]  # Diagnostic
         self.Diagram = diagram
         self.Nodes = []
 
@@ -54,7 +52,7 @@ class Grid:
         # Draw rows
         left_extent = self.Diagram.Origin.x
         right_extent = self.Diagram.Origin.x + self.Diagram.Size.width
-        this_height = 0
+        this_height = self.Diagram.Origin.y
         for h in self.Row_heights:
             this_height += h
             tablet.Lines.append( Line(
@@ -66,7 +64,7 @@ class Grid:
         # Draw columns
         bottom_extent = self.Diagram.Origin.y
         top_extent = bottom_extent + self.Diagram.Size.height
-        this_width = 0
+        this_width = self.Diagram.Origin.x
         for w in self.Col_widths:
             this_width += w
             tablet.Lines.append( Line(

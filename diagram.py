@@ -11,7 +11,19 @@ default_diagram_type = 'class'
 
 class Diagram:
     """
-    The Diagram covers the entire area of the Canvas inside the Canvas margin.
+    The Diagram covers a rectangle within the area inside the Canvas margin.  Use padding to specify
+    the extent and location of the diagram.  An origin and rectangle size will be derived from that
+    for internal usage.
+
+    Attributes
+    ---
+
+    Canvas : Drawn on this Canvas
+    Diagram_type : Type of model diagram to be drawn, class, for example
+    Grid : All content in the diagram is organized within the cells of this Grid
+    Padding : Space between Canvas margin and Diagram on all sides (useful for specification)
+    Origin : Lower left corner of Diagram in Canvas coordinates
+    Size : Size of the Diagram, derived from Padding also
 
     """
     def __init__(self, canvas, diagram_type):

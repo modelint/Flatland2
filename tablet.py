@@ -28,7 +28,8 @@ class Tablet:
             context.stroke()
         for r in self.Rectangles:
             context.set_line_width(r.line_style.width.value)
-            context.rectangle(r.lower_left.x, r.lower_left.y, r.size.width, r.size.height)
+            # Invert y coordinate and use top left rather than bottom left origin
+            context.rectangle(r.lower_left.x, self.Size.height - r.lower_left.y - r.size.height, r.size.width, r.size.height)
             context.stroke()
 
     def to_dc(self, tablet_coord):

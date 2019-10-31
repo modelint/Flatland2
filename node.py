@@ -38,8 +38,8 @@ class Node:
         # To obtain Canvas coordinates for this position, we add our relative location in our Cell
         # to our Diagram origin which has already been resolved to Canvas coordinates.
         lower_left_corner = Position(
-            x=cell_floor_boundary + self.Grid.Cell_padding.left + self.Grid.Diagram.Origin.y,
-            y=cell_left_boundary + self.Grid.Cell_padding.bottom + self.Grid.Diagram.Origin.x
+            x=cell_left_boundary + self.Grid.Cell_padding.left + self.Grid.Diagram.Origin.x,
+            y=cell_floor_boundary + self.Grid.Cell_padding.bottom + self.Grid.Diagram.Origin.y
         )
         # We already know our node height and width. For the rectanble border, we look up
         # the style defined for the associated node type. So now we can register our rectangle in the Tablet.
