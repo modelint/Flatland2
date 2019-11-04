@@ -25,3 +25,7 @@ class UnknownNodeType(FlatlandException):
 
 class CellOutofBounds:
     pass
+
+
+class NoContentForCompartment(FlatlandException):
+    pass

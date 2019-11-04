@@ -3,20 +3,48 @@ node.py
 """
 from flatland_types import Position, Rectangle
 from diagram_node_types import node_types
+from compartment import Compartment
 import flatland_exceptions
 
 
 class Node:
+    """
+    This is a rectangular diagram symbol consisting of one or more UML style Compartments
+    stacked in a vertical order.
+
+    Attributes
+    ---
+    Content : The unformatted text that will be drawn into the Node's Compartments
+              organized as a dictionary with the keys as compartment names such as 'class name', 'attributes', etc.
+    Size : Without considering the text content, this is the assumed default Node size
+    Grid : The Node is positioned into this Grid
+    Row : The Node is positioned on this Row
+    Column : and this Column
+
+    """
     def __init__(self, node_type_name, content, grid, row, column):
-        self.content = content
+        if not content:
+            raise flatland_exceptions.NoContentForCompartment
+        self.Content = content
         try:
-            self.node_type = node_types[node_type_name]
+            self.Node_type = node_types[node_type_name]
         except IndexError:
             raise flatland_exceptions.UnknownNodeType
-        self.Size = self.node_type.default_size # Rect_Size
+        self.Size = self.fit_content()
         self.Grid = grid
         self.Row = row
         self.Column = column
+        # Create a compartment for each element of content
+        # If content is missing, make less compartments
+        self.Compartments = [
+            Compartment(node=self, name=comp.name, content=text)
+            for text,comp in zip(self.Content, self.Node_type.compartments)
+        ]
+
+    def fit_content(self):
+        """Adjust node size to accommodate text content in each compartment"""
+        shrink_wrap_size =
+        s = max(self.Size, )k
 
     def render(self):
         """Calculate final position on the Canvas and register my rectangle in the Tablet"""

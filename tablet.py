@@ -1,36 +1,52 @@
 """
 tablet.py – Flatland draws to this and then the tablet can be drawn using cairo or some other draw framework
 """
-from flatland_types import Position, Line, Rectangle
+from flatland_types import *
 from typing import List
+import cairo
+
 
 class Tablet:
     def __init__(self, size, output_file):
         self.Size = size
-        self.Lines:  List[Line] = []
+        self.Lines: List[Line] = []
         self.Rectangles: List[Rectangle] = []
         self.Text = []
         self.Output_file = output_file
+        self.PDF_sheet = cairo.PDFSurface(self.Output_file, self.Size.width, self.Size.height)
+        self.Context = cairo.Context(self.PDF_sheet)
+        self.Font_weight_map = {FontWeight.NORMAL: cairo.FontWeight.NORMAL, FontWeight.BOLD: cairo.FontWeight.BOLD}
+        self.Font_slant_map = {FontSlant.NORMAL: cairo.FontSlant.NORMAL, FontSlant.ITALIC: cairo.FontSlant.ITALIC}
 
     def render(self):
         """Renders the tablet using Cairo for now"""
 
         # For now, always assume output to cairo
-        import cairo
-        pdf_sheet = cairo.PDFSurface(self.Output_file, self.Size.width, self.Size.height)
-        context = cairo.Context(pdf_sheet)
-        context.set_source_rgb(0, 0, 0)
-        context.set_line_join(cairo.LINE_JOIN_ROUND)
+        self.Context.set_source_rgb(0, 0, 0)
+        self.Context.set_line_join(cairo.LINE_JOIN_ROUND)
         for l in self.Lines:
-            context.set_line_width(l.line_style.width.value)
-            context.move_to(*self.to_dc(l.from_here))
-            context.line_to(*self.to_dc(l.to_there))
-            context.stroke()
+            self.Context.set_line_width(l.line_style.width.value)
+            self.Context.move_to(*self.to_dc(l.from_here))
+            self.Context.line_to(*self.to_dc(l.to_there))
+            self.Context.stroke()
         for r in self.Rectangles:
-            context.set_line_width(r.line_style.width.value)
+            self.Context.set_line_width(r.line_style.width.value)
             # Invert y coordinate and use top left rather than bottom left origin
-            context.rectangle(r.lower_left.x, self.Size.height - r.lower_left.y - r.size.height, r.size.width, r.size.height)
-            context.stroke()
+            self.Context.rectangle(r.lower_left.x, self.Size.height - r.lower_left.y - r.size.height,
+                                   r.size.width, r.size.height)
+            self.Context.stroke()
+
+    def text_size(self, style: Text_Style, text_block):
+        """Returns the size of a text block if displayed"""
+        # We map flatland values to cairo values to set the desired text style
+        self.Context.select_font_face(
+            family=style.typeface.value,
+            slant=self.Font_slant_map[style.slant.value],
+            weight=self.Font_weight_map[style.weight.value]
+        )
+        self.Context.set_font_size(style.size)
+        te = self.Context.text_extents(text_block)
+        return Rect_Size(height=te.height, width=te.width)
 
     def to_dc(self, tablet_coord):
         """
