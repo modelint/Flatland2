@@ -1,7 +1,7 @@
 """
 node.py
 """
-from flatland_types import Position, Rectangle
+from flatland_types import Position, Rectangle, Rect_Size
 from diagram_node_types import node_types
 from compartment import Compartment
 import flatland_exceptions
@@ -30,7 +30,6 @@ class Node:
             self.Node_type = node_types[node_type_name]
         except IndexError:
             raise flatland_exceptions.UnknownNodeType
-        self.Size = self.fit_content()
         self.Grid = grid
         self.Row = row
         self.Column = column
@@ -41,10 +40,18 @@ class Node:
             for text,comp in zip(self.Content, self.Node_type.compartments)
         ]
 
-    def fit_content(self):
+    @property
+    def Size(self):
         """Adjust node size to accommodate text content in each compartment"""
-        shrink_wrap_size =
-        s = max(self.Size, )k
+        # For all compartments in this node, get the max height and width
+        crects = [c.Text_block_size for r in self.Compartments]
+        # Get the max of each compartment width and the default node type width
+        max_width = max([r.width for r in crects] + [self. self.Node_type.default_size.width])
+        # Height is the sum of all compartment heights
+        # Ignore the default node type height for now
+        node_height = sum([r.height for r in crects])
+        # Return a rectangle with the
+        return Rect_Size(height=node_height, width=max_width)
 
     def render(self):
         """Calculate final position on the Canvas and register my rectangle in the Tablet"""

@@ -16,9 +16,9 @@ class Compartment:
         self.Node = node
         self.Type : Compartment_Type_Attrs = self.Node.Node_type.compartments[self.Name]
         self.Content = content
-        self.Text_block_size : Rect_Size = self.compute_block_size
 
-    def compute_block_size(self):
+    @property
+    def Text_block_size(self):
         """ Compute the size of the text block with required internal compartment padding """
         # Have the tablet compute the total ink area given the text style
         text_ink_area : Rect_Size = self.Node.Grid.Diagram.Canvas.Tablet.text_size(
