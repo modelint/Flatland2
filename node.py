@@ -20,6 +20,7 @@ class Node:
     Grid : The Node is positioned into this Grid
     Row : The Node is positioned on this Row
     Column : and this Column
+    Compartments : Each compartment to be filled in
 
     """
     def __init__(self, node_type_name, content, grid, row, column):
@@ -36,17 +37,17 @@ class Node:
         # Create a compartment for each element of content
         # If content is missing, make less compartments
         self.Compartments = [
-            Compartment(node=self, name=comp.name, content=text)
-            for text,comp in zip(self.Content, self.Node_type.compartments)
+            Compartment(node=self, name=comp_name, content=text)
+            for text,comp_name in zip(self.Content, self.Node_type.compartments.keys())
         ]
 
     @property
     def Size(self):
         """Adjust node size to accommodate text content in each compartment"""
         # For all compartments in this node, get the max height and width
-        crects = [c.Text_block_size for r in self.Compartments]
+        crects = [c.Text_block_size for c in self.Compartments]
         # Get the max of each compartment width and the default node type width
-        max_width = max([r.width for r in crects] + [self. self.Node_type.default_size.width])
+        max_width = max([r.width for r in crects] + [self.Node_type.default_size.width])
         # Height is the sum of all compartment heights
         # Ignore the default node type height for now
         node_height = sum([r.height for r in crects])
@@ -76,8 +77,10 @@ class Node:
             x=cell_left_boundary + self.Grid.Cell_padding.left + self.Grid.Diagram.Origin.x,
             y=cell_floor_boundary + self.Grid.Cell_padding.bottom + self.Grid.Diagram.Origin.y
         )
-        # We already know our node height and width. For the rectanble border, we look up
-        # the style defined for the associated node type. So now we can register our rectangle in the Tablet.
-        self.Grid.Diagram.Canvas.Tablet.Rectangles.append(
-           Rectangle(line_style=self.node_type.line_style, lower_left=lower_left_corner, size=self.Size)
-        )
+
+        # Have each compartment draw itself working from the bottom up
+        floor = lower_left_corner.y
+        for c in self.Compartments[::-1]:
+            c.render(Position(x=lower_left_corner.x, y=floor))
+            floor += c.Size.height
+

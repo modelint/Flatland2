@@ -1,6 +1,6 @@
 """ compartment.py """
 
-from flatland_types import Rect_Size, Compartment_Type_Attrs
+from flatland_types import Rect_Size, Compartment_Type_Attrs, Position, Rectangle
 
 
 class Compartment:
@@ -11,19 +11,39 @@ class Compartment:
     ---
 
     """
+
     def __init__(self, node, name, content):
         self.Name = name
         self.Node = node
-        self.Type : Compartment_Type_Attrs = self.Node.Node_type.compartments[self.Name]
-        self.Content = content
+        self.Type: Compartment_Type_Attrs = self.Node.Node_type.compartments[self.Name]
+        self.Content = content  # list of text lines
+        self.leading = 4  # Temporary default leading in points ( change later to be font specific
 
     @property
     def Text_block_size(self):
         """ Compute the size of the text block with required internal compartment padding """
+        longest_line = max(self.Content, key=len)
         # Have the tablet compute the total ink area given the text style
-        text_ink_area : Rect_Size = self.Node.Grid.Diagram.Canvas.Tablet.text_size(
-            style=self.Node.Node_type.text_style, text_block=self.Content)
+        line_ink_area: Rect_Size = self.Node.Grid.Diagram.Canvas.Tablet.text_size(
+            style=self.Type.text_style, text_line=longest_line)
+
+        block_width = line_ink_area.width + self.Type.padding.left + self.Type.padding.right
+        block_height = ((line_ink_area.height + self.leading) * len(self.Content)
+                        + self.Type.padding.top + self.Type.padding.bottom)
         # Now add the padding specified for this compartment type
-        return Rect_Size(width=text_ink_area.width + self.Type.padding.left + self.Type.padding.right,
-                         height=text_ink_area.height + self.Type.padding.top + self.Type.padding.bottom)
+        return Rect_Size(width=block_width, height=block_height)
+
+    @property
+    def Size(self):
+        """Compute the size of the visible border"""
+        # Width matches the node width and the height is the full text block size
+        return Rect_Size(width=self.Node.Size.width, height=self.Text_block_size.height)
+
+    def render(self, lower_left_corner: Position):
+        """ Create rectangle on the tablet"""
+
+        self.Node.Grid.Diagram.Canvas.Tablet.Rectangles.append(
+            Rectangle(line_style=self.Node.Node_type.line_style, lower_left=lower_left_corner,
+                      size=self.Size)
+        )
 

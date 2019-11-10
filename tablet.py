@@ -11,13 +11,14 @@ class Tablet:
         self.Size = size
         self.Lines: List[Line] = []
         self.Rectangles: List[Rectangle] = []
-        self.Text = []
+        self.Text = [] # This will be a list of lines of text
         self.Output_file = output_file
         self.PDF_sheet = cairo.PDFSurface(self.Output_file, self.Size.width, self.Size.height)
         self.Context = cairo.Context(self.PDF_sheet)
         self.Font_weight_map = {FontWeight.NORMAL: cairo.FontWeight.NORMAL, FontWeight.BOLD: cairo.FontWeight.BOLD}
         self.Font_slant_map = {FontSlant.NORMAL: cairo.FontSlant.NORMAL, FontSlant.ITALIC: cairo.FontSlant.ITALIC}
 
+# TODO: Update to render each line of text (moving to each line start separately)
     def render(self):
         """Renders the tablet using Cairo for now"""
 
@@ -36,16 +37,16 @@ class Tablet:
                                    r.size.width, r.size.height)
             self.Context.stroke()
 
-    def text_size(self, style: Text_Style, text_block):
-        """Returns the size of a text block if displayed"""
+    def text_size(self, style: Text_Style, text_line):
+        """Returns the size of a line of text if displayed"""
         # We map flatland values to cairo values to set the desired text style
         self.Context.select_font_face(
-            family=style.typeface.value,
-            slant=self.Font_slant_map[style.slant.value],
-            weight=self.Font_weight_map[style.weight.value]
+            style.typeface.value,
+            self.Font_slant_map[style.slant],
+            self.Font_weight_map[style.weight]
         )
         self.Context.set_font_size(style.size)
-        te = self.Context.text_extents(text_block)
+        te = self.Context.text_extents(text_line)
         return Rect_Size(height=te.height, width=te.width)
 
     def to_dc(self, tablet_coord):

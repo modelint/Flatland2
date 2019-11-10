@@ -11,8 +11,16 @@ def create_canvas(args):
         drawoutput=args.file,
         show_margin=True
     )
+    class_text = [
+        ['Aircraft'], [
+            'Altitude',
+            'Tail number : ACAO {I}',
+            'Airspeed : Knots',
+            'Heading'
+        ]
+    ]
     flatland_canvas.Diagram.Grid.place_node(
-        row=1, column=2, node_type_name='class', content='Aircraft')
+        row=1, column=2, node_type_name='class', content=class_text)
     flatland_canvas.render()
 
 
