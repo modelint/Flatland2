@@ -11,14 +11,13 @@ class Tablet:
         self.Size = size
         self.Lines: List[Line] = []
         self.Rectangles: List[Rectangle] = []
-        self.Text = [] # This will be a list of lines of text
+        self.Text: List[Text_Line] = []
         self.Output_file = output_file
         self.PDF_sheet = cairo.PDFSurface(self.Output_file, self.Size.width, self.Size.height)
         self.Context = cairo.Context(self.PDF_sheet)
         self.Font_weight_map = {FontWeight.NORMAL: cairo.FontWeight.NORMAL, FontWeight.BOLD: cairo.FontWeight.BOLD}
         self.Font_slant_map = {FontSlant.NORMAL: cairo.FontSlant.NORMAL, FontSlant.ITALIC: cairo.FontSlant.ITALIC}
 
-# TODO: Update to render each line of text (moving to each line start separately)
     def render(self):
         """Renders the tablet using Cairo for now"""
 
@@ -36,6 +35,11 @@ class Tablet:
             self.Context.rectangle(r.lower_left.x, self.Size.height - r.lower_left.y - r.size.height,
                                    r.size.width, r.size.height)
             self.Context.stroke()
+        for t in self.Text:
+            self.Context.select_font_face(t.style.typeface.value, t.style.slant.value, t.style.weight.value)
+            self.Context.set_font_size(t.style.size)
+            self.Context.move_to(t.lower_left.x, self.Size.height - t.lower_left.y)
+            self.Context.show_text(t.content)
 
     def text_size(self, style: Text_Style, text_line):
         """Returns the size of a line of text if displayed"""

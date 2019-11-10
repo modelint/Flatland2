@@ -10,14 +10,14 @@ node_types = {
                                  'class name': Compartment_Type_Attrs(
                                      alignment=Alignment(vertical=VertAlign.CENTER,
                                                          horizontal=HorizAlign.CENTER),
-                                     padding=Padding(top=5, bottom=5, left=5, right=5),
+                                     padding=Padding(top=5, bottom=10, left=10, right=5),
                                      text_style=Text_Style(typeface=TypeFace.PALATINO,
                                                            size=11, slant=FontSlant.NORMAL,
                                                            weight=FontWeight.NORMAL)),
                                  'attributes': Compartment_Type_Attrs(
                                      alignment=Alignment(vertical=VertAlign.CENTER,
                                                          horizontal=HorizAlign.CENTER),
-                                     padding=Padding(top=4, bottom=4, left=4, right=4),
+                                     padding=Padding(top=4, bottom=10, left=10, right=4),
                                      text_style=Text_Style(typeface=TypeFace.PALATINO,
                                                            size=9, slant=FontSlant.NORMAL,
                                                            weight=FontWeight.NORMAL)),

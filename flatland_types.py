@@ -51,6 +51,7 @@ class HorizAlign(Enum):
 Stroke = namedtuple('Stroke', 'width pattern')
 Line = namedtuple('Line', 'line_style from_here to_there')
 Text_Style = namedtuple('Text_Style', 'typeface size slant weight')
+Text_Line = namedtuple('Text_Line', 'lower_left style content')
 Rectangle = namedtuple('Rectangle', 'line_style lower_left, size')
 Position = namedtuple('Position', 'x y')
 Rect_Size = namedtuple('Rect_Size', 'height width')

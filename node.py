@@ -79,8 +79,8 @@ class Node:
         )
 
         # Have each compartment draw itself working from the bottom up
-        floor = lower_left_corner.y
+        comp_y = lower_left_corner.y
         for c in self.Compartments[::-1]:
-            c.render(Position(x=lower_left_corner.x, y=floor))
-            floor += c.Size.height
+            c.render(Position(x=lower_left_corner.x, y=comp_y))
+            comp_y += c.Size.height
 
