@@ -36,7 +36,11 @@ class Tablet:
                                    r.size.width, r.size.height)
             self.Context.stroke()
         for t in self.Text:
-            self.Context.select_font_face(t.style.typeface.value, t.style.slant.value, t.style.weight.value)
+            self.Context.select_font_face(
+                t.style.typeface.value,
+                self.Font_slant_map[t.style.slant],
+                self.Font_weight_map[t.style.weight]
+            )
             self.Context.set_font_size(t.style.size)
             self.Context.move_to(t.lower_left.x, self.Size.height - t.lower_left.y)
             self.Context.show_text(t.content)

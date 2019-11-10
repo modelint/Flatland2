@@ -19,7 +19,7 @@ class StrokeStyle(Enum):
 
 class TypeFace(Enum):
     """We'll start with a limited selection of typefaces that work nicely for drawing models"""
-    PALATINO = 'Palatino Sans Infomral LT Pro'
+    PALATINO = 'Palatino Sans Informal LT Pro'
     GILLSANS = 'Gill Sans'
     FUTURA = 'Futura'
     HELVETICA = 'Helvetica'
