@@ -52,45 +52,45 @@ class Grid:
         # Draw rows
         left_extent = self.Diagram.Origin.x
         right_extent = self.Diagram.Origin.x + self.Diagram.Size.width
-        this_height = self.Diagram.Origin.y
         for h in self.Row_heights:
-            this_height += h
             tablet.Lines.append( Line(
                     line_style=Stroke(width=StrokeWidth.THIN, pattern=StrokeStyle.SOLID),
-                    from_here=Position(left_extent, this_height), to_there=Position(right_extent, this_height)
+                    from_here=Position(left_extent, h + self.Diagram.Origin.y),
+                    to_there=Position(right_extent, h + self.Diagram.Origin.y)
                 )
             )
 
         # Draw columns
         bottom_extent = self.Diagram.Origin.y
         top_extent = bottom_extent + self.Diagram.Size.height
-        this_width = self.Diagram.Origin.x
         for w in self.Col_widths:
-            this_width += w
             tablet.Lines.append( Line(
                     line_style=Stroke(width=StrokeWidth.THIN, pattern=StrokeStyle.SOLID),
-                    from_here=Position(this_width, bottom_extent), to_there=Position(this_width, top_extent)
+                    from_here=Position(w + self.Diagram.Origin.x, bottom_extent),
+                    to_there=Position(w + self.Diagram.Origin.x, top_extent)
                 )
             )
 
         # Draw nodes
         [n.render() for n in self.Nodes]
 
-    def add_row(self, height):
+    def add_row(self, cell_height):
         """Adds an empty row upward with the given height"""
         # Add the row height
-        if height + sum(self.Row_heights) > self.Diagram.Size.height:
+        new_row_height = cell_height if not self.Row_heights else self.Row_heights[-1] + cell_height
+        if new_row_height > self.Diagram.Size.height:
             raise flatland_exceptions.SheetHeightExceededFE
-        self.Row_heights.append(height)
+        self.Row_heights.append(new_row_height)
         # Insert an empty node for each column
         empty_row = [None for _ in self.Col_widths]
         self.Cells.append(empty_row)
 
-    def add_column(self, width):
+    def add_column(self, cell_width):
         """Adds an empty column rightward with the given width"""
-        if width + sum(self.Col_widths) > self.Diagram.Size.width:
+        new_col_width = cell_width if not self.Col_widths else self.Col_widths[-1] + cell_width
+        if new_col_width > self.Diagram.Size.width:
             raise flatland_exceptions.SheetWidthExceededFE
-        self.Col_widths.append(width)
+        self.Col_widths.append(new_col_width)
         # For each row, add a column
         [row.append(None) for row in self.Cells]
 
@@ -109,10 +109,10 @@ class Grid:
             raise flatland_exceptions.CellOccupiedFE
 
         # Add necessary rows and columns, if any
-        node_height = new_node.Size.height + self.Cell_padding.top + self.Cell_padding.bottom
-        node_width = new_node.Size.width + self.Cell_padding.left + self.Cell_padding.right
-        [self.add_row(node_height) for _ in range(rows_to_add)]
-        [self.add_column(node_width) for _ in range(columns_to_add)]
+        cell_height = new_node.Size.height + self.Cell_padding.top + self.Cell_padding.bottom
+        cell_width = new_node.Size.width + self.Cell_padding.left + self.Cell_padding.right
+        [self.add_row(cell_height) for _ in range(rows_to_add)]
+        [self.add_column(cell_width) for _ in range(columns_to_add)]
 
         # Place the node in the new location
         new_node.Row = row
