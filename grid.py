@@ -111,6 +111,36 @@ class Grid:
         # Add necessary rows and columns, if any
         cell_height = new_node.Size.height + self.Cell_padding.top + self.Cell_padding.bottom
         cell_width = new_node.Size.width + self.Cell_padding.left + self.Cell_padding.right
+
+        # Check for horizontal overlap
+        if not columns_to_add:
+            left, right = column-2, column-1
+            right_col_pos = self.Col_widths[right]
+            left_col_pos = 0 if left < 0 else self.Col_widths[left]
+            current_col_width = right_col_pos - left_col_pos
+            overlap = max(0, cell_width - current_col_width)
+            if overlap:
+                # add the overlap to each col width from the right side of this cell outward
+                self.Col_widths = self.Col_widths[:right] + [c + overlap for c in self.Col_widths[right:]]
+                # Check to see if the rightmost column position is now outside the diagram area
+                if self.Col_widths[-1] > self.Diagram.Size.width:
+                    raise flatland_exceptions.SheetWidthExceededFE
+
+        # Check for vertical overlap
+        if not rows_to_add:
+            bottom, top = row-2, row-1
+            row_ceiling = self.Row_heights[top]
+            row_floor = 0 if bottom < 0 else self.Row_heights[bottom]
+            current_row_height = row_ceiling - row_floor
+            overlap = max(0, cell_height - current_row_height)
+            if overlap:
+                # add the overlap to each row ceiling from the top of this cell upward
+                self.Row_heights = self.Row_heights[:top] + [r + overlap for r in self.Row_heights[top:]]
+                # Check to see if the rightmost column position is now outside the diagram area
+                if self.Row_heights[-1] > self.Diagram.Size.height:
+                    raise flatland_exceptions.SheetWidthExceededFE
+
+
         [self.add_row(cell_height) for _ in range(rows_to_add)]
         [self.add_column(cell_width) for _ in range(columns_to_add)]
 

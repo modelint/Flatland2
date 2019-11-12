@@ -53,7 +53,7 @@ class Compartment:
         assert self.Line_height # It should have been set by now
         ypos = lower_left_corner.y + self.Type.padding.bottom
         xpos = lower_left_corner.x + self.Type.padding.left
-        for line in self.Content:
+        for line in self.Content[::-1]:  # Reverse order since we are positioning lines from the bottom up
             self.Node.Grid.Diagram.Canvas.Tablet.Text.append(Text_Line(
                 lower_left=Position(xpos, ypos), content=line, style=self.Type.text_style))
             ypos += self.leading + self.Line_height

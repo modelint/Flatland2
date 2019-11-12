@@ -14,7 +14,7 @@ def create_canvas(args):
     class_Aircraft = [
         ['Aircraft'], [
             'Altitude',
-            'Tail number : ACAO {I}',
+            'Tail number: ACAO {I}',
             'Airspeed : Knots',
             'Heading'
         ]
@@ -27,10 +27,35 @@ def create_canvas(args):
             'Aircraft {R13}'
         ]
     ]
+
+    class_Runway = [
+        ['Runway'], [
+            'ID : Runway Code {I}',
+            'Length : Distance',
+            'Width : Distance',
+            'Something to make it really really long'
+        ]
+    ]
+
+
+    class_Tower = [
+        ['Tower'], [
+            'ID : Nominal {I}',
+            'A : Distance',
+            'B : Distance',
+            'C : Distance',
+            'D : Distance',
+            'E : Distance',
+            'F : Distance',
+            'G : Distance'
+        ]
+    ]
     flatland_canvas.Diagram.Grid.place_node(
-        row=1, column=7, node_type_name='class', content=class_Aircraft)
+        row=3, column=3, node_type_name='class', content=class_Aircraft)
     flatland_canvas.Diagram.Grid.place_node(
-        row=7, column=10, node_type_name='class', content=class_Pilot)
+        row=1, column=1, node_type_name='class', content=class_Pilot)
+    flatland_canvas.Diagram.Grid.place_node(
+        row=2, column=2, node_type_name='class', content=class_Tower)
     flatland_canvas.render()
 
 
