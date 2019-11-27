@@ -37,15 +37,17 @@ class FontSlant(Enum):
 
 
 class VertAlign(Enum):
-    TOP = 'top'
-    CENTER = 'center'
-    BOTTOM = 'bottom'
+    """The numeric values are low to high in the axis direction"""
+    BOTTOM = 0
+    CENTER = 1
+    TOP = 2
 
 
 class HorizAlign(Enum):
-    LEFT = 'left'
-    CENTER = 'center'
-    RIGHT = 'right'
+    """The numeric values are low to high in the axis direction"""
+    LEFT = 0
+    CENTER = 1
+    RIGHT = 2
 
 
 Stroke = namedtuple('Stroke', 'width pattern')

@@ -5,6 +5,8 @@ from flatland_types import Position, Rectangle, Rect_Size
 from diagram_node_types import node_types
 from compartment import Compartment
 import flatland_exceptions
+from layout_specification import default_cell_alignment
+from single_cell_node import SingleCellNode
 
 
 class Node:
@@ -16,14 +18,13 @@ class Node:
     ---
     Content : The unformatted text that will be drawn into the Node's Compartments
               organized as a dictionary with the keys as compartment names such as 'class name', 'attributes', etc.
-    Size : Without considering the text content, this is the assumed default Node size
     Grid : The Node is positioned into this Grid
-    Row : The Node is positioned on this Row
-    Column : and this Column
     Compartments : Each compartment to be filled in
-
+    Local_alignment : Position of the node in the spanned area, vertical and horizontal
+    Position : Lower left corner position of Node in Diagram coordinates
     """
-    def __init__(self, node_type_name, content, grid, row, column):
+
+    def __init__(self, node_type_name, content, grid, local_alignment):
         if not content:
             raise flatland_exceptions.NoContentForCompartment
         self.Content = content
@@ -32,14 +33,15 @@ class Node:
         except IndexError:
             raise flatland_exceptions.UnknownNodeType
         self.Grid = grid
-        self.Row = row
-        self.Column = column
         # Create a compartment for each element of content
         # If content is missing, make less compartments
         self.Compartments = [
             Compartment(node=self, name=comp_name, content=text)
-            for text,comp_name in zip(self.Content, self.Node_type.compartments.keys())
+            for text, comp_name in zip(self.Content, self.Node_type.compartments.keys())
         ]
+        self.Local_alignment = local_alignment if local_alignment else default_cell_alignment
+        self.Position = self.Grid.place_single_cell_node(self) if isinstance(self, SingleCellNode) \
+            else self.Grid.place_spanning_node(self)
 
     @property
     def Size(self):
@@ -67,8 +69,8 @@ class Node:
         # boundary of the Row below us, hence we subtract one more.  Careful, though since
         # the bottom-most Row has no lower row.  In that case, the floor is at zero.
         # Similar logic applies when obtaining the left boundary, but with Columns.
-        cell_floor_boundary = 0 if self.Row-2 < 0 else self.Grid.Row_heights[self.Row-2]
-        cell_left_boundary = 0 if self.Column-2 < 0 else self.Grid.Col_widths[self.Column-2]
+        cell_floor_boundary = 0 if self.Row - 2 < 0 else self.Grid.Row_heights[self.Row - 2]
+        cell_left_boundary = 0 if self.Column - 2 < 0 else self.Grid.Col_widths[self.Column - 2]
 
         # Now we create a position coordinate for our lower left corner
         # To obtain Canvas coordinates for this position, we add our relative location in our Cell
@@ -83,4 +85,3 @@ class Node:
         for c in self.Compartments[::-1]:
             c.render(Position(x=lower_left_corner.x, y=comp_y))
             comp_y += c.Size.height
-

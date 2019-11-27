@@ -51,10 +51,12 @@ class Canvas:
         self.Margin = default_canvas_margin
         self.Diagram = Diagram(self, diagram_type)
         self.Tablet = Tablet(size=self.Point_size, output_file=drawoutput)
-        self.Show_margin = show_margin
+        self.Show_margin = show_margin # For diagnostic purposes only
 
     def render(self):
+        """Draw all content of this Canvas onto the framework independent Tablet"""
         if self.Show_margin:
+            # Draw a thin rectangle to represent the margin boundary
             drawable_origin = Position(x=self.Margin.left, y=self.Margin.bottom)
             draw_area_height = self.Point_size.height - self.Margin.top - self.Margin.bottom
             draw_area_width = self.Point_size.width - self.Margin.left - self.Margin.right
@@ -63,7 +65,9 @@ class Canvas:
                 Rectangle(line_style=Stroke(width=StrokeWidth.THIN, pattern=StrokeStyle.SOLID),
                           lower_left=drawable_origin, size=draw_area_size)
             )
+        # Now draw the diagram content
         self.Diagram.render()
+        # Finally output the tablet to the target graphics framework
         self.Tablet.render()
 
     def __repr__(self):

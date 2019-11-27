@@ -1,10 +1,21 @@
 """
 diagram_node_types.py
+
+Covers the Node Type and Diagram Type classes in the Flatland Class Diagram.
 """
 from flatland_types import *
 from collections import OrderedDict
 
 node_types = {
+    """
+    Node Type information specifies data that is the same for all Nodes of a given type
+    All Class nodes, for example, have three compartments each with a particular typeface.
+    This information would be the same on each class node on any class diagram.
+    
+    We use an OrderedDict for compartments to implement the R1 relationship on the modeled
+    Compartment Type Class
+    
+    """
     'class': Node_Type_Attrs(corner_rounding=0,
                              compartments=OrderedDict({
                                  'class name': Compartment_Type_Attrs(
@@ -125,6 +136,10 @@ node_types = {
 }
 
 diagram_types = {
+    """
+    Here we specify what kinds of nodes may appear on a given type of diagram.  You cannot, put a state
+    node on a class diagram, for example.
+    """
     'class': {'class', 'imported_class'},
     'state': {'state'},
     'collab': {'overview_class', 'ee'},

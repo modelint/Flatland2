@@ -7,6 +7,40 @@ import cairo
 
 
 class Tablet:
+    """
+    The Tablet class is not specified on the Flatland Class Diagram since it is at a different
+    level of abstraction.  In Exexutable UML, we would say that Tablet is in another subject
+    matter domain.
+
+    Whereas the Flatland Class Diagram describes diagram layout, the Tablet
+    class defines a mapping to a graphics framework. As such, it serves to isolate Flatland
+    itself from the specifics of any particular graphics framework such as Cairo. For example,
+    Flatland elements are specified in the upper right quadrant of an xy coordinate system.
+    Cairo, uses display coordinates where y increments downward rather than upward. So Tablet
+    converts from the Flatland coordinates to Cairo coordinates.  Also, text styles are defined
+    in Flatland and then later mapped to whatever text display mechanisms are supported by a
+    particular graphics framework.
+
+
+    Consequently, a new framework can be supported by updating the Tablet class without affecting any
+    of the Flatland classes.
+
+    When flatland elements render themselves they create text, lines and rectangles on the Tablet
+    in flatland coordinates. Once complete, the tablet renders these using coordinates and functions
+    specific to a particular graphics framework such as Cairo.
+
+    Attributes
+    ---
+    Size : The size of the whatever surface (PDF, RGB, SVG, etc) Tablet supports.
+    Lines : A list of geometric lines each with start and end coordinates.
+    Rectangles : A list of rectangles each with a lower left corner, height and width
+    Text : A list of text lines (new lines are not supported)
+    Output_file : A filename or output stream object to be output as a drawing
+    PDF_sheet : For now we only support PDF output as defined in Cairo.  So this is a Cairo surface
+    Context : A Cairo context object for drawing on the PDF sheet
+    Font_weight_map : Translates Flatland font weight enums to Cairo enums
+    Font_slant_map : Translates Flatland font slant enums to Cairo enums
+    """
     def __init__(self, size, output_file):
         self.Size = size
         self.Lines: List[Line] = []
