@@ -34,6 +34,7 @@ class Canvas:
     Tablet : This is a proxy for the graphics framework.  It is the only place in the code
         where the framework (such as Cairo) is referenced.  Consequently, we can easily swap
         to alternate graphic or web based display frameworks as necessary
+    Show_margin : Draw the margin? For diagnostic purposes only
 
     """
 
@@ -51,7 +52,7 @@ class Canvas:
         self.Margin = default_canvas_margin
         self.Diagram = Diagram(self, diagram_type)
         self.Tablet = Tablet(size=self.Point_size, output_file=drawoutput)
-        self.Show_margin = show_margin # For diagnostic purposes only
+        self.Show_margin = show_margin
 
     def render(self):
         """Draw all content of this Canvas onto the framework independent Tablet"""

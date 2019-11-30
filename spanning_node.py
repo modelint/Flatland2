@@ -23,6 +23,7 @@ class SpanningNode(Node):
     Low_row : The lowest row
     Left_column : The leftmost column
     Right_column : The rightmost column
+    Position : Lower left corner position of Node in Diagram coordinates
     """
     def __init__(self, node_type_name, content, grid, high_row, low_row, left_column, right_column, local_alignment):
         super().__init__(node_type_name, content, grid, local_alignment)
@@ -32,5 +33,6 @@ class SpanningNode(Node):
         self.Low_row = low_row
         self.Left_column = left_column
         self.Right_column = right_column
+        self.Position = self.Grid.place_spanning_node(self)
 
 

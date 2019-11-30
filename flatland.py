@@ -1,6 +1,7 @@
 from canvas import Canvas
 from single_cell_node import SingleCellNode
-from spanning_node import SpanningNode
+# from spanning_node import SpanningNode
+from flatland_types import VertAlign, HorizAlign, Alignment
 
 """ flatland.py – 2D Model diagram generator
 
@@ -43,13 +44,13 @@ this program. If not, see <http://www.gnu.org/licenses/>.
 __author__ = "Leon Starr"
 __contact__ = "leon_starr@modelint.com"
 __copyright__ = "Copyright 2019, Model Integration, LLC"
-__date__ = "2019/11/11"
+__date__ = "2019/11/27"
 __deprecated__ = False
 __email__ = "leon_starr@modelint.com"
 __license__ = "GPLv3"
 __maintainer__ = "Leon Starr"
 __status__ = "Development"
-__version__ = "0.0.5"
+__version__ = "0.1.0"
 
 
 # For diagnostics during development
@@ -106,12 +107,11 @@ def create_canvas(args):
         ]
     ]
     SingleCellNode(node_type_name='class', content=class_Aircraft, grid=flatland_canvas.Diagram.Grid,
-                   row=1, column=2)
-    #     row=1, column=2, node_type_name='class', content=class_Aircraft, local_alignment=x)
-    # flatland_canvas.Diagram.Grid.place_node(
-    #     row=1, column=1, node_type_name='class', content=class_Pilot)
-    # flatland_canvas.Diagram.Grid.place_node(
-    #     row=2, column=2, node_type_name='class', content=class_Tower)
+                   row=1, column=1)
+    SingleCellNode(node_type_name='class', content=class_Runway, grid=flatland_canvas.Diagram.Grid,
+                   row=2, column=3)
+    # SingleCellNode(node_type_name='class', content=class_Tower, grid=flatland_canvas.Diagram.Grid,
+    #                row=2, column=1, local_alignment=Alignment(vertical=VertAlign.BOTTOM, horizontal=HorizAlign.CENTER))
     flatland_canvas.render()
 
 
@@ -124,5 +124,5 @@ if __name__ == "__main__":
     Canvas_Args = namedtuple("Canvas_Args", "diagram sheet orientation file")
 
     test_input = Canvas_Args(
-        diagram="class", sheet="tabloid", orientation="landscape", file="ftest.pdf")
+        diagram="class", sheet="letter", orientation="landscape", file="ftest.pdf")
     create_canvas(args=test_input)
