@@ -1,7 +1,7 @@
 """
 node.py
 """
-from flatland_types import Rect_Size
+from flatland_types import Rect_Size, Position
 from diagram_node_types import node_types
 from compartment import Compartment
 import flatland_exceptions
@@ -41,7 +41,7 @@ class Node:
 
     @property
     def Canvas_position(self):
-        """Diagram position is computed by the subclass"""
+        """Overridden: Position of lower left corner on canvas is computed differently by each subclass"""
         return None
 
     @property
@@ -57,4 +57,11 @@ class Node:
         # Return a rectangle with the
         return Rect_Size(height=node_height, width=max_width)
 
+    def render(self):
+        """Calculate final position on the Canvas and register my rectangle in the Tablet"""
 
+        # Start at the bottom of the node and render each compartment upward
+        comp_y = self.Canvas_position.y
+        for c in self.Compartments[::-1]: # Reverse the compartment order to bottom up
+            c.render(Position(x=self.Canvas_position.x, y=comp_y))
+            comp_y += c.Size.height # bottom of next compartment is top of this one

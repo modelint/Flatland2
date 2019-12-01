@@ -1,6 +1,6 @@
 from canvas import Canvas
 from single_cell_node import SingleCellNode
-# from spanning_node import SpanningNode
+from spanning_node import SpanningNode
 from flatland_types import VertAlign, HorizAlign, Alignment
 
 """ flatland.py – 2D Model diagram generator
@@ -106,14 +106,17 @@ def create_canvas(args):
             'G : Distance'
         ]
     ]
-    SingleCellNode(node_type_name='class', content=class_Aircraft, grid=flatland_canvas.Diagram.Grid,
-                   row=3, column=1)
-    SingleCellNode(node_type_name='class', content=class_Runway, grid=flatland_canvas.Diagram.Grid,
-                   row=1, column=3)
-    SingleCellNode(node_type_name='class', content=class_Tower, grid=flatland_canvas.Diagram.Grid,
-                   row=2, column=2, local_alignment=Alignment(vertical=VertAlign.CENTER, horizontal=HorizAlign.CENTER))
-    SingleCellNode(node_type_name='class', content=class_Pilot, grid=flatland_canvas.Diagram.Grid,
-                   row=2, column=3, local_alignment=Alignment(vertical=VertAlign.CENTER, horizontal=HorizAlign.RIGHT))
+    SpanningNode(node_type_name='class', content=class_Tower, grid=flatland_canvas.Diagram.Grid,
+                 high_row=2, low_row=1, left_column=1, right_column=2,
+                 local_alignment=Alignment(vertical=VertAlign.CENTER, horizontal=HorizAlign.CENTER))
+    # SingleCellNode(node_type_name='class', content=class_Aircraft, grid=flatland_canvas.Diagram.Grid,
+    #                row=1, column=2)
+    # SingleCellNode(node_type_name='class', content=class_Runway, grid=flatland_canvas.Diagram.Grid,
+    #                row=1, column=3)
+    # SingleCellNode(node_type_name='class', content=class_Tower, grid=flatland_canvas.Diagram.Grid,
+    #                row=2, column=2, local_alignment=Alignment(vertical=VertAlign.CENTER, horizontal=HorizAlign.CENTER))
+    # SingleCellNode(node_type_name='class', content=class_Pilot, grid=flatland_canvas.Diagram.Grid,
+    #                row=2, column=3, local_alignment=Alignment(vertical=VertAlign.CENTER, horizontal=HorizAlign.RIGHT))
     flatland_canvas.render()
 
 

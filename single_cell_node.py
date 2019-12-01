@@ -25,7 +25,7 @@ class SingleCellNode(Node):
 
     @property
     def Canvas_position(self):
-        """Calculate position on the Canvas"""
+        """Position of lower left corner on the Canvas"""
         # Workout alignment within Cell
         lower_left_x = align_on_axis(
             axis_alignment=self.Local_alignment.horizontal.value,
@@ -41,31 +41,3 @@ class SingleCellNode(Node):
         ) + self.Grid.Diagram.Origin.y # + self.Grid.Row_boundaries[self.Row-1]
         return Position(x=lower_left_x, y=lower_left_y)
 
-    def render(self):
-        """Calculate final position on the Canvas and register my rectangle in the Tablet"""
-
-        # To get our position inside the Cell, we need to resolve the coordinates of our lower left corner.
-        # That's easy to do once we have the height of the cell floor and the horizontal position of
-        # the left boundary.
-        #
-        # If we are in the bottom row, the floor is zero relative to our Grid/Diagram
-        # We have to subtract two from our Row, one to index into the array – that gets us
-        # to our Row height, which is the ceiling boundary.  But we really want the ceiling
-        # boundary of the Row below us, hence we subtract one more.  Careful, though since
-        # the bottom-most Row has no lower row.  In that case, the floor is at zero.
-        # Similar logic applies when obtaining the left boundary, but with Columns.
-        # cell_floor_boundary = self.Grid.Row_boundaries[self.Row - 1]
-        # cell_left_boundary = self.Grid.Col_boundaries[self.Column - 1]
-
-        # Now we create a position coordinate for our lower left corner
-        # To obtain Canvas coordinates for this position, we add our relative location in our Cell
-        # to our Diagram origin which has already been resolved to Canvas coordinates.
-        # lower_left_corner = Position(
-        #     x=cell_left_boundary + self.Grid.Cell_padding.left + self.Grid.Diagram.Origin.x,
-        #     y=cell_floor_boundary + self.Grid.Cell_padding.bottom + self.Grid.Diagram.Origin.y
-        # )
-
-        comp_y = self.Canvas_position.y
-        for c in self.Compartments[::-1]:
-            c.render(Position(x=self.Canvas_position.x, y=comp_y))
-            comp_y += c.Size.height
