@@ -12,7 +12,6 @@ from single_cell_node import SingleCellNode
 from itertools import product
 
 
-
 class Grid:
     """
     Positioning nodes in a drawing tool typically involves pixel level placement which
@@ -217,6 +216,8 @@ class Grid:
         vertical_padding = self.Cell_padding.top + self.Cell_padding.bottom
         new_cell_height = node.Size.height + vertical_padding
         new_cell_width = node.Size.width + horizontal_padding
+        default_cell_height = node.Node_type.default_size.height
+        default_cell_width = node.Node_type.default_size.width
 
         # Check for horizontal overlap
         if not columns_to_add:
@@ -241,10 +242,13 @@ class Grid:
                     raise flatland_exceptions.SheetWidthExceededFE
 
         # Add extra rows and columns (must add the rows first)
-        for _ in range(rows_to_add):
-            self.add_row(new_cell_height)
-        for _ in range(columns_to_add):
-            self.add_column(new_cell_width)
+        for r in range(rows_to_add):
+            # Each new row, except the last will be of default height with the last matching the required height
+            add_height = new_cell_height if r == rows_to_add-1 else default_cell_height
+            self.add_row(add_height)
+        for c in range(columns_to_add):
+            add_width = new_cell_width if c == columns_to_add-1 else default_cell_width
+            self.add_column(add_width)
 
         # Place the node in the new location
         self.Cells[node.Row - 1][node.Column - 1] = node

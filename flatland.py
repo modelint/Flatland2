@@ -44,13 +44,13 @@ this program. If not, see <http://www.gnu.org/licenses/>.
 __author__ = "Leon Starr"
 __contact__ = "leon_starr@modelint.com"
 __copyright__ = "Copyright 2019, Model Integration, LLC"
-__date__ = "2019/11/27"
+__date__ = "2019/11/30"
 __deprecated__ = False
 __email__ = "leon_starr@modelint.com"
 __license__ = "GPLv3"
 __maintainer__ = "Leon Starr"
 __status__ = "Development"
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 
 # For diagnostics during development
@@ -107,11 +107,13 @@ def create_canvas(args):
         ]
     ]
     SingleCellNode(node_type_name='class', content=class_Aircraft, grid=flatland_canvas.Diagram.Grid,
-                   row=1, column=1)
+                   row=3, column=1)
     SingleCellNode(node_type_name='class', content=class_Runway, grid=flatland_canvas.Diagram.Grid,
-                   row=2, column=3)
-    # SingleCellNode(node_type_name='class', content=class_Tower, grid=flatland_canvas.Diagram.Grid,
-    #                row=2, column=1, local_alignment=Alignment(vertical=VertAlign.BOTTOM, horizontal=HorizAlign.CENTER))
+                   row=1, column=3)
+    SingleCellNode(node_type_name='class', content=class_Tower, grid=flatland_canvas.Diagram.Grid,
+                   row=2, column=2, local_alignment=Alignment(vertical=VertAlign.CENTER, horizontal=HorizAlign.CENTER))
+    SingleCellNode(node_type_name='class', content=class_Pilot, grid=flatland_canvas.Diagram.Grid,
+                   row=2, column=3, local_alignment=Alignment(vertical=VertAlign.CENTER, horizontal=HorizAlign.RIGHT))
     flatland_canvas.render()
 
 

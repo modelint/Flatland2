@@ -32,13 +32,13 @@ class SingleCellNode(Node):
             boundaries=self.Grid.Col_boundaries, from_grid_unit=self.Column, to_grid_unit=self.Column,
             from_padding=self.Grid.Cell_padding.left, to_padding=self.Grid.Cell_padding.right,
             node_extent=self.Size.width
-        ) + self.Grid.Diagram.Origin.x + self.Grid.Col_boundaries[self.Column-1]
+        ) + self.Grid.Diagram.Origin.x # +  self.Grid.Col_boundaries[self.Column-1]
         lower_left_y = align_on_axis(
             axis_alignment=self.Local_alignment.vertical.value,
             boundaries=self.Grid.Row_boundaries, from_grid_unit=self.Row, to_grid_unit=self.Row,
             from_padding=self.Grid.Cell_padding.bottom, to_padding=self.Grid.Cell_padding.top,
             node_extent=self.Size.height
-        ) + self.Grid.Diagram.Origin.y + self.Grid.Row_boundaries[self.Row-1]
+        ) + self.Grid.Diagram.Origin.y # + self.Grid.Row_boundaries[self.Row-1]
         return Position(x=lower_left_x, y=lower_left_y)
 
     def render(self):

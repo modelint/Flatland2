@@ -46,10 +46,10 @@ def align_on_axis(axis_alignment: int, boundaries, from_grid_unit, to_grid_unit,
     leftover_space = round(cell_extent - from_padding - to_padding - node_extent, scale)
     if leftover_space:
         if axis_alignment == 1:  # middle alignment
-            return round(cell_extent / 2 + boundaries[from_grid_unit - 1], scale)
+            return cell_extent/2 - node_extent/2 + boundaries[from_grid_unit - 1]
         elif axis_alignment == 0:  # left or bottom alignment
             return boundaries[from_grid_unit - 1] + from_padding
         elif axis_alignment == 2:  # right or top alignment
             return boundaries[to_grid_unit] - node_extent - to_padding
     else:
-        return from_padding
+        return from_padding + boundaries[from_grid_unit -1]
