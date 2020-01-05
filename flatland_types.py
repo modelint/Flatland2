@@ -6,6 +6,12 @@ from collections import namedtuple
 from enum import Enum
 
 
+class NodeFace(Enum):
+    TOP = 'top'
+    BOTTOM = 'bottom'
+    RIGHT = 'right'
+    LEFT = 'left'
+
 class StrokeWidth(Enum):
     THIN = 1
     NORMAL = 2
@@ -62,3 +68,4 @@ Padding = namedtuple('Padding', 'top bottom left right')
 Node_Type_Attrs = namedtuple('Node_Type_Attrs',
                              'corner_rounding compartments line_style default_size max_size')
 Compartment_Type_Attrs = namedtuple('Compartment_Type_Attrs', 'alignment padding text_style')
+New_Stem = namedtuple('New_Stem', 'stem_type connector_semantic node face position')

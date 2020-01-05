@@ -7,6 +7,10 @@ class FlatlandException(Exception):
     pass
 
 
+class UnsupportedNotation(FlatlandException):
+    pass
+
+
 class SheetWidthExceededFE(FlatlandException):
     pass
 

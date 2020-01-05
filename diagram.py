@@ -1,6 +1,7 @@
 """
 diagram.py
 """
+import flatland_exceptions
 from layout_specification import default_diagram_origin
 from diagram_node_types import diagram_types
 from flatland_types import Position, Padding, Rect_Size
@@ -20,15 +21,20 @@ class Diagram:
 
     Canvas : Drawn on this Canvas
     Diagram_type : Type of model diagram to be drawn, class, for example
+    Notation: The supported notation used on this diagram
     Grid : All content in the diagram is organized within the cells of this Grid
     Padding : Space between Canvas margin and Diagram on all sides (useful for specification)
     Origin : Lower left corner of Diagram in Canvas coordinates
     Size : Size of the Diagram, derived from Padding also
 
     """
-    def __init__(self, canvas, diagram_type):
+    def __init__(self, canvas, diagram_type, notation):
         self.Canvas = canvas
         self.Diagram_type = diagram_types.get(diagram_type, default_diagram_type)
+        if notation in self.Diagram_type.notations:
+            self.Notation = notation
+        else:
+            raise flatland_exceptions.UnsupportedNotation
         self.Grid = Grid(diagram=self)  # Start with an empty grid
         self.Padding = Padding(top=0, bottom=0, left=0, right=0)
         self.Origin = Position(

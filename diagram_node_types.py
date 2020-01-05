@@ -142,8 +142,25 @@ node_types = {
 }
 
 diagram_types = {
-    'class': {'class', 'imported_class'},
-    'state': {'state'},
-    'collab': {'overview_class', 'ee'},
-    'domain': {'domain'}
+    'class': {
+        'nodes': {'class', 'imported class'},
+        'connectors': {'binary association', 'ternary association', 'generalization'},
+        'notations' : {'Shlaer-Mellor', 'xUML', 'Starr'}
+    },
+    'state': {
+        'nodes': {'state'},
+        'connectors': {'itransition', 'deletion state', 'initial state'},
+        'notations' : {'xUML'}
+    },
+    'collab': {
+        'nodes': {'overview class', 'ee'},
+        'connectors': {'communication'},
+        'notations': {'xUML'}
+    },
+    'domain': {
+        'nodes': {'domain'},
+        'connectors': {'bridge'},
+        'notations': {'xUML', 'Shlaer-Mellor', 'Starr'}
+    }
 }
+

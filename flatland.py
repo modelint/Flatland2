@@ -1,7 +1,8 @@
 from canvas import Canvas
 from single_cell_node import SingleCellNode
+from connector import Connector
 from spanning_node import SpanningNode
-from flatland_types import VertAlign, HorizAlign, Alignment
+from flatland_types import New_Stem, NodeFace, VertAlign, HorizAlign, Alignment
 
 """ flatland.py – 2D Model diagram generator
 
@@ -43,14 +44,14 @@ this program. If not, see <http://www.gnu.org/licenses/>.
 
 __author__ = "Leon Starr"
 __contact__ = "leon_starr@modelint.com"
-__copyright__ = "Copyright 2019, Model Integration, LLC"
-__date__ = "2019/11/30"
+__copyright__ = "Copyright 2019,2020, Leon Starr"
+__date__ = "2019/12/29"
 __deprecated__ = False
 __email__ = "leon_starr@modelint.com"
 __license__ = "GPLv3"
 __maintainer__ = "Leon Starr"
 __status__ = "Development"
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 
 # For diagnostics during development
@@ -60,6 +61,7 @@ def create_canvas(args):
     # this file for diagnostic purposes
     flatland_canvas = Canvas(
         diagram_type=args.diagram,
+        notation=args.notation,
         standard_sheet_name=args.sheet,
         orientation=args.orientation,
         drawoutput=args.file,
@@ -106,17 +108,24 @@ def create_canvas(args):
             'G : Distance'
         ]
     ]
-    SpanningNode(node_type_name='class', content=class_Tower, grid=flatland_canvas.Diagram.Grid,
-                 high_row=2, low_row=1, left_column=1, right_column=2,
-                 local_alignment=Alignment(vertical=VertAlign.CENTER, horizontal=HorizAlign.CENTER))
-    # SingleCellNode(node_type_name='class', content=class_Aircraft, grid=flatland_canvas.Diagram.Grid,
-    #                row=1, column=2)
+    n1 = SingleCellNode(node_type_name='class', content=class_Aircraft, grid=flatland_canvas.Diagram.Grid,
+                        row=2, column=1)
+    n2 = SingleCellNode(node_type_name='class', content=class_Pilot, grid=flatland_canvas.Diagram.Grid,
+                        row=2, column=4)
+    c1stems = [New_Stem(stem_type='class multiplicity', connector_semantic='1',
+                        node=n1, face=NodeFace.RIGHT, position=0),
+               New_Stem(stem_type='class multiplicity', connector_semantic='Mc',
+                        node=n2, face=NodeFace.LEFT, position=0)
+               ]
+    Connector(connector_type='binary association', stems=c1stems)
+
+    # SpanningNode(node_type_name='class', content=class_Tower, grid=flatland_canvas.Diagram.Grid,
+    #              high_row=2, low_row=1, left_column=1, right_column=2,
+    #              local_alignment=Alignment(vertical=VertAlign.TOP, horizontal=HorizAlign.LEFT))
     # SingleCellNode(node_type_name='class', content=class_Runway, grid=flatland_canvas.Diagram.Grid,
     #                row=1, column=3)
     # SingleCellNode(node_type_name='class', content=class_Tower, grid=flatland_canvas.Diagram.Grid,
     #                row=2, column=2, local_alignment=Alignment(vertical=VertAlign.CENTER, horizontal=HorizAlign.CENTER))
-    # SingleCellNode(node_type_name='class', content=class_Pilot, grid=flatland_canvas.Diagram.Grid,
-    #                row=2, column=3, local_alignment=Alignment(vertical=VertAlign.CENTER, horizontal=HorizAlign.RIGHT))
     flatland_canvas.render()
 
 
@@ -126,8 +135,8 @@ if __name__ == "__main__":
     # function that is called from the command line
     from collections import namedtuple
 
-    Canvas_Args = namedtuple("Canvas_Args", "diagram sheet orientation file")
+    Canvas_Args = namedtuple("Canvas_Args", "diagram notation sheet orientation file")
 
     test_input = Canvas_Args(
-        diagram="class", sheet="letter", orientation="landscape", file="ftest.pdf")
+        diagram="class", notation="UML", sheet="letter", orientation="landscape", file="ftest.pdf")
     create_canvas(args=test_input)

@@ -4,10 +4,12 @@ canvas.py
 This is the Flatland (and not the cairo) Canvas class
 """
 import sys
+import flatland_exceptions
 from flatland_types import Padding, Alignment, Rect_Size, Position, Rectangle, Stroke, StrokeStyle, StrokeWidth
 from sheet import us_sheet_sizes, euro_sheet_A_sizes
 from diagram import Diagram
 from tablet import Tablet
+from diagram_node_types import diagram_types
 
 # All sheet and canvas related constants are kept together here for easy review and editing
 points_in_cm = 28.3465
@@ -38,7 +40,7 @@ class Canvas:
 
     """
 
-    def __init__(self, diagram_type, standard_sheet_name, orientation,
+    def __init__(self, diagram_type, notation, standard_sheet_name, orientation,
                  drawoutput=sys.stdout.buffer, show_margin=False):
         self.Sheet_name = standard_sheet_name
         self.Orientation = orientation
@@ -50,7 +52,8 @@ class Canvas:
             factor = points_in_cm
         self.Point_size = Rect_Size(height=int(self.Size[0] * factor), width=int(self.Size[1] * factor))
         self.Margin = default_canvas_margin
-        self.Diagram = Diagram(self, diagram_type)
+        self.Diagram = Diagram(self, diagram_type, notation)
+        self.Notation = notation
         self.Tablet = Tablet(size=self.Point_size, output_file=drawoutput)
         self.Show_margin = show_margin
 
