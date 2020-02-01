@@ -20,147 +20,171 @@ diagram_types : dict
 """
 from flatland_types import *
 from collections import OrderedDict
+from notation import Notation, ConnectorTypeName
+from enum import Enum
+
+
+class DiagramTypeName(Enum):
+    """
+    These are the names of the supported diagram types
+    """
+    CD = 'Class diagram',
+    SMD = 'State machine diagram',
+    CCD = 'Class collaboration diagram',
+    DD = 'Domain diagram'
+
+
+class NodeTypeName(Enum):
+    """
+    These are the names of all supported node types
+    """
+    M_class = "Class",  # A normal class
+    I_class = "Imported class",  # Class from a different subsystem
+    State = "State",
+    O_class = "Overview class",  # For collaboration diagram
+    Domain = "Domain",  # For domain chart
+    EE = "External entity"  # For collaboration diagram
+
 
 node_types = {
-    'class': Node_Type_Attrs(corner_rounding=0,
-                             compartments=OrderedDict({
-                                 'class name': Compartment_Type_Attrs(
-                                     alignment=Alignment(vertical=VertAlign.CENTER,
-                                                         horizontal=HorizAlign.CENTER),
-                                     padding=Padding(top=5, bottom=10, left=10, right=5),
-                                     text_style=Text_Style(typeface=TypeFace.PALATINO,
-                                                           size=11, slant=FontSlant.NORMAL,
-                                                           weight=FontWeight.NORMAL)),
-                                 'attributes': Compartment_Type_Attrs(
-                                     alignment=Alignment(vertical=VertAlign.CENTER,
-                                                         horizontal=HorizAlign.CENTER),
-                                     padding=Padding(top=4, bottom=10, left=10, right=4),
-                                     text_style=Text_Style(typeface=TypeFace.PALATINO,
-                                                           size=9, slant=FontSlant.NORMAL,
-                                                           weight=FontWeight.NORMAL)),
-                                 'methods': Compartment_Type_Attrs(
-                                     alignment=Alignment(vertical=VertAlign.CENTER,
-                                                         horizontal=HorizAlign.CENTER),
-                                     padding=Padding(top=4, bottom=4, left=4, right=4),
-                                     text_style=Text_Style(typeface=TypeFace.PALATINO,
-                                                           size=9, slant=FontSlant.NORMAL,
-                                                           weight=FontWeight.NORMAL))
+    NodeTypeName.M_class: Node_Type_Attrs(corner_rounding=0,
+                                          compartments=OrderedDict({
+                                              'class name': Compartment_Type_Attrs(
+                                                  alignment=Alignment(vertical=VertAlign.CENTER,
+                                                                      horizontal=HorizAlign.CENTER),
+                                                  padding=Padding(top=5, bottom=10, left=10, right=5),
+                                                  text_style=Text_Style(typeface=TypeFace.PALATINO,
+                                                                        size=11, slant=FontSlant.NORMAL,
+                                                                        weight=FontWeight.NORMAL)),
+                                              'attributes': Compartment_Type_Attrs(
+                                                  alignment=Alignment(vertical=VertAlign.CENTER,
+                                                                      horizontal=HorizAlign.CENTER),
+                                                  padding=Padding(top=4, bottom=10, left=10, right=4),
+                                                  text_style=Text_Style(typeface=TypeFace.PALATINO,
+                                                                        size=9, slant=FontSlant.NORMAL,
+                                                                        weight=FontWeight.NORMAL)),
+                                              'methods': Compartment_Type_Attrs(
+                                                  alignment=Alignment(vertical=VertAlign.CENTER,
+                                                                      horizontal=HorizAlign.CENTER),
+                                                  padding=Padding(top=4, bottom=4, left=4, right=4),
+                                                  text_style=Text_Style(typeface=TypeFace.PALATINO,
+                                                                        size=9, slant=FontSlant.NORMAL,
+                                                                        weight=FontWeight.NORMAL))
 
-                             }),
-                             line_style=Stroke(width=StrokeWidth.NORMAL, pattern=StrokeStyle.SOLID),
-                             default_size=Rect_Size(height=80, width=110),
-                             max_size=Rect_Size(height=180, width=144)),
-    'imported_class': Node_Type_Attrs(corner_rounding=0,
-                                      compartments=OrderedDict({
-                                          'class name': Compartment_Type_Attrs(
-                                              alignment=Alignment(vertical=VertAlign.CENTER,
-                                                                  horizontal=HorizAlign.CENTER),
-                                              padding=Padding(top=5, bottom=5, left=5, right=5),
-                                              text_style=Text_Style(
-                                                  typeface=TypeFace.PALATINO,
-                                                  size=11, slant=FontSlant.NORMAL,
-                                                  weight=FontWeight.NORMAL)),
-                                          'attributes': Compartment_Type_Attrs(
-                                              alignment=Alignment(vertical=VertAlign.CENTER,
-                                                                  horizontal=HorizAlign.CENTER),
-                                              padding=Padding(top=4, bottom=4, left=4, right=4),
-                                              text_style=Text_Style(
-                                                  typeface=TypeFace.PALATINO,
-                                                  size=9, slant=FontSlant.NORMAL,
-                                                  weight=FontWeight.NORMAL))
+                                          }),
+                                          line_style=Stroke(width=StrokeWidth.NORMAL, pattern=StrokeStyle.SOLID),
+                                          default_size=Rect_Size(height=80, width=110),
+                                          max_size=Rect_Size(height=180, width=144)),
+    NodeTypeName.I_class: Node_Type_Attrs(corner_rounding=0,
+                                          compartments=OrderedDict({
+                                              'class name': Compartment_Type_Attrs(
+                                                  alignment=Alignment(vertical=VertAlign.CENTER,
+                                                                      horizontal=HorizAlign.CENTER),
+                                                  padding=Padding(top=5, bottom=5, left=5, right=5),
+                                                  text_style=Text_Style(
+                                                      typeface=TypeFace.PALATINO,
+                                                      size=11, slant=FontSlant.NORMAL,
+                                                      weight=FontWeight.NORMAL)),
+                                              'attributes': Compartment_Type_Attrs(
+                                                  alignment=Alignment(vertical=VertAlign.CENTER,
+                                                                      horizontal=HorizAlign.CENTER),
+                                                  padding=Padding(top=4, bottom=4, left=4, right=4),
+                                                  text_style=Text_Style(
+                                                      typeface=TypeFace.PALATINO,
+                                                      size=9, slant=FontSlant.NORMAL,
+                                                      weight=FontWeight.NORMAL))
 
-                                      }),
-                                      line_style=Stroke(width=StrokeWidth.NORMAL, pattern=StrokeStyle.DASHED),
-                                      default_size=Rect_Size(height=80, width=110),
-                                      max_size=Rect_Size(height=180, width=144)),
-    'state': Node_Type_Attrs(corner_rounding=4,
-                             compartments=OrderedDict({
-                                 'state name': Compartment_Type_Attrs(
-                                     alignment=Alignment(vertical=VertAlign.CENTER,
-                                                         horizontal=HorizAlign.CENTER),
-                                     padding=Padding(top=5, bottom=5, left=5, right=5),
-                                     text_style=Text_Style(
-                                         typeface=TypeFace.PALATINO,
-                                         size=11, slant=FontSlant.NORMAL,
-                                         weight=FontWeight.NORMAL)),
-                                 'activity': Compartment_Type_Attrs(
-                                     alignment=Alignment(vertical=VertAlign.CENTER,
-                                                         horizontal=HorizAlign.CENTER),
-                                     padding=Padding(top=4, bottom=4, left=4, right=4),
-                                     text_style=Text_Style(
-                                         typeface=TypeFace.PALATINO,
-                                         size=9, slant=FontSlant.NORMAL,
-                                         weight=FontWeight.NORMAL))
-                             }),
-                             line_style=Stroke(width=StrokeWidth.NORMAL, pattern=StrokeStyle.SOLID),
-                             default_size=Rect_Size(height=50, width=110),
-                             max_size=Rect_Size(height=108, width=300)),
-    'overview_class': Node_Type_Attrs(corner_rounding=0,
-                                      compartments=OrderedDict({
-                                          'class name': Compartment_Type_Attrs(
-                                              alignment=Alignment(vertical=VertAlign.CENTER,
-                                                                  horizontal=HorizAlign.CENTER),
-                                              padding=Padding(top=5, bottom=5, left=5, right=5),
-                                              text_style=Text_Style(
-                                                  typeface=TypeFace.PALATINO,
-                                                  size=11, slant=FontSlant.NORMAL,
-                                                  weight=FontWeight.NORMAL))
-                                      }),
-                                      line_style=Stroke(width=StrokeWidth.NORMAL, pattern=StrokeStyle.SOLID),
-                                      default_size=Rect_Size(height=25, width=100),
-                                      max_size=Rect_Size(height=60, width=300)),
-    'domain': Node_Type_Attrs(corner_rounding=0,
-                              compartments=OrderedDict({
-                                  'domain name': Compartment_Type_Attrs(
-                                      alignment=Alignment(vertical=VertAlign.CENTER,
-                                                          horizontal=HorizAlign.CENTER),
-                                      padding=Padding(top=5, bottom=5, left=5, right=5),
-                                      text_style=Text_Style(
-                                          typeface=TypeFace.PALATINO,
-                                          size=11, slant=FontSlant.NORMAL,
-                                          weight=FontWeight.NORMAL))
-                              }),
-                              line_style=Stroke(width=StrokeWidth.NORMAL, pattern=StrokeStyle.SOLID),
-                              default_size=Rect_Size(height=60, width=100),
-                              max_size=Rect_Size(height=110, width=300)),
-    'external entity': Node_Type_Attrs(corner_rounding=0,
-                                       compartments=OrderedDict({
-                                           'ee name': Compartment_Type_Attrs(
-                                                                             alignment=Alignment(
-                                                                                 vertical=VertAlign.CENTER,
-                                                                                 horizontal=HorizAlign.CENTER),
-                                                                             padding=Padding(top=5, bottom=5, left=5,
-                                                                                             right=5),
-                                                                             text_style=Text_Style(
-                                                                                 typeface=TypeFace.PALATINO,
-                                                                                 size=11, slant=FontSlant.NORMAL,
-                                                                                 weight=FontWeight.NORMAL))
-                                       }),
-                                       line_style=Stroke(width=StrokeWidth.NORMAL, pattern=StrokeStyle.SOLID),
-                                       default_size=Rect_Size(height=25, width=100),
-                                       max_size=Rect_Size(height=60, width=300))
+                                          }),
+                                          line_style=Stroke(width=StrokeWidth.NORMAL, pattern=StrokeStyle.DASHED),
+                                          default_size=Rect_Size(height=80, width=110),
+                                          max_size=Rect_Size(height=180, width=144)),
+    NodeTypeName.State: Node_Type_Attrs(corner_rounding=4,
+                                        compartments=OrderedDict({
+                                            'state name': Compartment_Type_Attrs(
+                                                alignment=Alignment(vertical=VertAlign.CENTER,
+                                                                    horizontal=HorizAlign.CENTER),
+                                                padding=Padding(top=5, bottom=5, left=5, right=5),
+                                                text_style=Text_Style(
+                                                    typeface=TypeFace.PALATINO,
+                                                    size=11, slant=FontSlant.NORMAL,
+                                                    weight=FontWeight.NORMAL)),
+                                            'activity': Compartment_Type_Attrs(
+                                                alignment=Alignment(vertical=VertAlign.CENTER,
+                                                                    horizontal=HorizAlign.CENTER),
+                                                padding=Padding(top=4, bottom=4, left=4, right=4),
+                                                text_style=Text_Style(
+                                                    typeface=TypeFace.PALATINO,
+                                                    size=9, slant=FontSlant.NORMAL,
+                                                    weight=FontWeight.NORMAL))
+                                        }),
+                                        line_style=Stroke(width=StrokeWidth.NORMAL, pattern=StrokeStyle.SOLID),
+                                        default_size=Rect_Size(height=50, width=110),
+                                        max_size=Rect_Size(height=108, width=300)),
+    NodeTypeName.O_class: Node_Type_Attrs(corner_rounding=0,
+                                          compartments=OrderedDict({
+                                              'class name': Compartment_Type_Attrs(
+                                                  alignment=Alignment(vertical=VertAlign.CENTER,
+                                                                      horizontal=HorizAlign.CENTER),
+                                                  padding=Padding(top=5, bottom=5, left=5, right=5),
+                                                  text_style=Text_Style(
+                                                      typeface=TypeFace.PALATINO,
+                                                      size=11, slant=FontSlant.NORMAL,
+                                                      weight=FontWeight.NORMAL))
+                                          }),
+                                          line_style=Stroke(width=StrokeWidth.NORMAL, pattern=StrokeStyle.SOLID),
+                                          default_size=Rect_Size(height=25, width=100),
+                                          max_size=Rect_Size(height=60, width=300)),
+    NodeTypeName.Domain: Node_Type_Attrs(corner_rounding=0,
+                                         compartments=OrderedDict({
+                                             'domain name': Compartment_Type_Attrs(
+                                                 alignment=Alignment(vertical=VertAlign.CENTER,
+                                                                     horizontal=HorizAlign.CENTER),
+                                                 padding=Padding(top=5, bottom=5, left=5, right=5),
+                                                 text_style=Text_Style(
+                                                     typeface=TypeFace.PALATINO,
+                                                     size=11, slant=FontSlant.NORMAL,
+                                                     weight=FontWeight.NORMAL))
+                                         }),
+                                         line_style=Stroke(width=StrokeWidth.NORMAL, pattern=StrokeStyle.SOLID),
+                                         default_size=Rect_Size(height=60, width=100),
+                                         max_size=Rect_Size(height=110, width=300)),
+    NodeTypeName.EE: Node_Type_Attrs(corner_rounding=0,
+                                     compartments=OrderedDict({
+                                         'ee name': Compartment_Type_Attrs(
+                                             alignment=Alignment(
+                                                 vertical=VertAlign.CENTER,
+                                                 horizontal=HorizAlign.CENTER),
+                                             padding=Padding(top=5, bottom=5, left=5,
+                                                             right=5),
+                                             text_style=Text_Style(
+                                                 typeface=TypeFace.PALATINO,
+                                                 size=11, slant=FontSlant.NORMAL,
+                                                 weight=FontWeight.NORMAL))
+                                     }),
+                                     line_style=Stroke(width=StrokeWidth.NORMAL, pattern=StrokeStyle.SOLID),
+                                     default_size=Rect_Size(height=25, width=100),
+                                     max_size=Rect_Size(height=60, width=300))
 }
 
 diagram_types = {
-    'class': {
-        'nodes': {'class', 'imported class'},
-        'connectors': {'binary association', 'ternary association', 'generalization'},
-        'notations' : {'Shlaer-Mellor', 'xUML', 'Starr'}
+    DiagramTypeName.CD: {
+        'nodes': {NodeTypeName.M_class, NodeTypeName.I_class},
+        'connectors': {ConnectorTypeName.binary_assoc, ConnectorTypeName.assoc_class, ConnectorTypeName.gen},
+        'notations': {Notation.SM, Notation.xUML, Notation.Starr}
     },
-    'state': {
-        'nodes': {'state'},
-        'connectors': {'itransition', 'deletion state', 'initial state'},
-        'notations' : {'xUML'}
+    DiagramTypeName.SMD: {
+        'nodes': {NodeTypeName.State},
+        'connectors': {ConnectorTypeName.init_trans, ConnectorTypeName.del_trans, ConnectorTypeName.init_trans},
+        'notations': {Notation.xUML}
     },
-    'collab': {
-        'nodes': {'overview class', 'ee'},
-        'connectors': {'communication'},
-        'notations': {'xUML'}
+    DiagramTypeName.CCD: {
+        'nodes': {NodeTypeName.O_class, NodeTypeName.EE},
+        'connectors': {ConnectorTypeName.comm},
+        'notations': {Notation.xUML}
     },
-    'domain': {
-        'nodes': {'domain'},
-        'connectors': {'bridge'},
-        'notations': {'xUML', 'Shlaer-Mellor', 'Starr'}
+    DiagramTypeName.DD: {
+        'nodes': {NodeTypeName.Domain},
+        'connectors': {ConnectorTypeName.bridge},
+        'notations': {Notation.SM, Notation.xUML, Notation.Starr}
     }
 }
-

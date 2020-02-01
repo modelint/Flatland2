@@ -117,7 +117,7 @@ def create_canvas(args):
                New_Stem(stem_type='class multiplicity', connector_semantic='Mc',
                         node=n2, face=NodeFace.LEFT, position=0)
                ]
-    Connector(connector_type='binary association', stems=c1stems)
+    Connector(diagram=flatland_canvas.Diagram, connector_type='binary association', stems=c1stems)
 
     # SpanningNode(node_type_name='class', content=class_Tower, grid=flatland_canvas.Diagram.Grid,
     #              high_row=2, low_row=1, left_column=1, right_column=2,
