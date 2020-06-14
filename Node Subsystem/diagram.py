@@ -2,9 +2,8 @@
 diagram.py
 """
 import flatland_exceptions
-from layout_specification import default_diagram_origin
-from diagram_node_types import diagram_types
-from flatland_types import Position, Padding, Rect_Size
+from diagram_type import diagram_types
+from geometry_types import Position, Padding, Rect_Size
 from grid import Grid
 
 default_diagram_type = 'class'

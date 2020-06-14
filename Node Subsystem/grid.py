@@ -4,9 +4,7 @@ grid.py
 
 import flatland_exceptions
 from linear_geometry import expand_boundaries, span
-from node import Node
 from layout_specification import default_cell_alignment, default_cell_padding
-from flatland_types import *
 from spanning_node import SpanningNode
 from single_cell_node import SingleCellNode
 from itertools import product

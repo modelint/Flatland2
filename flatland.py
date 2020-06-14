@@ -1,8 +1,17 @@
+
+from collections import namedtuple
+
 from canvas import Canvas
 from single_cell_node import SingleCellNode
-from connector import Connector
-from spanning_node import SpanningNode
-from flatland_types import New_Stem, NodeFace, VertAlign, HorizAlign, Alignment
+from node_type import NodeTypeName
+
+# from spanning_node import SpanningNode
+# from bend_route import Bend_Route, Bend
+# from connection_types import New_Stem, NodeFace
+# from geometry_types import VertAlign, HorizAlign, Alignment
+# from straight_binary_connector import StraightBinaryConnector
+# from connector_type import ConnectorTypeName, StemTypeName
+# from notation import StemSemantic
 
 """ flatland.py – 2D Model diagram generator
 
@@ -45,13 +54,16 @@ this program. If not, see <http://www.gnu.org/licenses/>.
 __author__ = "Leon Starr"
 __contact__ = "leon_starr@modelint.com"
 __copyright__ = "Copyright 2019,2020, Leon Starr"
-__date__ = "2019/12/29"
+__date__ = "2020/2/29"
 __deprecated__ = False
 __email__ = "leon_starr@modelint.com"
 __license__ = "GPLv3"
 __maintainer__ = "Leon Starr"
 __status__ = "Development"
 __version__ = "0.3.0"
+
+
+New_Stem = namedtuple('New_Stem', 'stem_type semantic node face anchor')
 
 
 # For diagnostics during development
@@ -108,16 +120,17 @@ def create_canvas(args):
             'G : Distance'
         ]
     ]
-    n1 = SingleCellNode(node_type_name='class', content=class_Aircraft, grid=flatland_canvas.Diagram.Grid,
+    n1 = SingleCellNode(node_type_name=NodeTypeName.M_class, content=class_Aircraft, grid=flatland_canvas.Diagram.Grid,
                         row=2, column=1)
-    n2 = SingleCellNode(node_type_name='class', content=class_Pilot, grid=flatland_canvas.Diagram.Grid,
-                        row=2, column=4)
-    c1stems = [New_Stem(stem_type='class multiplicity', connector_semantic='1',
-                        node=n1, face=NodeFace.RIGHT, position=0),
-               New_Stem(stem_type='class multiplicity', connector_semantic='Mc',
-                        node=n2, face=NodeFace.LEFT, position=0)
-               ]
-    Connector(diagram=flatland_canvas.Diagram, connector_type='binary association', stems=c1stems)
+    # n2 = SingleCellNode(node_type_name=NodeTypeName.M_class, content=class_Pilot, grid=flatland_canvas.Diagram.Grid,
+    #                     row=2, column=4)
+    # p_stem = New_Stem(stem_type=StemTypeName.class_mult, semantic=StemSemantic.Mult_1, node=n1,
+    #                   face=NodeFace.RIGHT, anchor=0)
+    #
+    # f_stem = New_Stem(stem_type=StemTypeName.class_mult, semantic=StemSemantic.Mult_Mc, node=n2,
+    #                   face=NodeFace.LEFT, anchor=None)
+    #
+    # StraightBinaryConnector(diagram=flatland_canvas.Diagram, projecting_stem=p_stem, floating_stem=f_stem)
 
     # SpanningNode(node_type_name='class', content=class_Tower, grid=flatland_canvas.Diagram.Grid,
     #              high_row=2, low_row=1, left_column=1, right_column=2,

@@ -1,8 +1,8 @@
 """ spanning_node.py """
 
 from node import Node
-from flatland_types import *
 from linear_geometry import align_on_axis
+
 
 class SpanningNode(Node):
     """

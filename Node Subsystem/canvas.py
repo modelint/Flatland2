@@ -4,12 +4,11 @@ canvas.py
 This is the Flatland (and not the cairo) Canvas class
 """
 import sys
-import flatland_exceptions
-from flatland_types import Padding, Alignment, Rect_Size, Position, Rectangle, Stroke, StrokeStyle, StrokeWidth
+from geometry_types import Padding, Alignment, Rect_Size, Position, Rectangle
+from draw_types import Stroke, StrokeStyle, StrokeWidth
 from sheet import us_sheet_sizes, euro_sheet_A_sizes
 from diagram import Diagram
 from tablet import Tablet
-from diagram_node_types import diagram_types
 
 # All sheet and canvas related constants are kept together here for easy review and editing
 points_in_cm = 28.3465

@@ -1,8 +1,9 @@
 """
-flatland_types.py
+connection_types.py
+
+Data types to support Connectors and Stems
 """
 
-from collections import namedtuple
 from enum import Enum
 
 
@@ -10,55 +11,25 @@ class StemEnd(Enum):
     ROOT = 0,
     VINE = 1
 
+
 class NodeFace(Enum):
-    TOP = 'top'
-    BOTTOM = 'bottom'
-    RIGHT = 'right'
-    LEFT = 'left'
+    """
+    Values are multiplied by absolute distance to get an x or y coordinate.
+    """
+    TOP = 1
+    BOTTOM = -1
+    RIGHT = 1
+    LEFT = -1
 
 
-class StrokeWidth(Enum):
-    THIN = 1
-    NORMAL = 2
-    THICK = 3
+HorizontalFace = {NodeFace.TOP, NodeFace.BOTTOM}
 
-
-class StrokeStyle(Enum):
-    SOLID = 1
-    DASHED = 2
-
-
-class TypeFace(Enum):
-    """We'll start with a limited selection of typefaces that work nicely for drawing models"""
-    PALATINO = 'Palatino Sans Informal LT Pro'
-    GILLSANS = 'Gill Sans'
-    FUTURA = 'Futura'
-    HELVETICA = 'Helvetica'
-    VERDANA = 'Verdana'
-
-
-class FontWeight(Enum):
-    NORMAL = 1
-    BOLD = 2
-
-
-class FontSlant(Enum):
-    NORMAL = 1
-    ITALIC = 2
-
-
-class VertAlign(Enum):
-    """The numeric values are low to high in the axis direction"""
-    BOTTOM = 0
-    CENTER = 1
-    TOP = 2
-
-
-class HorizAlign(Enum):
-    """The numeric values are low to high in the axis direction"""
-    LEFT = 0
-    CENTER = 1
-    RIGHT = 2
+OppositeFace = {
+    NodeFace.TOP: NodeFace.BOTTOM,
+    NodeFace.BOTTOM: NodeFace.TOP,
+    NodeFace.LEFT: NodeFace.RIGHT,
+    NodeFace.RIGHT: NodeFace.LEFT
+}
 
 
 class Geometry(Enum):
@@ -88,18 +59,4 @@ class Geometry(Enum):
     T = "ternary",
     H = "hierarchical"
 
-
-Stroke = namedtuple('Stroke', 'width pattern')
-Line = namedtuple('Line', 'line_style from_here to_there')
-Text_Style = namedtuple('Text_Style', 'typeface size slant weight')
-Text_Line = namedtuple('Text_Line', 'lower_left style content')
-Rectangle = namedtuple('Rectangle', 'line_style lower_left, size')
-Position = namedtuple('Position', 'x y')
-Rect_Size = namedtuple('Rect_Size', 'height width')
-Alignment = namedtuple('Alignment', 'vertical horizontal')
-Padding = namedtuple('Padding', 'top bottom left right')
-Node_Type_Attrs = namedtuple('Node_Type_Attrs',
-                             'corner_rounding compartments line_style default_size max_size')
-Compartment_Type_Attrs = namedtuple('Compartment_Type_Attrs', 'alignment padding text_style')
-New_Stem = namedtuple('New_Stem', 'stem_type connector_semantic node face position')
 

@@ -1,6 +1,7 @@
-""" sheet.py – Standard and non-standard sheet sizes """
+"""
+sheet.py – Standard and non-standard sheet sizes
 
-from flatland_types import Padding, Alignment, Rect_Size, Position, Rectangle, StrokeWidth
+"""
 
 # All sheet and canvas related constants are kept together here for easy review and editing
 us_sheet_sizes = {

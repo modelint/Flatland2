@@ -1,6 +1,7 @@
 """ compartment.py """
 
-from flatland_types import *
+from geometry_types import Rect_Size, Position, Rectangle
+from draw_types import Text_Line
 
 
 class Compartment:
@@ -15,7 +16,8 @@ class Compartment:
     def __init__(self, node, name, content):
         self.Name = name
         self.Node = node
-        self.Type: Compartment_Type_Attrs = self.Node.Node_type.compartments[self.Name]
+        self.Type = self.Node.Node_type.compartments[self.Name]
+        # self.Type: Compartment_Type_Attrs = self.Node.Node_type.compartments[self.Name]
         self.Content = content  # list of text lines
         self.leading = 4  # Temporary default leading in points ( change later to be font specific
         self.Line_height = None  # Unknown until Text block size computed

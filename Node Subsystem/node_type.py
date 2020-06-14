@@ -1,10 +1,8 @@
 """
-diagram_node_types.py
+node_type.py
 
-Covers the Node Type and Diagram Type classes in the Flatland Class Diagram.
+Defines the types of Nodes that may appear on Diagrams
 
-Attributes
----
 node_types : dict
     Node Type information specifies data that is the same for all Nodes of a given type
     All Class nodes, for example, have three compartments each with a particular typeface.
@@ -12,38 +10,17 @@ node_types : dict
 
     We use an OrderedDict for compartments to implement the R1 relationship on the modeled
     Compartment Type Class
-
-diagram_types : dict
-    Here we specify what kinds of nodes may appear on a given type of diagram.  You cannot, put a state
-    node on a class diagram, for example.
-
 """
-from flatland_types import *
-from collections import OrderedDict
-from notation import Notation, ConnectorTypeName
-from enum import Enum
 
+from names import NodeTypeName
+from collections import namedtuple, OrderedDict
+from draw_types import Stroke, Text_Style, StrokeWidth, StrokeStyle, TypeFace, FontWeight, FontSlant
+from geometry_types import Alignment, VertAlign, HorizAlign, Padding, Rect_Size
 
-class DiagramTypeName(Enum):
-    """
-    These are the names of the supported diagram types
-    """
-    CD = 'Class diagram',
-    SMD = 'State machine diagram',
-    CCD = 'Class collaboration diagram',
-    DD = 'Domain diagram'
+Node_Type_Attrs = namedtuple('Node_Type_Attrs',
+                             'corner_rounding compartments line_style default_size max_size')
 
-
-class NodeTypeName(Enum):
-    """
-    These are the names of all supported node types
-    """
-    M_class = "Class",  # A normal class
-    I_class = "Imported class",  # Class from a different subsystem
-    State = "State",
-    O_class = "Overview class",  # For collaboration diagram
-    Domain = "Domain",  # For domain chart
-    EE = "External entity"  # For collaboration diagram
+Compartment_Type_Attrs = namedtuple('Compartment_Type_Attrs', 'alignment padding text_style')
 
 
 node_types = {
@@ -164,27 +141,4 @@ node_types = {
                                      line_style=Stroke(width=StrokeWidth.NORMAL, pattern=StrokeStyle.SOLID),
                                      default_size=Rect_Size(height=25, width=100),
                                      max_size=Rect_Size(height=60, width=300))
-}
-
-diagram_types = {
-    DiagramTypeName.CD: {
-        'nodes': {NodeTypeName.M_class, NodeTypeName.I_class},
-        'connectors': {ConnectorTypeName.binary_assoc, ConnectorTypeName.assoc_class, ConnectorTypeName.gen},
-        'notations': {Notation.SM, Notation.xUML, Notation.Starr}
-    },
-    DiagramTypeName.SMD: {
-        'nodes': {NodeTypeName.State},
-        'connectors': {ConnectorTypeName.init_trans, ConnectorTypeName.del_trans, ConnectorTypeName.init_trans},
-        'notations': {Notation.xUML}
-    },
-    DiagramTypeName.CCD: {
-        'nodes': {NodeTypeName.O_class, NodeTypeName.EE},
-        'connectors': {ConnectorTypeName.comm},
-        'notations': {Notation.xUML}
-    },
-    DiagramTypeName.DD: {
-        'nodes': {NodeTypeName.Domain},
-        'connectors': {ConnectorTypeName.bridge},
-        'notations': {Notation.SM, Notation.xUML, Notation.Starr}
-    }
 }

@@ -1,7 +1,8 @@
 """
 tablet.py – Flatland draws to this and then the tablet can be drawn using cairo or some other draw framework
 """
-from flatland_types import *
+from draw_types import Line, Text_Line, Text_Style, FontWeight, FontSlant
+from geometry_types import Rectangle, Rect_Size, Position
 from typing import List
 import cairo
 

@@ -2,7 +2,7 @@
 
 from linear_geometry import align_on_axis
 from node import Node
-from flatland_types import Position
+from geometry_types import Position
 
 
 class SingleCellNode(Node):

@@ -1,8 +1,8 @@
 """
 node.py
 """
-from flatland_types import Rect_Size, Position
-from diagram_node_types import node_types
+from geometry_types import Rect_Size, Position
+from node_type import node_types
 from compartment import Compartment
 import flatland_exceptions
 from layout_specification import default_cell_alignment

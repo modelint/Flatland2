@@ -16,21 +16,24 @@ class Notation(Enum):
     xUML = 'Executable UML'  # For those who need the standard, subset of UML with some annotations
 
 
-class ConnectorSemantic(Enum):
+class StemSemantic(Enum):
     """
-    Supported semantics for a decorated stem end
-    No entry for plain, non-decorated stem ends such as subclass/specialization
+    These are the notation independent semantics. Each notation may or may not
+    specify a decoration for corresponding stem ends.
     """
+    # For state machines
+    From_state = 'From state',  # Typically no decoration
     Target_state = 'Target state',
-    Final_state = 'Final pseudo state',
-    Initial_state = 'Initial pseudo state',
-    Mult_Mc = 'Many conditional multiplicity',
+    Final_pstate = 'Final pseudo state',
+    Initial_pstate = 'Initial pseudo state',
+
+    # For class models
     Mult_1 = '1 unconditional multiplicity',
     Mult_M = 'Many unconditional multiplicity',
+    Mult_Mc = 'Many conditional multiplicity',
     Mult_1c = '1 conditional multiplicity',
-    Gen = 'Generalization',
-    Dependency = 'Dependency'
-
+    Super_class = 'Superclass',
+    Sub_class = 'Subclass'  # Typically no decoration
 
 
 
