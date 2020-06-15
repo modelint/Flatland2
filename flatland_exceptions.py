@@ -11,6 +11,14 @@ class UnsupportedNotation(FlatlandException):
     pass
 
 
+class UnsupportedDiagramType(FlatlandException):
+    pass
+
+
+class NotationUnsupportedForDiagramType(FlatlandException):
+    pass
+
+
 class SheetWidthExceededFE(FlatlandException):
     pass
 

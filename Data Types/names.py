@@ -18,6 +18,14 @@ class DiagramTypeName(Enum):
     DD = 'Domain diagram'
 
 
+user_diagram_names = {
+    'class': DiagramTypeName.CD,
+    'state': DiagramTypeName.SMD,
+    'cc': DiagramTypeName.CCD,
+    'domain': DiagramTypeName.DD
+}
+
+
 class NodeTypeName(Enum):
     """
     These are the names of all supported node types

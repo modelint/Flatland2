@@ -4,13 +4,8 @@ connector_type.py
 Connector and stem type specification
 """
 from enum import Enum
-from collections import namedtuple
-# from diagram_type import DiagramTypeName
-from draw_types import Stroke, StrokeWidth, StrokeStyle
+from names import DiagramTypeName, ConnectorTypeName
 from connection_types import Geometry
-from notation import Notation
-
-
 
 
 class ConnectionRole(Enum):
@@ -22,8 +17,6 @@ class ConnectionRole(Enum):
     trunk = "node to top of hierarchy",
     branch = "node to bottom of hierarchy",
     free = "unary node to open space"
-
-
 
 
 connector_types = {

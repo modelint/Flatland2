@@ -151,5 +151,5 @@ if __name__ == "__main__":
     Canvas_Args = namedtuple("Canvas_Args", "diagram notation sheet orientation file")
 
     test_input = Canvas_Args(
-        diagram="class", notation="UML", sheet="letter", orientation="landscape", file="ftest.pdf")
+        diagram="class", notation="xUML", sheet="letter", orientation="landscape", file="ftest.pdf")
     create_canvas(args=test_input)

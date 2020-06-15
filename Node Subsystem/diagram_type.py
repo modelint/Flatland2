@@ -11,7 +11,6 @@ diagram_types : dict
     node on a class diagram, for example. Also we show what notations are supported for each Diagram Type.
 
 """
-from enum import Enum
 
 from names import DiagramTypeName, ConnectorTypeName, NodeTypeName
 from notation import Notation

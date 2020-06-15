@@ -2,7 +2,9 @@
 diagram.py
 """
 import flatland_exceptions
+from names import user_diagram_names
 from diagram_type import diagram_types
+from notation import user_notation_names
 from geometry_types import Position, Padding, Rect_Size
 from grid import Grid
 
@@ -27,13 +29,27 @@ class Diagram:
     Size : Size of the Diagram, derived from Padding also
 
     """
-    def __init__(self, canvas, diagram_type, notation):
+
+    def __init__(self, canvas, diagram_type_name, notation_name):
         self.Canvas = canvas
-        self.Diagram_type = diagram_types.get(diagram_type, default_diagram_type)
-        if notation in self.Diagram_type.notations:
-            self.Notation = notation
-        else:
+        try:  # map user entered string to enum
+            supported_diagram_type = user_diagram_names[diagram_type_name]
+        except KeyError:
+            raise flatland_exceptions.UnsupportedDiagramType
+
+        # it must be in here or we need to update the diagram types file
+        self.Diagram_type = diagram_types[supported_diagram_type]
+
+        try:  # map user entered notation string to enum
+            notation = user_notation_names[notation_name]
+        except KeyError:
             raise flatland_exceptions.UnsupportedNotation
+
+        if notation in self.Diagram_type['notations']:
+            self.Notation = notation
+        else:  # Our diagram type does not support this notation
+            raise flatland_exceptions.NotationUnsupportedForDiagramType
+
         self.Grid = Grid(diagram=self)  # Start with an empty grid
         self.Padding = Padding(top=0, bottom=0, left=0, right=0)
         self.Origin = Position(

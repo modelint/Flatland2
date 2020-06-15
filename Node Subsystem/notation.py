@@ -16,6 +16,13 @@ class Notation(Enum):
     xUML = 'Executable UML'  # For those who need the standard, subset of UML with some annotations
 
 
+user_notation_names = {
+    'SM' : Notation.SM,
+    'Starr' : Notation.Starr,
+    'xUML' : Notation.xUML
+}
+
+
 class StemSemantic(Enum):
     """
     These are the notation independent semantics. Each notation may or may not
