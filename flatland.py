@@ -54,13 +54,13 @@ this program. If not, see <http://www.gnu.org/licenses/>.
 __author__ = "Leon Starr"
 __contact__ = "leon_starr@modelint.com"
 __copyright__ = "Copyright 2019,2020, Leon Starr"
-__date__ = "2020/2/29"
+__date__ = "2020/6/16"
 __deprecated__ = False
 __email__ = "leon_starr@modelint.com"
 __license__ = "GPLv3"
 __maintainer__ = "Leon Starr"
 __status__ = "Development"
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 
 
 New_Stem = namedtuple('New_Stem', 'stem_type semantic node face anchor')
@@ -122,8 +122,8 @@ def create_canvas(args):
     ]
     n1 = SingleCellNode(node_type_name=NodeTypeName.M_class, content=class_Aircraft, grid=flatland_canvas.Diagram.Grid,
                         row=2, column=1)
-    # n2 = SingleCellNode(node_type_name=NodeTypeName.M_class, content=class_Pilot, grid=flatland_canvas.Diagram.Grid,
-    #                     row=2, column=4)
+    n2 = SingleCellNode(node_type_name=NodeTypeName.M_class, content=class_Pilot, grid=flatland_canvas.Diagram.Grid,
+                        row=2, column=3)
     # p_stem = New_Stem(stem_type=StemTypeName.class_mult, semantic=StemSemantic.Mult_1, node=n1,
     #                   face=NodeFace.RIGHT, anchor=0)
     #

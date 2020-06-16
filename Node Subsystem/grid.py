@@ -4,6 +4,8 @@ grid.py
 
 import flatland_exceptions
 from linear_geometry import expand_boundaries, span
+from geometry_types import Position
+from draw_types import Line, Stroke, StrokeStyle, StrokeWidth
 from layout_specification import default_cell_alignment, default_cell_padding
 from spanning_node import SpanningNode
 from single_cell_node import SingleCellNode

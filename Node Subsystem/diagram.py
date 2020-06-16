@@ -26,7 +26,7 @@ class Diagram:
     Grid : All content in the diagram is organized within the cells of this Grid
     Padding : Space between Canvas margin and Diagram on all sides (useful for specification)
     Origin : Lower left corner of Diagram in Canvas coordinates
-    Size : Size of the Diagram, derived from Padding also
+    Size : Size of the Diagram rectangle within the Canvas
 
     """
 
@@ -56,7 +56,7 @@ class Diagram:
             x=self.Canvas.Margin.left + self.Padding.left,
             y=self.Canvas.Margin.bottom + self.Padding.bottom
         )
-        self.Size = Rect_Size(
+        self.Size = Rect_Size(  # extent from origin to right or upper canvas margin
             width=self.Canvas.Point_size.width - self.Origin.x - self.Canvas.Margin.right,
             height=self.Canvas.Point_size.height - self.Origin.y - self.Canvas.Margin.top
         )

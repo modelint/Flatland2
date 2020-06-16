@@ -5,7 +5,7 @@ sheet.py – Standard and non-standard sheet sizes
 
 # All sheet and canvas related constants are kept together here for easy review and editing
 us_sheet_sizes = {
-    'letter': (8.5, 11),
+    'letter': (8.5, 11),  # 612 x 792 pts
     'tabloid': (11, 17),
     'C': (17, 22),
     'D': (22, 34),
