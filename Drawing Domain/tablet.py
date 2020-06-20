@@ -97,6 +97,8 @@ class Tablet:
         To display coordinates – Convert tablet bottom_left origin coordinate to
         display coordinate where top-left origin is used.
         """
+        #print(f'tc: {tablet_coord}')
+        #print(f'to_dc x: {tablet_coord.x}, y: {tablet_coord.y}')
         assert (tablet_coord.y <= self.Size.height), "Tablet bounds exceeded"
         return Position(x=tablet_coord.x, y=self.Size.height - tablet_coord.y)
 

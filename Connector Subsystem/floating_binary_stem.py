@@ -1,7 +1,8 @@
 """ floating_binary_stem.py """
 
 from stem import Stem
-from flatland_types import NodeFace
+from connection_types import NodeFace
+from geometry_types import Position
 
 
 class FloatingBinaryStem(Stem):
@@ -33,7 +34,7 @@ class FloatingBinaryStem(Stem):
 
         # Stem initialized with our computed root end
         Stem.__init__(
-            connector, stem_type, semantic, node, face, root_position=(x, y))
+            self, connector, stem_type, semantic, node, face, root_position=Position(x, y))
 
     def render(self):
         """

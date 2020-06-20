@@ -2,9 +2,11 @@
 stem.py
 """
 
-from flatland_types import NodeFace, Position, StemEnd
+from connection_types import NodeFace, StemEnd
+from geometry_types import Position
 from layout_specification import default_unary_branch_length, undecorated_stem_clearance
-from connector_type import StemTypeUsageID, stem_type_usages, ConnectionRole
+from stem_type_usage import StemTypeUsageID, stem_type_usages
+from connector_type import ConnectionRole
 from decorated_stem_end import decorated_stem_ends, DecoratedStemEndID
 
 
@@ -28,7 +30,7 @@ def compute_vine_position(connector_type, diagram_type, stem_type):
     if role == ConnectionRole.free:
         stem_length = default_unary_branch_length
 
-    return 1
+    return 1  # TODO: Not the real value, just for testing. Not used for rendering
 
 
 class Stem:

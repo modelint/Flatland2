@@ -4,7 +4,7 @@ straight_binary_connector.py
 from binary_connector import BinaryConnector
 from anchored_stem import AnchoredStem
 from floating_binary_stem import FloatingBinaryStem
-from flatland_types import New_Stem
+from draw_types import Line, Stroke, StrokeWidth, StrokeStyle
 
 
 class StraightBinaryConnector(BinaryConnector):
@@ -30,9 +30,8 @@ class StraightBinaryConnector(BinaryConnector):
     where it touches the opposing face of its attached Node
     """
 
-    def __init__(self, diagram, connector_type, projecting_stem: New_Stem, floating_stem: New_Stem, tertiary_stem=None):
-
-        BinaryConnector.__init__(self, diagram, connector_type, tertiary_stem)
+    def __init__(self, diagram, projecting_stem, floating_stem, tertiary_stem=None):
+        BinaryConnector.__init__(self, diagram, tertiary_stem)
 
         self.Projecting_stem = AnchoredStem(
             connector=self,
@@ -58,5 +57,7 @@ class StraightBinaryConnector(BinaryConnector):
 
     def render(self):
         # Create line from vine end of Projecting Binary Stem to vine end of Floating Binary Stem
-        pass
-
+        tablet = self.Diagram.Canvas.Tablet
+        tablet.Lines.append(Line(
+            line_style=Stroke(StrokeWidth.THIN, pattern=StrokeStyle.SOLID),
+            from_here=self.Projecting_stem.Root_end, to_there=self.Floating_stem.Root_end))

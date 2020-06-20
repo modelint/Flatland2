@@ -6,7 +6,7 @@ Modeled class: Symbol
 Here you define all text and graphical symbols drawn on the ends
 of Connectors (Stems) in each supported notation.
 """
-from flatland_types import Stroke, StrokeStyle, StrokeWidth
+from draw_types import Stroke, StrokeStyle, StrokeWidth
 from collections import namedtuple
 from enum import Enum
 

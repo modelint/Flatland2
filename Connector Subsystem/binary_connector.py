@@ -2,6 +2,8 @@
 binary_connector.py
 """
 from connector import Connector
+from names import ConnectorTypeName
+
 
 class BinaryConnector(Connector):
     """
@@ -12,5 +14,5 @@ class BinaryConnector(Connector):
     ---
     Tertiary_stem – An optional Tertiary Stem may be supplied with a user specified anchor position
     """
-    def __init__(self, diagram, connector_type, tertiary_stem):
-        Connector.__init__(diagram, connector_type)
+    def __init__(self, diagram, tertiary_stem):
+        Connector.__init__(self, diagram, connector_type=ConnectorTypeName.binary_assoc)

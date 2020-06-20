@@ -14,9 +14,9 @@ ends and, therefore, has no decorated stem ends.
 """
 from collections import namedtuple
 from notation import StemSemantic, Notation
-from connector_type import StemTypeName
+from stem_type import StemTypeName
 from symbol import Symbol
-from flatland_types import StemEnd
+from connection_types import StemEnd
 from diagram_type import DiagramTypeName
 from layout_specification import undecorated_stem_clearance
 

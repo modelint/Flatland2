@@ -3,15 +3,14 @@ from collections import namedtuple
 
 from canvas import Canvas
 from single_cell_node import SingleCellNode
-from node_type import NodeTypeName
+from names import NodeTypeName, StemTypeName
+from notation import StemSemantic
+from straight_binary_connector import StraightBinaryConnector
+from connection_types import NodeFace
 
 # from spanning_node import SpanningNode
 # from bend_route import Bend_Route, Bend
-# from connection_types import New_Stem, NodeFace
 # from geometry_types import VertAlign, HorizAlign, Alignment
-# from straight_binary_connector import StraightBinaryConnector
-# from connector_type import ConnectorTypeName, StemTypeName
-# from notation import StemSemantic
 
 """ flatland.py – 2D Model diagram generator
 
@@ -124,13 +123,13 @@ def create_canvas(args):
                         row=2, column=1)
     n2 = SingleCellNode(node_type_name=NodeTypeName.M_class, content=class_Pilot, grid=flatland_canvas.Diagram.Grid,
                         row=2, column=3)
-    # p_stem = New_Stem(stem_type=StemTypeName.class_mult, semantic=StemSemantic.Mult_1, node=n1,
-    #                   face=NodeFace.RIGHT, anchor=0)
-    #
-    # f_stem = New_Stem(stem_type=StemTypeName.class_mult, semantic=StemSemantic.Mult_Mc, node=n2,
-    #                   face=NodeFace.LEFT, anchor=None)
-    #
-    # StraightBinaryConnector(diagram=flatland_canvas.Diagram, projecting_stem=p_stem, floating_stem=f_stem)
+    p_stem = New_Stem(stem_type=StemTypeName.class_mult, semantic=StemSemantic.Mult_1, node=n1,
+                      face=NodeFace.RIGHT, anchor=2)
+
+    f_stem = New_Stem(stem_type=StemTypeName.class_mult, semantic=StemSemantic.Mult_Mc, node=n2,
+                      face=NodeFace.LEFT, anchor=None)
+
+    StraightBinaryConnector(diagram=flatland_canvas.Diagram, projecting_stem=p_stem, floating_stem=f_stem)
 
     # SpanningNode(node_type_name='class', content=class_Tower, grid=flatland_canvas.Diagram.Grid,
     #              high_row=2, low_row=1, left_column=1, right_column=2,

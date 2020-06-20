@@ -38,14 +38,16 @@ class Diagram:
             raise flatland_exceptions.UnsupportedDiagramType
 
         # it must be in here or we need to update the diagram types file
-        self.Diagram_type = diagram_types[supported_diagram_type]
+        self.Diagram_type = supported_diagram_type
+        # self.Diagram_type = diagram_types[supported_diagram_type]
 
         try:  # map user entered notation string to enum
             notation = user_notation_names[notation_name]
         except KeyError:
             raise flatland_exceptions.UnsupportedNotation
 
-        if notation in self.Diagram_type['notations']:
+        # if notation in self.Diagram_type['notations']:
+        if notation in diagram_types[self.Diagram_type]['notations']:
             self.Notation = notation
         else:  # Our diagram type does not support this notation
             raise flatland_exceptions.NotationUnsupportedForDiagramType

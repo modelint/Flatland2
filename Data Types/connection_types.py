@@ -8,7 +8,7 @@ from enum import Enum
 
 
 class StemEnd(Enum):
-    ROOT = 0,
+    ROOT = 0
     VINE = 1
 
 
@@ -16,10 +16,10 @@ class NodeFace(Enum):
     """
     Values are multiplied by absolute distance to get an x or y coordinate.
     """
-    TOP = 1
-    BOTTOM = -1
-    RIGHT = 1
-    LEFT = -1
+    TOP = "north"
+    BOTTOM = "south"
+    RIGHT = "east"
+    LEFT = "west"
 
 
 HorizontalFace = {NodeFace.TOP, NodeFace.BOTTOM}
@@ -54,9 +54,9 @@ class Geometry(Enum):
     Node and another type of Stem emanates from each of the subsidiary Nodes and one or more lines are drawn to
     connect all the Stems. A class diagram generalization relationship is a typical case.
     """
-    U = "unary",
-    B = "binary",
-    T = "ternary",
+    U = "unary"
+    B = "binary"
+    T = "ternary"
     H = "hierarchical"
 
 

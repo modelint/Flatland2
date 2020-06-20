@@ -1,8 +1,9 @@
 """ anchored_stem.py """
 
 from stem import Stem
-from flatland_types import NodeFace
+from connection_types import NodeFace
 from layout_specification import default_stem_positions
+from geometry_types import Position
 
 
 def anchor_to_position(node, face, anchor_position):
@@ -17,30 +18,29 @@ def anchor_to_position(node, face, anchor_position):
     """
     # Return either an x or y value where the root end is placed
     if face == NodeFace.LEFT or face == NodeFace.RIGHT:
-        face_extent = node.Size.Rect_Size.height
+        face_extent = node.Size.height
     else:
-        face_extent = node.Size.Rect_Size.width
+        face_extent = node.Size.width
 
     # Compute center relative position to edge relative position by shifting the number line
     stem_step_size = face_extent / (default_stem_positions + 1)
-    edge_relative_step = round(default_stem_positions / 2) + anchor_position
-    edge_relative_distance = edge_relative_step * stem_step_size
+    edge_offset = face_extent / 2 + anchor_position * stem_step_size
 
     if face == NodeFace.LEFT:
         x = node.Canvas_position.x
-        y = node.Canvas_position.y + edge_relative_distance
+        y = node.Canvas_position.y + edge_offset
     elif face == NodeFace.RIGHT:
-        x = node.Canvas_position.x + node.Size.Rect_Size.width
-        y = node.Canvas_position.y + edge_relative_distance
+        x = node.Canvas_position.x + node.Size.width
+        y = node.Canvas_position.y + edge_offset
     elif face == NodeFace.TOP:
-        y = node.Canvas_position.y + node.Size.Rect_Size.height
-        x = node.Canvas_position.x + edge_relative_distance
+        y = node.Canvas_position.y + node.Size.height
+        x = node.Canvas_position.x + edge_offset
     else:
         assert (face == NodeFace.BOTTOM)
         y = node.Canvas_position.y
-        x = node.Canvas_position.x + edge_relative_distance
+        x = node.Canvas_position.x + edge_offset
 
-    return x, y
+    return Position(x, y)
 
 
 class AnchoredStem(Stem):
