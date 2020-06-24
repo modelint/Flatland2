@@ -1,4 +1,6 @@
-""" layout_specification.py – These are the default values used for layout"""
+"""
+layout_specification.py – These are the default values used for layout
+"""
 
 from geometry_types import Padding, Position, Alignment, VertAlign, HorizAlign
 
@@ -25,10 +27,20 @@ default_cell_alignment = Alignment(vertical=VertAlign.CENTER, horizontal=HorizAl
 # right number, especially for a class or state diagram.  But this could vary by diagram and node type in the future.
 default_stem_positions = 5
 
+# The number of ruts where Path can be defined in a Lane
+# These work like stem/anchor positions on a Lane as opposed to a Node face
+# For a value of 3 we get positions -1, 0 and +1 with 0 representing the Lane Center
+# and +1 high/right and -1 low/left
+default_rut_positions = 3
+
 # For a Stem that has no graphic decoration, such as an xUML class binary association connection or a xUML subclass
 # connection, this is the minimum distance from the node face to either a bend or the opposing Stem end. It prevents
 # a bend too close to a Node face or a connection too close to another Node.
 undecorated_stem_clearance = 11
+
+# When adding an empty row or column to acommodate a Path in a Connector use these
+default_new_path_row_height = 100
+default_new_path_col_width = 100
 
 # The distance from the root end on the Node face to the vine end just before any vine end
 # shape decorations are drawn

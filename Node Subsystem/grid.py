@@ -3,12 +3,14 @@ grid.py
 """
 
 import flatland_exceptions
-from linear_geometry import expand_boundaries, span
+from linear_geometry import expand_boundaries, span, step_edge_distance
 from geometry_types import Position
 from draw_types import Line, Stroke, StrokeStyle, StrokeWidth
-from layout_specification import default_cell_alignment, default_cell_padding
+from layout_specification import default_cell_alignment, default_cell_padding, default_rut_positions
+from layout_specification import default_new_path_col_width, default_new_path_row_height
 from spanning_node import SpanningNode
 from single_cell_node import SingleCellNode
+from connection_types import LaneOrientation
 from itertools import product
 
 
@@ -52,6 +54,26 @@ class Grid:
         self.Cell_padding = default_cell_padding
         self.Cell_alignment = default_cell_alignment
         self.Diagram = diagram
+
+    def get_rut(self, lane, rut, orientation):
+        """
+        Compute a y coordinate above row boundary if lane_orientation is row
+        or an x coordinate right of column boundary if lane_orientation is column
+        :param: lane,
+        :param: orientation
+        :return: rut_position
+        """
+        if orientation == LaneOrientation.ROW:
+            # TODO: Consider expressing row/column boundaries in Canvas coordinates so this offset is not needed
+            margin_offset = self.Diagram.Canvas.Margin.bottom # row and column boundaries are relative to margin
+            low_boundary = self.Row_boundaries[lane - 1]
+            lane_width = self.Row_boundaries[lane] - low_boundary
+        else:
+            margin_offset = self.Diagram.Canvas.Margin.left
+            low_boundary = self.Col_boundaries[lane - 1]
+            lane_width = self.Col_boundaries[lane] - low_boundary
+
+        return margin_offset + low_boundary + step_edge_distance(num_of_steps=default_rut_positions, extent=lane_width, step=rut)
 
     def render(self):
         """Draw self on tablet for diagnostic purposes"""
@@ -170,12 +192,30 @@ class Grid:
         [self.add_column(cell_width) for _ in range(columns_to_add)]
 
         # Assign each cell to this node
-        spanned_rows = list(range(node.Low_row, node.High_row+1))
-        spanned_cols = list(range(node.Left_column, node.Right_column+1))
+        spanned_rows = list(range(node.Low_row, node.High_row + 1))
+        spanned_cols = list(range(node.Left_column, node.Right_column + 1))
         # Figure out the correct syntax for statement below
         for r, c in product(spanned_rows, spanned_cols):
-            self.Cells[r-1][c-1] = node
+            self.Cells[r - 1][c - 1] = node
         self.Nodes.append(node)
+
+    def add_lane(self, lane, orientation: LaneOrientation):
+        """
+        If necessary, expand grid to include Lane at the designated row or column number
+        The model defines a Lane as "either a Row or Column"
+        :param lane:
+        :param orientation:
+        """
+        # Add enough columns or rows for the desired Lane
+        # TODO: Refactor grid to at least include addrows addcols methods
+        if orientation == LaneOrientation.ROW:
+            rows_to_add = max(0, lane - len(self.Row_boundaries[1:]))
+            for r in range(rows_to_add):
+                self.add_row(default_new_path_row_height)
+        else:
+            columns_to_add = max(0, lane - len(self.Col_boundaries[1:]))
+            for c in range(columns_to_add):
+                self.add_column(default_new_path_col_width)
 
     def place_single_cell_node(self, node: SingleCellNode):
         """Places the node adding any required rows or columns"""
@@ -221,10 +261,10 @@ class Grid:
         # Add extra rows and columns (must add the rows first)
         for r in range(rows_to_add):
             # Each new row, except the last will be of default height with the last matching the required height
-            add_height = new_cell_height if r == rows_to_add-1 else default_cell_height
+            add_height = new_cell_height if r == rows_to_add - 1 else default_cell_height
             self.add_row(add_height)
         for c in range(columns_to_add):
-            add_width = new_cell_width if c == columns_to_add-1 else default_cell_width
+            add_width = new_cell_width if c == columns_to_add - 1 else default_cell_width
             self.add_column(add_width)
 
         # Place the node in the new location

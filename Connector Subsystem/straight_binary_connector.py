@@ -60,4 +60,4 @@ class StraightBinaryConnector(BinaryConnector):
         tablet = self.Diagram.Canvas.Tablet
         tablet.Lines.append(Line(
             line_style=Stroke(StrokeWidth.THIN, pattern=StrokeStyle.SOLID),
-            from_here=self.Projecting_stem.Root_end, to_there=self.Floating_stem.Root_end))
+            from_here=self.Projecting_stem.Vine_end, to_there=self.Floating_stem.Vine_end))

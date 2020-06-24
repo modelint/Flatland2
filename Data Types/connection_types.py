@@ -7,6 +7,14 @@ Data types to support Connectors and Stems
 from enum import Enum
 
 
+class LaneOrientation(Enum):
+    """
+    Two possible Lane orientations
+    """
+    ROW = 0
+    COLUMN = 1
+
+
 class StemEnd(Enum):
     ROOT = 0
     VINE = 1

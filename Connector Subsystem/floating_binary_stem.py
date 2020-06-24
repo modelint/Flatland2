@@ -25,10 +25,10 @@ class FloatingBinaryStem(Stem):
         if face == NodeFace.LEFT:
             x = node.Canvas_position.x
         elif face == NodeFace.RIGHT:
-            x = node.Canvas_position.x + node.Size.Rect_Size.width
+            x = node.Canvas_position.x + node.Size.width
         # top and bottom faces are horizontal, so they determine the y coordinate
         elif face == NodeFace.TOP:
-            y = node.Canvas_position.y + node.Size.Rect_Size.height
+            y = node.Canvas_position.y + node.Size.height
         elif face == NodeFace.BOTTOM:
             y = node.Canvas_position.y
 

@@ -59,10 +59,11 @@ class Stem:
         self.Node_face = node_face
         self.Semantic = semantic
         self.Root_end = root_position
-        self.Vine_end = compute_vine_position(
-            connector_type=connector.Connector_type, diagram_type=connector.Diagram.Diagram_type,
-            stem_type=stem_type
-        )
+        self.Vine_end = self.Root_end # TODO: Assuming zero length stem for now
+        # self.Vine_end = compute_vine_position(
+        #     connector_type=connector.Connector_type, diagram_type=connector.Diagram.Diagram_type,
+        #     stem_type=stem_type
+        # )
 
     def compute_vine_end(self):
         # We need the distance of the Vine end away from the node face

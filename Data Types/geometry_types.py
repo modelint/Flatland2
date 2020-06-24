@@ -7,7 +7,6 @@ Data types for 2D geometry and alignment
 from collections import namedtuple
 from enum import Enum
 
-
 class VertAlign(Enum):
     """The numeric values are low to high in the axis direction"""
     BOTTOM = 0

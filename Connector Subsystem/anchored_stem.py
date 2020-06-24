@@ -4,6 +4,7 @@ from stem import Stem
 from connection_types import NodeFace
 from layout_specification import default_stem_positions
 from geometry_types import Position
+from linear_geometry import step_edge_distance
 
 
 def anchor_to_position(node, face, anchor_position):
@@ -22,9 +23,7 @@ def anchor_to_position(node, face, anchor_position):
     else:
         face_extent = node.Size.width
 
-    # Compute center relative position to edge relative position by shifting the number line
-    stem_step_size = face_extent / (default_stem_positions + 1)
-    edge_offset = face_extent / 2 + anchor_position * stem_step_size
+    edge_offset = step_edge_distance(num_of_steps=default_stem_positions, extent=face_extent, step=anchor_position )
 
     if face == NodeFace.LEFT:
         x = node.Canvas_position.x

@@ -10,6 +10,34 @@ the need to differentiate between the two.
 scale = 2  # For float rounding errors (change to 3 or 4 if errors are visible on drawings)
 
 
+def step_edge_distance(num_of_steps, extent, step):
+    """
+    You have a line segment with a given extent (length). In distance coordinates such as points, 0 is at the
+    beginning of the segment increasing to the extent at the other end. A number line is defined with step
+    increment 0 at the center of the line segment. Steps increase positively toward the extent and negatively toward
+    the 0 coordinate. There is no step increment defined at either boundary (0 or the extent).
+
+    Let's say the line segment is 100 pt long and we want 5 steps.  The zero step will be at coordinate 50.
+    All negative steps will have a value less than 50 and all positive steps will be greater than 50.
+    To make this work we divide the line segment into equally spaced increments by dividing the extent by the total
+    number of steps plus one. With 5 steps then, we get 6 increments each 20 pt wide. There will be three on each
+    side of the zero step. This means the number line will be -2, -1, 0, 1, 2 giving us our five step positions.
+
+    Given a step number, return the distance coordinate. In our example, step 0 will return 50 pt.
+    Step -1 will return 30 pt and so on. Note that no step will return either the extent or 0 pt since
+    the whole idea is to avoid stepping to the edge of the line segment.
+
+    :param num_of_steps: Line segment is divided into this number of steps
+    :param extent: Length of line segment
+    :param step: You want the distance of this step from the beginning of the line segment
+    :return: Distance from edge of extent
+    """
+    # divide the face into equal size steps, 5 anchor positions = 6 steps
+    stem_step_size = extent / (num_of_steps + 1)
+    # add distance from center going away in either direction based on +/- anchor position
+    return extent / 2 + step * stem_step_size
+
+
 def expand_boundaries(boundaries, start_boundary, expansion):
     """Push boundaries out by exapnsion from starting boundary"""
     return boundaries[:start_boundary] + [b + expansion for b in boundaries[start_boundary:]]

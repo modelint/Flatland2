@@ -1,4 +1,3 @@
-
 from collections import namedtuple
 
 from canvas import Canvas
@@ -63,6 +62,7 @@ __status__ = "Development"
 __version__ = "0.4.0"
 
 New_Stem = namedtuple('New_Stem', 'stem_type semantic node face anchor')
+New_Path = namedtuple('New_Path', 'lane rut')
 
 
 # For diagnostics during development
@@ -119,20 +119,25 @@ def create_canvas(args):
             'G : Distance'
         ]
     ]
-    n1 = SingleCellNode(node_type_name=NodeTypeName.M_class, content=class_Aircraft, grid=flatland_canvas.Diagram.Grid,
+    t_node = SingleCellNode(node_type_name=NodeTypeName.M_class, content=class_Aircraft, grid=flatland_canvas.Diagram.Grid,
                         row=1, column=1)
-    n2 = SingleCellNode(node_type_name=NodeTypeName.M_class, content=class_Pilot, grid=flatland_canvas.Diagram.Grid,
-                        row=3, column=3)
+    p_node = SingleCellNode(node_type_name=NodeTypeName.M_class, content=class_Pilot, grid=flatland_canvas.Diagram.Grid,
+                        row=1, column=3)
 
-    t_stem = New_Stem(stem_type=StemTypeName.class_mult, semantic=StemSemantic.Mult_Mc, node=n1,
-                      face=NodeFace.TOP, anchor=0)
-    p_stem = New_Stem(stem_type=StemTypeName.class_mult, semantic=StemSemantic.Mult_1, node=n2,
-                      face=NodeFace.LEFT, anchor=0)
-
-
-    BendingBinaryConnector(diagram=flatland_canvas.Diagram, anchored_stem_p=p_stem, anchored_stem_t=t_stem)
+    # t_stem = New_Stem(stem_type=StemTypeName.class_mult, semantic=StemSemantic.Mult_Mc, node=t_node,
+    #                   face=NodeFace.RIGHT, anchor=-2)
+    # p_stem = New_Stem(stem_type=StemTypeName.class_mult, semantic=StemSemantic.Mult_1, node=p_node,
+    #                   face=NodeFace.LEFT, anchor=None)
     #
-    # StraightBinaryConnector(diagram=flatland_canvas.Diagram, projecting_stem=p_stem, floating_stem=f_stem)
+    t_stem = New_Stem(stem_type=StemTypeName.class_mult, semantic=StemSemantic.Mult_Mc, node=t_node,
+                      face=NodeFace.TOP, anchor=0)
+    p_stem = New_Stem(stem_type=StemTypeName.class_mult, semantic=StemSemantic.Mult_1, node=p_node,
+                      face=NodeFace.TOP, anchor=0)
+    p = [ New_Path(lane=2, rut=0) ]
+
+    BendingBinaryConnector(diagram=flatland_canvas.Diagram, anchored_stem_p=p_stem, anchored_stem_t=t_stem, paths=p)
+    #
+    # StraightBinaryConnector(diagram=flatland_canvas.Diagram, projecting_stem=t_stem, floating_stem=p_stem)
 
     # SpanningNode(node_type_name='class', content=class_Tower, grid=flatland_canvas.Diagram.Grid,
     #              high_row=2, low_row=1, left_column=1, right_column=2,
