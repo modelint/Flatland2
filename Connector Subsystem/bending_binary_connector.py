@@ -47,36 +47,30 @@ class BendingBinaryConnector(BinaryConnector):
             return [ self.node_to_node() ]
         else:
             corners = []
-            # Add first corner of first path
-            path_horizontal = self.T_stem.Node_face in HorizontalFace
-            first_path = self.Paths[0]  # First path yields two corners
-            if path_horizontal:  # Row
-                self.Diagram.Grid.add_lane(lane=first_path.lane, orientation=LaneOrientation.ROW)
-                x1 = self.T_stem.Vine_end.x
-                x2 = self.P_stem.Vine_end.x
-                y = self.Diagram.Grid.get_rut(lane=first_path.lane, rut=first_path.rut, orientation=LaneOrientation.ROW)
-                corners.append(Position(x=x1,y=y))
-                corners.append(Position(x=x2,y=y))
-            else:  # Column
-                self.Diagram.Grid.add_lane(lane=first_path.lane, orientation=LaneOrientation.COLUMN)
-                y1 = self.T_stem.Vine_end.y
-                y2 = self.P_stem.Vine_end.y
-                x = self.Diagram.Grid.get_rut(lane=first_path.lane, orientation=LaneOrientation.COLUMN)
-                corners.append(Position(x=x, y=y1))
-                corners.append(Position(x=x, y=y2))
-
-            for p in self.Paths[1:]: # If any, each following path yields one corner
-                # TODO: Recheck before running this code for double bend case
-                path_horizontal = not path_horizontal  # toggle the orientation
-                if path_horizontal:  # Row
-                    # TODO: Refactor so that add lanes are not repeated for first and subsequent paths
+            to_horizontal_path = self.T_stem.Node_face in HorizontalFace
+            first_path = True
+            for p in self.Paths:
+                if to_horizontal_path:  # Row
                     self.Diagram.Grid.add_lane(lane=p.lane, orientation=LaneOrientation.ROW)
-                    x = self.Diagram.Grid.get_rut(lane=p.lane, rut=p.rut, orientation=LaneOrientation.ROW)
-                    y = corners[-1].y
+                    previous_x = self.T_stem.Vine_end.x if first_path else corners[-1].x
+                    rut_y = self.Diagram.Grid.get_rut(lane=p.lane, rut=p.rut, orientation=LaneOrientation.ROW)
+                    x, y = previous_x, rut_y
                 else:  # Column
                     self.Diagram.Grid.add_lane(lane=p.lane, orientation=LaneOrientation.COLUMN)
-                    x = corners[-1].x
-                    y = self.Diagram.Grid.get_rut(lane=p.lane, rut=p.rut, orientation=LaneOrientation.COLUMN)
+                    previous_y = self.T_stem.Vine_end.y if first_path else corners[-1].y
+                    rut_x = self.Diagram.Grid.get_rut(lane=p.lane, rut=p.rut, orientation=LaneOrientation.COLUMN)
+                    x, y = rut_x, previous_y
+                corners.append(Position(x,y))
+                to_horizontal_path = not to_horizontal_path  # toggle the orientation
+                first_path = False
+            # Cap final path with last corner
+            if to_horizontal_path:
+                x = corners[-1].x
+                y = self.P_stem.Vine_end.y
+            else:
+                x = self.P_stem.Vine_end.x
+                y = corners[-1].y
+            corners.append(Position(x,y))
             return corners
 
     def node_to_node(self):
