@@ -1,7 +1,7 @@
 """
 tablet.py – Flatland draws to this and then the tablet can be drawn using cairo or some other draw framework
 """
-from draw_types import Line, Text_Line, Text_Style, FontWeight, FontSlant
+from draw_types import Line, Text_Line, Text_Style, FontWeight, FontSlant, Stroke, StrokeWidth, StrokeStyle
 from geometry_types import Rectangle, Rect_Size, Position
 from typing import List
 import cairo
@@ -60,6 +60,11 @@ class Tablet:
         self.Context.set_source_rgb(0, 0, 0)
         self.Context.set_line_join(cairo.LINE_JOIN_ROUND)
         for l in self.Lines:
+            # TODO: Use a dictionary to look this up
+            if l.line_style.pattern == StrokeStyle.DASHED:
+                self.Context.set_dash([9, 9])
+            else:
+                self.Context.set_dash([])
             self.Context.set_line_width(l.line_style.width.value)
             self.Context.move_to(*self.to_dc(l.from_here))
             self.Context.line_to(*self.to_dc(l.to_there))

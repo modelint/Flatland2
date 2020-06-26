@@ -5,7 +5,6 @@ stem.py
 from connection_types import NodeFace, StemEnd
 from geometry_types import Position
 from layout_specification import default_unary_branch_length, undecorated_stem_clearance
-from stem_type_usage import StemTypeUsageID, stem_type_usages
 from connector_type import ConnectionRole
 from decorated_stem_end import decorated_stem_ends, DecoratedStemEndID
 
@@ -59,63 +58,11 @@ class Stem:
         self.Node_face = node_face
         self.Semantic = semantic
         self.Root_end = root_position
-        self.Vine_end = self.Root_end # TODO: Assuming zero length stem for now
-        # self.Vine_end = compute_vine_position(
-        #     connector_type=connector.Connector_type, diagram_type=connector.Diagram.Diagram_type,
-        #     stem_type=stem_type
-        # )
-
-    def compute_vine_end(self):
-        # We need the distance of the Vine end away from the node face
-        # This is determined by the Stem Type Usage role, so we look that up first
-        # For a free usage, this is just the standard length
-        # For an opposing usage, this is the clearance distance
-        # For a tee usage, this is determined after working out where the connector is drawn
-        # for a trunk usage, it is the clearance distance
-        # for a branch usage, it is the clearance distance
-        # We factor in the direction (horizontal or vertical) and add to either the Root_end x or y coordinate
-
-        stkey = StemTypeUsageID(
-            connector_type=self.Connector.Connector_type, diagram_type=self.Connector.Diagram.Diagram_type,
-            stem_type=self.Stem_type
-        )
-        usage = stem_type_usages[stkey]
-        # Compute distance along x or y axis
-        if usage == ConnectionRole.free:
-            stem_length = default_unary_branch_length
-        else:
-            # Get root and vine decoration stems if any
-            vine_query = DecoratedStemEndID(
-                stem_type=self.Stem_type, semantic=self.Semantic, dtype=self.Connector.Diagram.Diagram_type,
-                notation=self.Connector.Diagram.Notation, end=StemEnd.VINE)
-            vine_decoration = decorated_stem_ends[vine_query].get()
-            vine_clearance = 0 if not vine_decoration else vine_decoration.clearance
-            root_query = DecoratedStemEndID(
-                stem_type=self.Stem_type, semantic=self.Semantic, dtype=self.Connector.Diagram.Diagram_type,
-                notation=self.Connector.Diagram.Notation, end=StemEnd.ROOT)
-            root_decoration = decorated_stem_ends[root_query].get()
-            root_clearance = 0 if not root_decoration else root_decoration.clearance
-            stem_length = root_clearance + vine_clearance or undecorated_stem_clearance
-
-        if usage != ConnectionRole.tee:
-            # In the tee case, we need to figure out where the vine meets the connector line first
-
-            if self.Node_face == NodeFace.TOP or self.Node_face == NodeFace.BOTTOM:
-                return Position(self.Root_end.x, self.Node_face.value * (self.Root_end.y + stem_length))
-            else:
-                return Position(self.Root_end.y, self.Node_face.value * (self.Root_end.x + stem_length))
-        else:
-            # For now we will just return the root position with no change
-            return self.Root_end
+        self.Vine_end = self.Root_end  # Should be overridden by the subclasses
 
     def render(self):
         """
         Draw self
         """
-        # Draw the root if any
-        # Start with node face and position
-        # Draw the root end decoration if any
-
-        # Draw the vine end if any
-        # Cases: Binary (just draw it), Unary, just draw it, Tertiary (need connector position)
+        # Overriden by the subclass
         pass

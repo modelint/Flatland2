@@ -3,7 +3,9 @@ straight_binary_connector.py
 """
 from binary_connector import BinaryConnector
 from anchored_stem import AnchoredStem
+from connection_types import HorizontalFace
 from floating_binary_stem import FloatingBinaryStem
+from tertiary_stem import TertiaryStem
 from draw_types import Line, Stroke, StrokeWidth, StrokeStyle
 
 
@@ -49,11 +51,28 @@ class StraightBinaryConnector(BinaryConnector):
             face=floating_stem.face,
             projecting_stem=self.Projecting_stem
         )
+        self.Tertiary_stem = None
+        if tertiary_stem:
+            self.Tertiary_stem = TertiaryStem(
+                connector=self,
+                stem_type=tertiary_stem.stem_type,
+                semantic=tertiary_stem.semantic,
+                node=tertiary_stem.node,
+                face=tertiary_stem.face,
+                anchor_position=tertiary_stem.anchor,
+                binary_connector_position=self.compute_axis()
+            )
 
         self.Projecting_stem.render()
         self.Floating_stem.render()
 
         self.render()
+
+    def compute_axis(self):
+        if self.Projecting_stem.Node_face in HorizontalFace:
+            return self.Projecting_stem.Root_end.x
+        else:
+            return self.Projecting_stem.Root_end.y
 
     def render(self):
         # Create line from vine end of Projecting Binary Stem to vine end of Floating Binary Stem

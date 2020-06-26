@@ -36,6 +36,9 @@ class FloatingBinaryStem(Stem):
         Stem.__init__(
             self, connector, stem_type, semantic, node, face, root_position=Position(x, y))
 
+        # TODO: For now they are the same. This changes when we begin decorating the Stems
+        self.Vine_end = self.Root_end
+
     def render(self):
         """
         Draw self

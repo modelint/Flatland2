@@ -57,3 +57,6 @@ class AnchoredStem(Stem):
         # Anchored position is used to compute the root end position
         Stem.__init__(self, connector, stem_type, semantic, node, face,
                       root_position=anchor_to_position(node, face, anchor_position))
+
+        # TODO: For now they are the same. This changes when we begin decorating the Stems
+        self.Vine_end = self.Root_end
