@@ -2,9 +2,10 @@
 bending_binary_connector.py
 """
 from binary_connector import BinaryConnector
+from tertiary_stem import TertiaryStem
 from anchored_stem import AnchoredStem
-from connection_types import HorizontalFace, LaneOrientation
-from draw_types import Line, Stroke, StrokeWidth, StrokeStyle
+from connection_types import HorizontalFace, LaneOrientation, OppositeFace
+from draw_types import StrokeWidth, StrokeStyle
 from geometry_types import Position
 from open_polygon import OpenPolygon
 
@@ -40,6 +41,25 @@ class BendingBinaryConnector(BinaryConnector):
             anchor_position=anchored_stem_p.anchor
         )
         self.Corners = self.compute_corners()
+
+        self.Tertiary_stem = None
+        if tertiary_stem:
+            # Find all line segments in the bending connector parallel to the tertiary node face
+            # Where the tertiary stem is attached
+            points = [self.T_stem.Vine_end] + self.Corners + [self.P_stem.Vine_end]
+            segs = set(zip(points, points[1:]))
+            horizontal_segs = {s for s in segs if s[0].y == s[1].y}
+            parallel_segs = horizontal_segs if tertiary_stem.face in HorizontalFace else segs - horizontal_segs
+            self.Tertiary_stem = TertiaryStem(
+                connector=self,
+                stem_type=tertiary_stem.stem_type,
+                semantic=tertiary_stem.semantic,
+                node=tertiary_stem.node,
+                face=tertiary_stem.face,
+                anchor_position=tertiary_stem.anchor,
+                parallel_segs=parallel_segs
+            )
+
         self.render()
 
     def compute_corners(self):

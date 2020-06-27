@@ -24,11 +24,10 @@ class NodeFace(Enum):
     """
     Values are multiplied by absolute distance to get an x or y coordinate.
     """
-    TOP = "north"
-    BOTTOM = "south"
-    RIGHT = "east"
-    LEFT = "west"
-
+    TOP = 0
+    BOTTOM = 1
+    RIGHT = 2
+    LEFT = 3
 
 HorizontalFace = {NodeFace.TOP, NodeFace.BOTTOM}
 

@@ -60,7 +60,7 @@ class StraightBinaryConnector(BinaryConnector):
                 node=tertiary_stem.node,
                 face=tertiary_stem.face,
                 anchor_position=tertiary_stem.anchor,
-                binary_connector_position=self.compute_axis()
+                parallel_segs={(self.Projecting_stem.Vine_end, self.Floating_stem.Vine_end)}
             )
 
         self.Projecting_stem.render()
@@ -69,6 +69,11 @@ class StraightBinaryConnector(BinaryConnector):
         self.render()
 
     def compute_axis(self):
+        """
+        Determines the x or y axis of the straight connector line where the Tertiary Stem attaches.
+        The Tertiary Stem will know whether or not the returned value is x or y based on its own orientation.
+        :return: x_or_y_axis
+        """
         if self.Projecting_stem.Node_face in HorizontalFace:
             return self.Projecting_stem.Root_end.x
         else:

@@ -3,7 +3,7 @@ tertiary_stem.py
 """
 
 from anchored_stem import AnchoredStem
-from connection_types import HorizontalFace
+from connection_types import HorizontalFace, NodeFace
 from geometry_types import Position
 from draw_types import Line, Stroke, StrokeWidth, StrokeStyle
 
@@ -12,17 +12,27 @@ class TertiaryStem(AnchoredStem):
     """
     An Anchored Stem that reaches from a Node face at its root end and attaches its vine end to a Binary Connector.
     """
-    def __init__(self, connector, stem_type, semantic, node, face, anchor_position, binary_connector_position):
+    def __init__(self, connector, stem_type, semantic, node, face, anchor_position, parallel_segs):
         AnchoredStem.__init__(
             self, connector, stem_type, semantic, node, face, anchor_position)
-        # Set vine end tangent to the horizontal or vertical Binary Connector position
-        if self.Node_face in HorizontalFace:
-            x = self.Root_end.x
-            y = binary_connector_position
+
+        if face in HorizontalFace:
+            if face == NodeFace.TOP:
+                isegs = {s for s in parallel_segs if s[0].y > self.Root_end.y}
+                yval = min({s[0].y for s in isegs})
+            elif face == NodeFace.BOTTOM:
+                isegs = {s for s in parallel_segs if s[0].y < self.Root_end.y}
+                yval = max({s[0].y for s in isegs})
+            self.Vine_end = Position(x=self.Root_end.x, y=yval)
         else:
-            x = binary_connector_position
-            y = self.Root_end.y
-        self.Vine_end = Position(x,y)
+            if face == NodeFace.RIGHT:
+                isegs = {s for s in parallel_segs if s[0].x > self.Root_end.x}
+                xval = min({s[0].x for s in isegs})
+            elif face == NodeFace.LEFT:
+                isegs = {s for s in parallel_segs if s[0].x < self.Root_end.x}
+                xval = max({s[0].x for s in isegs})
+            self.Vine_end = Position(x=xval, y=self.Root_end.y)
+
         self.render()
 
     def render(self):
