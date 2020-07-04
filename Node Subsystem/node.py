@@ -6,6 +6,7 @@ from node_type import node_types
 from compartment import Compartment
 import flatland_exceptions
 from layout_specification import default_cell_alignment
+from connection_types import NodeFace
 
 
 class Node:
@@ -41,8 +42,11 @@ class Node:
 
     @property
     def Canvas_position(self):
-        """Overridden: Position of lower left corner on canvas is computed differently by each subclass"""
-        return None
+        """
+        Must be overidden by each subclass.
+        :return: None, None
+        """
+        return Position(x=None, y=None)
 
     @property
     def Size(self):
@@ -56,6 +60,21 @@ class Node:
         node_height = sum([r.height for r in crects])
         # Return a rectangle with the
         return Rect_Size(height=node_height, width=max_width)
+
+    def Face_position(self, face : NodeFace ):
+        """
+        Returns the position of the specified face on the x or y axis
+        :param face : A node face
+        :return: position in x or y
+        """
+        if face == NodeFace.TOP:
+            return self.Canvas_position.y + self.Size.height
+        elif face == NodeFace.BOTTOM:
+            return self.Canvas_position.y
+        elif face == NodeFace.RIGHT:
+            return self.Canvas_position.x + self.Size.width
+        else:
+            return self.Canvas_position.x
 
     def render(self):
         """Calculate final position on the Canvas and register my rectangle in the Tablet"""
