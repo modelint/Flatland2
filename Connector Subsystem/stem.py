@@ -51,14 +51,14 @@ class Stem:
     """
 
     def __init__(self,
-                 connector, stem_type, semantic, node, node_face, root_position):
+                 connector, stem_type, semantic, node, node_face, root_position, vine_position):
         self.Connector = connector
         self.Stem_type = stem_type
         self.Node = node
         self.Node_face = node_face
         self.Semantic = semantic
         self.Root_end = root_position
-        self.Vine_end = self.Root_end  # Should be overridden by the subclasses
+        self.Vine_end = vine_position
 
     def render(self):
         """

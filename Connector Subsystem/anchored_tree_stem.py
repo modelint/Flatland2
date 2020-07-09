@@ -1,14 +1,16 @@
 """
-anchored_branch_stem.py
+anchored_tree_stem.py
 """
 
 from anchored_stem import AnchoredStem
 
 
-class AnchoredBranchStem(AnchoredStem):
+class AnchoredTreeStem(AnchoredStem):
     """
-    An Anchored Stem used in a Hierarchy Connector. For now we don't do much with this class, but it is on the
-    model and it may prove useful in the future.
+    Any Stem within a Tree Connector attached to a user specified anchor position is an Anchored Tree Stem.
     """
     def __init__(self, connector, stem_type, semantic, node, face, anchor_position):
         AnchoredStem.__init__(self, connector, stem_type, semantic, node, face, anchor_position)
+
+        # Nothing special going on here yet
+

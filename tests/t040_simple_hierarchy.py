@@ -7,7 +7,7 @@ from canvas import Canvas
 from single_cell_node import SingleCellNode
 from names import NodeTypeName, StemTypeName, ConnectorTypeName
 from notation import StemSemantic
-from hierachy_connector import HierarchyConnector
+from tree_connector import TreeConnector
 from connection_types import NodeFace
 
 from command_interface import *
@@ -56,22 +56,26 @@ def create_canvas(args):
 
     trunk_node = SingleCellNode(node_type_name=NodeTypeName.M_class, content=class_Trunk,
                                 grid=flatland_canvas.Diagram.Grid, row=3, column=2)
-    b1_node = SingleCellNode(node_type_name=NodeTypeName.M_class, content=class_B1,
+    l1_node = SingleCellNode(node_type_name=NodeTypeName.M_class, content=class_B1,
                              grid=flatland_canvas.Diagram.Grid, row=1, column=1)
-    b2_node = SingleCellNode(node_type_name=NodeTypeName.M_class, content=class_B2,
+    l2_node = SingleCellNode(node_type_name=NodeTypeName.M_class, content=class_B2,
                              grid=flatland_canvas.Diagram.Grid, row=1, column=3)
 
     trunk_stem = New_Stem(stem_type=StemTypeName.gen_superclass, semantic=StemSemantic.Super_class, node=trunk_node,
                           face=NodeFace.BOTTOM, anchor=0)
-    b1_stem = New_Stem(stem_type=StemTypeName.gen_subclass, semantic=StemSemantic.Sub_class, node=b1_node,
-                       face=NodeFace.TOP, anchor=0)
-    b2_stem = New_Stem(stem_type=StemTypeName.gen_subclass, semantic=StemSemantic.Sub_class, node=b2_node,
-                       face=NodeFace.TOP, anchor=0)
+    leaf1_stem = New_Stem(stem_type=StemTypeName.gen_subclass, semantic=StemSemantic.Sub_class, node=l1_node,
+                          face=NodeFace.TOP, anchor=0)
+    leaf2_stem = New_Stem(stem_type=StemTypeName.gen_subclass, semantic=StemSemantic.Sub_class, node=l2_node,
+                          face=NodeFace.TOP, anchor=0)
 
-    trunk_branch = New_Trunk_Branch(trunk_stem=trunk_stem, branch_stems={b1_stem, b2_stem}, graft=None, path=None)
+    trunk_branch = New_Trunk_Branch(
+        trunk_stem=trunk_stem,
+        leaf_stems={leaf1_stem, leaf2_stem},
+        graft=None, path=None, floating_leaf_stem=None
+    )
     branches = New_Branch_Set(trunk_branch=trunk_branch, offshoot_branches=None)
 
-    HierarchyConnector(diagram=flatland_canvas.Diagram, connector_type=ConnectorTypeName.gen, branches=branches)
+    TreeConnector(diagram=flatland_canvas.Diagram, connector_type=ConnectorTypeName.gen, branches=branches)
 
     flatland_canvas.render()
 

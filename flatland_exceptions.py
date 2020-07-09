@@ -41,3 +41,7 @@ class CellOutofBounds:
 
 class NoContentForCompartment(FlatlandException):
     pass
+
+
+class BranchCannotBeInterpolated(FlatlandException):
+    pass

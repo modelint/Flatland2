@@ -23,6 +23,7 @@ class HorizAlign(Enum):
 
 Rectangle = namedtuple('Rectangle', 'line_style lower_left, size')
 Position = namedtuple('Position', 'x y')
+Line_Segment = namedtuple('Line_Segment', 'from_position to_position')
 Rect_Size = namedtuple('Rect_Size', 'height width')
 Alignment = namedtuple('Alignment', 'vertical horizontal')
 Padding = namedtuple('Padding', 'top bottom left right')
