@@ -12,9 +12,13 @@ us_sheet_sizes = {
     'E': (34, 44)
 }
 
+default_us_sheet = 'tabloid'
+
 euro_sheet_A_sizes = {
     'A4': (210, 297),
     'A3': (297, 420),
     'A2': (420, 594),
     'A1': (594, 841)
 }
+
+default_euro_sheet = 'A3'

@@ -7,6 +7,11 @@ Data types to support Connectors and Stems
 from enum import Enum
 
 
+class Orientation(Enum):
+    Horizontal = 0
+    Vertical = 1
+
+
 class LaneOrientation(Enum):
     """
     Two possible Lane orientations
@@ -28,6 +33,7 @@ class NodeFace(Enum):
     BOTTOM = 1
     RIGHT = 2
     LEFT = 3
+
 
 HorizontalFace = {NodeFace.TOP, NodeFace.BOTTOM}
 
@@ -65,5 +71,3 @@ class Geometry(Enum):
     B = "binary"
     T = "ternary"
     H = "hierarchical"
-
-

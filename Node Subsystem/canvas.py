@@ -6,7 +6,7 @@ This is the Flatland (and not the cairo) Canvas class
 import sys
 from geometry_types import Padding, Alignment, Rect_Size, Position, Rectangle
 from draw_types import Stroke, StrokeStyle, StrokeWidth
-from sheet import us_sheet_sizes, euro_sheet_A_sizes
+from sheet import us_sheet_sizes, euro_sheet_A_sizes, default_us_sheet
 from diagram import Diagram
 from tablet import Tablet
 
@@ -47,7 +47,7 @@ class Canvas:
         if self.Size:
             factor = points_in_inch
         else:
-            self.Size = euro_sheet_A_sizes.get(standard_sheet_name, us_sheet_sizes[default_sheet])
+            self.Size = euro_sheet_A_sizes.get(standard_sheet_name, us_sheet_sizes[default_us_sheet])
             factor = points_in_cm
         self.Point_size = Rect_Size(height=int(self.Size[0] * factor), width=int(self.Size[1] * factor))
         self.Margin = default_canvas_margin

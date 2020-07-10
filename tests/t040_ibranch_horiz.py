@@ -1,5 +1,8 @@
 """
-t030_straight_binary_ternary.py
+t040_ibranch_horizontal.py
+
+Test:
+Draw a horizontal interpolated branch between a trunk node and two leaf nodes
 """
 from collections import namedtuple
 

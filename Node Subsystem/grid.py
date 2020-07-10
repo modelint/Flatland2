@@ -73,7 +73,8 @@ class Grid:
             low_boundary = self.Col_boundaries[lane - 1]
             lane_width = self.Col_boundaries[lane] - low_boundary
 
-        return margin_offset + low_boundary + step_edge_distance(num_of_steps=default_rut_positions, extent=lane_width, step=rut)
+        return margin_offset + low_boundary + step_edge_distance(
+            num_of_steps=default_rut_positions, extent=lane_width, step=rut)
 
     def render(self):
         """Draw self on tablet for diagnostic purposes"""
