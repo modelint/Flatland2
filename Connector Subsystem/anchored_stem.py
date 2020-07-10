@@ -52,11 +52,12 @@ class AnchoredStem(Stem):
     """
 
     def __init__(self, connector, stem_type, semantic, node, face, anchor_position):
-        self.Anchor_position = anchor_position  # We may need to refer back to this value in a future release
+
+        anchor = anchor_to_position(node, face, anchor_position)
+        #TODO: Vine position should be computed based on decorator, same as anchor for now
+        vine = anchor
 
         # Anchored position is used to compute the root end position
         Stem.__init__(self, connector, stem_type, semantic, node, face,
-                      root_position=anchor_to_position(node, face, anchor_position))
+                      anchor, vine)
 
-        # TODO: For now they are the same. This changes when we begin decorating the Stems
-        self.Vine_end = self.Root_end

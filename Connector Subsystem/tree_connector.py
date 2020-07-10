@@ -5,10 +5,8 @@ from connector import Connector
 from trunk_stem import TrunkStem
 from interpolated_branch import InterpolatedBranch
 from command_interface import New_Branch_Set
-from connection_types import HorizontalFace
 from anchored_leaf_stem import AnchoredLeafStem
 from floating_leaf_stem import FloatingLeafStem
-from geometry_types import Position
 from connector_type import ConnectorTypeName
 from diagram import Diagram
 
@@ -39,20 +37,20 @@ class TreeConnector(Connector):
 
         # Create Leaf Stems
         self.Leaf_stems = set()
-        for lstem in branches.trunk_branch.leaf_stems:
-            for s in lstem:
-                self.Leaf_stems.add(
-                    AnchoredLeafStem(
-                        connector=self,
-                        stem_type=s.stem_type,
-                        semantic=s.semantic,
-                        node=s.node,
-                        face=s.face,
-                        anchor_position=s.anchor
-                    )
+        for leaf_stem in branches.trunk_branch.leaf_stems:
+            self.Leaf_stems.add(
+                AnchoredLeafStem(
+                    connector=self,
+                    stem_type=leaf_stem.stem_type,
+                    semantic=leaf_stem.semantic,
+                    node=leaf_stem.node,
+                    face=leaf_stem.face,
+                    anchor_position=leaf_stem.anchor
                 )
+            )
 
         anchored_stems = {s for s in self.Leaf_stems}
+        anchored_stems.add(self.Trunk_stem)
 
         fleaf = branches.trunk_branch.floating_leaf_stem
         if fleaf:
@@ -79,7 +77,8 @@ class TreeConnector(Connector):
             # TODO: Handle this case
         else:
             # Create an Interpolated Branch between all non-graft, non-floating anchored tree stems
-            self.Branches.append(InterpolatedBranch(connector=self, hanging_stems=anchored_stems))
+            ibranch = InterpolatedBranch(order=0, connector=self, hanging_stems=anchored_stems)
+            self.Branches.append(ibranch)
 
         # Draw self
         self.render()
