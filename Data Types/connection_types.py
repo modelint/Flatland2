@@ -5,19 +5,14 @@ Data types to support Connectors and Stems
 """
 
 from enum import Enum
+from collections import namedtuple
+
+Path = namedtuple('Path', 'lane rut')
 
 
 class Orientation(Enum):
     Horizontal = 0
     Vertical = 1
-
-
-class LaneOrientation(Enum):
-    """
-    Two possible Lane orientations
-    """
-    ROW = 0
-    COLUMN = 1
 
 
 class StemEnd(Enum):

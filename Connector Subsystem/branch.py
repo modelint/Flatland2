@@ -19,7 +19,19 @@ class Branch:
 
     @property
     def Line_segment(self):
-        return Line_Segment(Position(0, 0), Position(0, 0))
+        branches = self.Connector.Branches
+        prev_axis = None if self.Order == 0 else branches[self.Order-1].Axis
+        next_axis = None if self.Order == len(branches)-1 else branches[self.Order+1].Axis
+        if self.Axis_orientation == Orientation.Horizontal:
+            y = self.Axis
+            x1 = prev_axis if prev_axis else min({s.Vine_end.x for s in self.Hanging_stems})
+            x2 = next_axis if next_axis else max({s.Vine_end.x for s in self.Hanging_stems})
+            return Line_Segment( from_position=Position(x=x1, y=y), to_position=Position(x=x2, y=y) )
+        else:
+            x = self.Axis
+            y1 = prev_axis if prev_axis else min({s.Vine_end.y for s in self.Hanging_stems})
+            y2 = next_axis if next_axis else max({s.Vine_end.y for s in self.Hanging_stems})
+        return Line_Segment( from_position=Position(x=x, y=y1), to_position=Position(x=x, y=y2) )
 
     def render(self):
         print(self.Line_segment)

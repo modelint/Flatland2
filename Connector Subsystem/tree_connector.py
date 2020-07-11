@@ -4,6 +4,7 @@ tree_connector.py
 from connector import Connector
 from trunk_stem import TrunkStem
 from interpolated_branch import InterpolatedBranch
+from rut_branch import RutBranch
 from command_interface import New_Branch_Set
 from anchored_leaf_stem import AnchoredLeafStem
 from floating_leaf_stem import FloatingLeafStem
@@ -66,11 +67,13 @@ class TreeConnector(Connector):
 
         self.Branches = []
 
+        # TODO: For now assuming only one branch in the sequence and specifying order 0 for that branch
+
         # Create trunk branch
         if branches.trunk_branch.path:
-            pass
-        # Create a Rut Branch
-        # TODO: Handle this case
+            # Create a Rut Branch
+            rbranch = RutBranch(order=0, connector=self, path=branches.trunk_branch.path, hanging_stems=anchored_stems)
+            self.Branches.append(rbranch)
         elif branches.trunk_branch.graft:
             pass
             # Create a Grafted Branch

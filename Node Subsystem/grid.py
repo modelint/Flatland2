@@ -10,7 +10,7 @@ from layout_specification import default_cell_alignment, default_cell_padding, d
 from layout_specification import default_new_path_col_width, default_new_path_row_height
 from spanning_node import SpanningNode
 from single_cell_node import SingleCellNode
-from connection_types import LaneOrientation
+from connection_types import Orientation
 from itertools import product
 
 
@@ -55,7 +55,7 @@ class Grid:
         self.Cell_alignment = default_cell_alignment
         self.Diagram = diagram
 
-    def get_rut(self, lane, rut, orientation):
+    def get_rut(self, lane: int, rut: int, orientation: Orientation):
         """
         Compute a y coordinate above row boundary if lane_orientation is row
         or an x coordinate right of column boundary if lane_orientation is column
@@ -63,7 +63,7 @@ class Grid:
         :param: orientation
         :return: rut_position
         """
-        if orientation == LaneOrientation.ROW:
+        if orientation == Orientation.Horizontal:
             # TODO: Consider expressing row/column boundaries in Canvas coordinates so this offset is not needed
             margin_offset = self.Diagram.Canvas.Margin.bottom # row and column boundaries are relative to margin
             low_boundary = self.Row_boundaries[lane - 1]
@@ -200,7 +200,7 @@ class Grid:
             self.Cells[r - 1][c - 1] = node
         self.Nodes.append(node)
 
-    def add_lane(self, lane, orientation: LaneOrientation):
+    def add_lane(self, lane, orientation: Orientation):
         """
         If necessary, expand grid to include Lane at the designated row or column number
         The model defines a Lane as "either a Row or Column"
@@ -209,7 +209,7 @@ class Grid:
         """
         # Add enough columns or rows for the desired Lane
         # TODO: Refactor grid to at least include addrows addcols methods
-        if orientation == LaneOrientation.ROW:
+        if orientation == Orientation.Horizontal:
             rows_to_add = max(0, lane - len(self.Row_boundaries[1:]))
             for r in range(rows_to_add):
                 self.add_row(default_new_path_row_height)

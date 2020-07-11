@@ -12,6 +12,16 @@ from geometry_types import Position, Line_Segment
 
 class InterpolatedBranch(Branch):
     def __init__(self, order: int, connector, hanging_stems: Set[AnchoredTreeStem]):
+        """
+        If the user does not specify any positional information for a Branch, its position
+        is interpolated at the midpoint between the opposing Node faces of the hanging
+        stems. If the opposing node faces are top/bottom, the axis will be horizontal,
+        otherwise vertical.
+
+        :param order: Ordinal value used as index into the Tree Connector branch sequence
+        :param connector: The Tree Connector
+        :param hanging_stems: A set of Anchored Tree Stems hanging on the Rut Branch
+        """
         # The axis of this branch is either an x or y canvas coordinate value
         # An Interpolated Branch is always drawn between sets of opposing stems
         # The stems either rise and descend vertically to meet on a horizontal axis
@@ -19,6 +29,8 @@ class InterpolatedBranch(Branch):
 
         # If an interpolated branch was specified by the user but there are no opposing stems/faces
         # there is a user error
+
+        # Compute the branch axis and orientation so we can init the superclass
 
         # All node faces for downward or leftward stems will have the highest y or x values
         # The opposing faces will then have the lowest y or x values
@@ -37,19 +49,19 @@ class InterpolatedBranch(Branch):
         axis = highest_low_face + (lowest_high_face - highest_low_face) / 2
         Branch.__init__(self, order, axis, connector, hanging_stems, axis_orientation)
 
-    @property
-    def Line_segment(self):
-        branches = self.Connector.Branches
-        prev_axis = None if self.Order == 0 else branches[self.Order-1].Axis
-        next_axis = None if self.Order == len(branches)-1 else branches[self.Order+1].Axis
-        if self.Axis_orientation == Orientation.Horizontal:
-            y = self.Axis
-            x1 = prev_axis if prev_axis else min({s.Vine_end.x for s in self.Hanging_stems})
-            x2 = next_axis if next_axis else max({s.Vine_end.x for s in self.Hanging_stems})
-            return Line_Segment( from_position=Position(x=x1, y=y), to_position=Position(x=x2, y=y) )
-        else:
-            x = self.Axis
-            y1 = prev_axis if prev_axis else min({s.Vine_end.y for s in self.Hanging_stems})
-            y2 = next_axis if next_axis else max({s.Vine_end.y for s in self.Hanging_stems})
-            return Line_Segment( from_position=Position(x=x, y=y1), to_position=Position(x=x, y=y2) )
+    # @property
+    # def Line_segment(self):
+    #     branches = self.Connector.Branches
+    #     prev_axis = None if self.Order == 0 else branches[self.Order-1].Axis
+    #     next_axis = None if self.Order == len(branches)-1 else branches[self.Order+1].Axis
+    #     if self.Axis_orientation == Orientation.Horizontal:
+    #         y = self.Axis
+    #         x1 = prev_axis if prev_axis else min({s.Vine_end.x for s in self.Hanging_stems})
+    #         x2 = next_axis if next_axis else max({s.Vine_end.x for s in self.Hanging_stems})
+    #         return Line_Segment( from_position=Position(x=x1, y=y), to_position=Position(x=x2, y=y) )
+    #     else:
+    #         x = self.Axis
+    #         y1 = prev_axis if prev_axis else min({s.Vine_end.y for s in self.Hanging_stems})
+    #         y2 = next_axis if next_axis else max({s.Vine_end.y for s in self.Hanging_stems})
+    #         return Line_Segment( from_position=Position(x=x, y=y1), to_position=Position(x=x, y=y2) )
 
