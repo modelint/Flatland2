@@ -3,14 +3,17 @@ rut_branch.py
 """
 
 from branch import Branch
-from connection_types import Path, NodeFace, HorizontalFace, Orientation
-from typing import Set
+from connection_types import Path, HorizontalFace, Orientation
+from typing import Set, TYPE_CHECKING
 from anchored_tree_stem import AnchoredTreeStem
-from geometry_types import Position, Line_Segment
+from general_types import Index
+
+if TYPE_CHECKING:
+    from tree_connector import TreeConnector
 
 
 class RutBranch(Branch):
-    def __init__(self, order: int, connector, path: Path, hanging_stems: Set[AnchoredTreeStem]):
+    def __init__(self, order: Index, connector: 'TreeConnector', path: Path, hanging_stems: Set[AnchoredTreeStem]):
         """
         The user may specify placment of a Branch along a Branch Path which defines a Lane
         (Row or Column, depending on orientation) in a rut position (center, off-center +1, etc).
@@ -26,4 +29,3 @@ class RutBranch(Branch):
             if list(hanging_stems)[0].Node_face in HorizontalFace else Orientation.Vertical
         axis_position = connector.Diagram.Grid.get_rut(path.lane, path.rut, axis_orientation)
         Branch.__init__(self, order, axis_position, connector, hanging_stems, axis_orientation)
-

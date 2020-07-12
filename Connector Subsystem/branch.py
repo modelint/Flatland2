@@ -1,15 +1,18 @@
 """
 branch.py
 """
-from typing import Set
+from typing import Set, TYPE_CHECKING
 from anchored_tree_stem import AnchoredTreeStem
-from geometry_types import Line_Segment, Position
+from geometry_types import Line_Segment, Position, Coordinate
 from draw_types import Line, Stroke, StrokeWidth, StrokeStyle
 from connection_types import Orientation
+from general_types import Index
 
+if TYPE_CHECKING:
+    from tree_connector import TreeConnector
 
 class Branch:
-    def __init__(self, order: int, axis: float, connector, hanging_stems: Set[AnchoredTreeStem],
+    def __init__(self, order: Index, axis: Coordinate, connector: 'TreeConnector', hanging_stems: Set[AnchoredTreeStem],
                  axis_orientation: Orientation):
         self.Order = order
         self.Connector = connector

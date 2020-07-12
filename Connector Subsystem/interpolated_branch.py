@@ -3,20 +3,28 @@ interpolated_branch.py
 """
 
 from branch import Branch
-from connection_types import NodeFace, HorizontalFace, Orientation
-from typing import Set
+from connection_types import NodeFace, Orientation
+from typing import Set, TYPE_CHECKING
 from flatland_exceptions import BranchCannotBeInterpolated
 from anchored_tree_stem import AnchoredTreeStem
-from geometry_types import Position, Line_Segment
+from general_types import Index
+
+if TYPE_CHECKING:
+    from tree_connector import TreeConnector
 
 
 class InterpolatedBranch(Branch):
-    def __init__(self, order: int, connector, hanging_stems: Set[AnchoredTreeStem]):
+    def __init__(self, order: Index, connector: 'TreeConnector', hanging_stems: Set[AnchoredTreeStem]):
         """
         If the user does not specify any positional information for a Branch, its position
         is interpolated at the midpoint between the opposing Node faces of the hanging
         stems. If the opposing node faces are top/bottom, the axis will be horizontal,
         otherwise vertical.
+
+        If there are no opposing faces (all faces on the same side), the branch will be drawn
+        as close as possible to the face furthest in the attached node face direction.
+        Furthest right(right face), furthest left(left face), furthest down(bottom face),
+        furthest up(top face).
 
         :param order: Ordinal value used as index into the Tree Connector branch sequence
         :param connector: The Tree Connector
@@ -37,6 +45,8 @@ class InterpolatedBranch(Branch):
         # We then take the middle point between the lowest high value and the highest of the low values
         # By adding this to the highest low value we get the canvas coordinate of the branch axis
 
+        # TODO: Handle no opposition (faces all on same side interpolation case)
+
         downward_stems = {s for s in hanging_stems if s.Node_face == NodeFace.BOTTOM}
         axis_orientation = Orientation.Horizontal if downward_stems else Orientation.Vertical
         high_stems = downward_stems if downward_stems else {s for s in hanging_stems if s.Node_face == NodeFace.LEFT}
@@ -48,20 +58,3 @@ class InterpolatedBranch(Branch):
         assert highest_low_face < lowest_high_face
         axis = highest_low_face + (lowest_high_face - highest_low_face) / 2
         Branch.__init__(self, order, axis, connector, hanging_stems, axis_orientation)
-
-    # @property
-    # def Line_segment(self):
-    #     branches = self.Connector.Branches
-    #     prev_axis = None if self.Order == 0 else branches[self.Order-1].Axis
-    #     next_axis = None if self.Order == len(branches)-1 else branches[self.Order+1].Axis
-    #     if self.Axis_orientation == Orientation.Horizontal:
-    #         y = self.Axis
-    #         x1 = prev_axis if prev_axis else min({s.Vine_end.x for s in self.Hanging_stems})
-    #         x2 = next_axis if next_axis else max({s.Vine_end.x for s in self.Hanging_stems})
-    #         return Line_Segment( from_position=Position(x=x1, y=y), to_position=Position(x=x2, y=y) )
-    #     else:
-    #         x = self.Axis
-    #         y1 = prev_axis if prev_axis else min({s.Vine_end.y for s in self.Hanging_stems})
-    #         y2 = next_axis if next_axis else max({s.Vine_end.y for s in self.Hanging_stems})
-    #         return Line_Segment( from_position=Position(x=x, y=y1), to_position=Position(x=x, y=y2) )
-

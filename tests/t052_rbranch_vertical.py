@@ -1,17 +1,13 @@
 """
-t41_ibranch_vertical.py
-
-Test:
-Draw a vertical interpolated branch between a trunk node and two leaf nodes
+t052_rbranch_vertical.py - Draw two rut branches bending at a corner
 """
-from collections import namedtuple
 
 from canvas import Canvas
 from single_cell_node import SingleCellNode
 from names import NodeTypeName, StemTypeName, ConnectorTypeName
 from notation import StemSemantic
 from tree_connector import TreeConnector
-from connection_types import NodeFace
+from connection_types import NodeFace, Path
 
 from command_interface import *
 
@@ -57,26 +53,50 @@ def create_canvas(args):
         ]
     ]
 
+    class_B3 = [
+        ['Hybrid Wing'], [
+            'Aircraft {I, R1}',
+            'Pilot  {I2, R1}',
+            'Flight time : Duration'
+        ]
+    ]
+
+    class_B4 = [
+        ['Saucer Wing'], [
+            'Aircraft {I, R1}',
+            'Pilot  {I2, R1}',
+            'Flight time : Duration'
+        ]
+    ]
     trunk_node = SingleCellNode(node_type_name=NodeTypeName.M_class, content=class_Trunk,
-                                grid=flatland_canvas.Diagram.Grid, row=2, column=1)
+                                grid=flatland_canvas.Diagram.Grid, row=2, column=2)
     l1_node = SingleCellNode(node_type_name=NodeTypeName.M_class, content=class_B1,
-                             grid=flatland_canvas.Diagram.Grid, row=1, column=3)
+                             grid=flatland_canvas.Diagram.Grid, row=1, column=1)
     l2_node = SingleCellNode(node_type_name=NodeTypeName.M_class, content=class_B2,
-                             grid=flatland_canvas.Diagram.Grid, row=3, column=3)
+                             grid=flatland_canvas.Diagram.Grid, row=1, column=3)
+    l3_node = SingleCellNode(node_type_name=NodeTypeName.M_class, content=class_B3,
+                             grid=flatland_canvas.Diagram.Grid, row=3, column=5)
 
     trunk_stem = New_Stem(stem_type=StemTypeName.gen_superclass, semantic=StemSemantic.Super_class, node=trunk_node,
-                          face=NodeFace.RIGHT, anchor=2)
+                          face=NodeFace.BOTTOM, anchor=0)
     leaf1_stem = New_Stem(stem_type=StemTypeName.gen_subclass, semantic=StemSemantic.Sub_class, node=l1_node,
-                          face=NodeFace.LEFT, anchor=0)
+                          face=NodeFace.TOP, anchor=0)
     leaf2_stem = New_Stem(stem_type=StemTypeName.gen_subclass, semantic=StemSemantic.Sub_class, node=l2_node,
-                          face=NodeFace.LEFT, anchor=-1)
+                          face=NodeFace.TOP, anchor=0)
+    leaf3_stem = New_Stem(stem_type=StemTypeName.gen_subclass, semantic=StemSemantic.Sub_class, node=l3_node,
+                          face=NodeFace.LEFT, anchor=0)
 
     trunk_branch = New_Trunk_Branch(
         trunk_stem=trunk_stem,
         leaf_stems={leaf1_stem, leaf2_stem},
         graft=None, path=None, floating_leaf_stem=None
     )
-    branches = New_Branch_Set(trunk_branch=trunk_branch, offshoot_branches=None)
+
+    off1_branch = New_Offshoot_Branch(
+        leaf_stems={leaf3_stem},
+        graft=None, path=Path(lane=4, rut=0), floating_leaf_stem=None
+    )
+    branches = New_Branch_Set(trunk_branch=trunk_branch, offshoot_branches=[off1_branch])
 
     TreeConnector(diagram=flatland_canvas.Diagram, connector_type=ConnectorTypeName.gen, branches=branches)
 

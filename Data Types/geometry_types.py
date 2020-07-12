@@ -4,8 +4,11 @@ geometry_types.py
 Data types for 2D geometry and alignment
 """
 
+from typing import NewType
 from collections import namedtuple
 from enum import Enum
+
+Coordinate = NewType('Coordinate', float )
 
 
 class VertAlign(Enum):

@@ -13,6 +13,7 @@ from single_cell_node import SingleCellNode
 from connection_types import Orientation
 from itertools import product
 
+show_grid = False
 
 class Grid:
     """
@@ -81,27 +82,28 @@ class Grid:
 
         tablet = self.Diagram.Canvas.Tablet
 
-        # Draw rows
-        left_extent = self.Diagram.Origin.x
-        right_extent = self.Diagram.Origin.x + self.Diagram.Size.width
-        for h in self.Row_boundaries:
-            tablet.Lines.append(Line(
-                line_style=Stroke(width=StrokeWidth.THIN, pattern=StrokeStyle.SOLID),
-                from_here=Position(left_extent, h + self.Diagram.Origin.y),
-                to_there=Position(right_extent, h + self.Diagram.Origin.y)
-            )
-            )
+        if show_grid:
+            # Draw rows
+            left_extent = self.Diagram.Origin.x
+            right_extent = self.Diagram.Origin.x + self.Diagram.Size.width
+            for h in self.Row_boundaries:
+                tablet.Lines.append(Line(
+                    line_style=Stroke(width=StrokeWidth.THIN, pattern=StrokeStyle.SOLID),
+                    from_here=Position(left_extent, h + self.Diagram.Origin.y),
+                    to_there=Position(right_extent, h + self.Diagram.Origin.y)
+                )
+                )
 
-        # Draw columns
-        bottom_extent = self.Diagram.Origin.y
-        top_extent = bottom_extent + self.Diagram.Size.height
-        for w in self.Col_boundaries:
-            tablet.Lines.append(Line(
-                line_style=Stroke(width=StrokeWidth.THIN, pattern=StrokeStyle.SOLID),
-                from_here=Position(w + self.Diagram.Origin.x, bottom_extent),
-                to_there=Position(w + self.Diagram.Origin.x, top_extent)
-            )
-            )
+            # Draw columns
+            bottom_extent = self.Diagram.Origin.y
+            top_extent = bottom_extent + self.Diagram.Size.height
+            for w in self.Col_boundaries:
+                tablet.Lines.append(Line(
+                    line_style=Stroke(width=StrokeWidth.THIN, pattern=StrokeStyle.SOLID),
+                    from_here=Position(w + self.Diagram.Origin.x, bottom_extent),
+                    to_there=Position(w + self.Diagram.Origin.x, top_extent)
+                )
+                )
 
         # Draw nodes
         [n.render() for n in self.Nodes]
