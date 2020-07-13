@@ -79,6 +79,7 @@ class Node:
     def render(self):
         """Calculate final position on the Canvas and register my rectangle in the Tablet"""
 
+        print("Drawing node")
         # Start at the bottom of the node and render each compartment upward
         comp_y = self.Canvas_position.y
         for c in self.Compartments[::-1]: # Reverse the compartment order to bottom up

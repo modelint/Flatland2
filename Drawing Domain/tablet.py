@@ -1,10 +1,12 @@
 """
 tablet.py – Flatland draws to this and then the tablet can be drawn using cairo or some other draw framework
 """
-from draw_types import Line, Text_Line, Text_Style, FontWeight, FontSlant, Stroke, StrokeWidth, StrokeStyle
+from draw_types import Line, Text_Line, Text_Style, FontWeight, FontSlant, Color, StrokeStyle
 from geometry_types import Rectangle, Rect_Size, Position
 from typing import List
 import cairo
+
+horrible_red = (1.0, 0.0, 0.0)  # Horrible red to show were we forgot to set color
 
 
 class Tablet:
@@ -42,6 +44,7 @@ class Tablet:
     Font_weight_map : Translates Flatland font weight enums to Cairo enums
     Font_slant_map : Translates Flatland font slant enums to Cairo enums
     """
+
     def __init__(self, size, output_file):
         self.Size = size
         self.Lines: List[Line] = []
@@ -52,12 +55,18 @@ class Tablet:
         self.Context = cairo.Context(self.PDF_sheet)
         self.Font_weight_map = {FontWeight.NORMAL: cairo.FontWeight.NORMAL, FontWeight.BOLD: cairo.FontWeight.BOLD}
         self.Font_slant_map = {FontSlant.NORMAL: cairo.FontSlant.NORMAL, FontSlant.ITALIC: cairo.FontSlant.ITALIC}
+        self.color_map = {
+            Color.BLACK: (0.0, 0.0, 0.0),
+            Color.GRID_BLUE: (0.2, 0.73, 0.92),
+            Color.CONN_PURPLE: (0.49, 0.20, 0.92),
+            Color.MARGIN_GOLD: (0.86, 0.83, 0.12)
+        }
 
     def render(self):
         """Renders the tablet using Cairo for now"""
 
         # For now, always assume output to cairo
-        self.Context.set_source_rgb(0, 0, 0)
+        self.Context.set_source_rgb(*horrible_red)  # Should never appear unless app forgets to set color
         self.Context.set_line_join(cairo.LINE_JOIN_ROUND)
         for l in self.Lines:
             # TODO: Use a dictionary to look this up
@@ -65,11 +74,13 @@ class Tablet:
                 self.Context.set_dash([9, 9])
             else:
                 self.Context.set_dash([])
+            self.Context.set_source_rgb(*self.color_map[l.line_style.color])
             self.Context.set_line_width(l.line_style.width.value)
             self.Context.move_to(*self.to_dc(l.from_here))
             self.Context.line_to(*self.to_dc(l.to_there))
             self.Context.stroke()
         for r in self.Rectangles:
+            self.Context.set_source_rgb(*self.color_map[r.line_style.color])
             self.Context.set_line_width(r.line_style.width.value)
             # Invert y coordinate and use top left rather than bottom left origin
             self.Context.rectangle(r.lower_left.x, self.Size.height - r.lower_left.y - r.size.height,

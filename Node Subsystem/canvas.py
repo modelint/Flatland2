@@ -5,7 +5,7 @@ This is the Flatland (and not the cairo) Canvas class
 """
 import sys
 from geometry_types import Padding, Alignment, Rect_Size, Position, Rectangle
-from draw_types import Stroke, StrokeStyle, StrokeWidth
+from draw_types import Stroke, StrokeStyle, StrokeWidth, Color
 from sheet import us_sheet_sizes, euro_sheet_A_sizes, default_us_sheet
 from diagram import Diagram
 from tablet import Tablet
@@ -65,7 +65,7 @@ class Canvas:
             draw_area_width = self.Point_size.width - self.Margin.left - self.Margin.right
             draw_area_size = Rect_Size(height=draw_area_height, width=draw_area_width)
             self.Tablet.Rectangles.append(
-                Rectangle(line_style=Stroke(width=StrokeWidth.THIN, pattern=StrokeStyle.SOLID),
+                Rectangle(line_style=Stroke(width=StrokeWidth.THIN, color=Color.MARGIN_GOLD, pattern=StrokeStyle.SOLID),
                           lower_left=drawable_origin, size=draw_area_size)
             )
         # Now draw the diagram content

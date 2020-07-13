@@ -6,7 +6,7 @@ Modeled class: Symbol
 Here you define all text and graphical symbols drawn on the ends
 of Connectors (Stems) in each supported notation.
 """
-from draw_types import Stroke, StrokeStyle, StrokeWidth
+from draw_types import Stroke, StrokeStyle, StrokeWidth, Color
 from collections import namedtuple
 from enum import Enum
 
@@ -55,22 +55,22 @@ Circle_Shape = namedtuple('Circle_Shape', 'radius solid stroke')
 
 simple_shape_symbols = {
     Symbol.Solid_arrow: Arrowhead_Shape(
-        base=7, height=9, stroke=Stroke(width=StrokeWidth.NORMAL, pattern=StrokeStyle.SOLID), fill=ArrowFill.Solid
+        base=7, height=9, stroke=Stroke(width=StrokeWidth.NORMAL, color=Color.CONN_PURPLE, pattern=StrokeStyle.SOLID), fill=ArrowFill.Solid
     ),
     Symbol.Hollow_arrow: Arrowhead_Shape(
-        base=7, height=9, stroke=Stroke(width=StrokeWidth.NORMAL, pattern=StrokeStyle.SOLID), fill=ArrowFill.Hollow
+        base=7, height=9, stroke=Stroke(width=StrokeWidth.NORMAL, color=Color.CONN_PURPLE, pattern=StrokeStyle.SOLID), fill=ArrowFill.Hollow
     ),
     Symbol.Open_arrow: Arrowhead_Shape(
-        base=7, height=9, stroke=Stroke(width=StrokeWidth.NORMAL, pattern=StrokeStyle.SOLID), fill=ArrowFill.Open
+        base=7, height=9, stroke=Stroke(width=StrokeWidth.NORMAL, color=Color.CONN_PURPLE, pattern=StrokeStyle.SOLID), fill=ArrowFill.Open
     ),
     Symbol.Gen_arrow: Arrowhead_Shape(
-        base=15, height=12, stroke=Stroke(width=StrokeWidth.NORMAL, pattern=StrokeStyle.SOLID), fill=ArrowFill.Hollow
+        base=15, height=12, stroke=Stroke(width=StrokeWidth.NORMAL, color=Color.CONN_PURPLE, pattern=StrokeStyle.SOLID), fill=ArrowFill.Hollow
     ),
     Symbol.Solid_UML_dot: Circle_Shape(
-        radius=8.5, solid=True, stroke=Stroke(width=StrokeWidth.NORMAL, pattern=StrokeStyle.SOLID)
+        radius=8.5, solid=True, stroke=Stroke(width=StrokeWidth.NORMAL, color=Color.CONN_PURPLE, pattern=StrokeStyle.SOLID)
     ),
     Symbol.Open_UML_circle: Circle_Shape(
-        radius=14.5, solid=False, stroke=Stroke(width=StrokeWidth.NORMAL, pattern=StrokeStyle.SOLID)
+        radius=14.5, solid=False, stroke=Stroke(width=StrokeWidth.NORMAL, color=Color.CONN_PURPLE, pattern=StrokeStyle.SOLID)
     )
 }
 

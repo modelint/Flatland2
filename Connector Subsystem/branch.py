@@ -4,7 +4,7 @@ branch.py
 from typing import Set, TYPE_CHECKING
 from anchored_tree_stem import AnchoredTreeStem
 from geometry_types import Line_Segment, Position, Coordinate
-from draw_types import Line, Stroke, StrokeWidth, StrokeStyle
+from draw_types import Line, Stroke, StrokeWidth, StrokeStyle, Color
 from connection_types import Orientation
 from general_types import Index
 
@@ -40,8 +40,9 @@ class Branch:
         print(self.Line_segment)
         tablet = self.Connector.Diagram.Canvas.Tablet
         # Draw the axis
+        print("Drawing branch axis")
         tablet.Lines.append(Line(
-            line_style=Stroke(StrokeWidth.THIN, pattern=StrokeStyle.SOLID),
+            line_style=Stroke(width=StrokeWidth.THIN, color=Color.CONN_PURPLE, pattern=StrokeStyle.SOLID),
             from_here=self.Line_segment.from_position, to_there=self.Line_segment.to_position)
         )
         # Draw the stems
@@ -53,7 +54,8 @@ class Branch:
                 x = self.Axis
                 y = s.Vine_end.y
 
+            print("Drawing branch stem")
             tablet.Lines.append(Line(
-                line_style=Stroke(StrokeWidth.THIN, pattern=StrokeStyle.SOLID),
+                line_style=Stroke(width=StrokeWidth.THIN, color=Color.CONN_PURPLE, pattern=StrokeStyle.SOLID),
                 from_here=s.Vine_end, to_there=Position(x, y))
             )

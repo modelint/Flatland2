@@ -14,7 +14,7 @@ node_types : dict
 
 from names import NodeTypeName
 from collections import namedtuple, OrderedDict
-from draw_types import Stroke, Text_Style, StrokeWidth, StrokeStyle, TypeFace, FontWeight, FontSlant
+from draw_types import Stroke, Text_Style, StrokeWidth, StrokeStyle, TypeFace, FontWeight, FontSlant, Color
 from geometry_types import Alignment, VertAlign, HorizAlign, Padding, Rect_Size
 
 Node_Type_Attrs = namedtuple('Node_Type_Attrs',
@@ -49,7 +49,7 @@ node_types = {
                                                                         weight=FontWeight.NORMAL))
 
                                           }),
-                                          line_style=Stroke(width=StrokeWidth.NORMAL, pattern=StrokeStyle.SOLID),
+                                          line_style=Stroke(color=Color.BLACK, width=StrokeWidth.NORMAL, pattern=StrokeStyle.SOLID),
                                           default_size=Rect_Size(height=80, width=110),
                                           max_size=Rect_Size(height=180, width=144)),
     NodeTypeName.I_class: Node_Type_Attrs(corner_rounding=0,
@@ -72,7 +72,7 @@ node_types = {
                                                       weight=FontWeight.NORMAL))
 
                                           }),
-                                          line_style=Stroke(width=StrokeWidth.NORMAL, pattern=StrokeStyle.DASHED),
+                                          line_style=Stroke(color=Color.BLACK, width=StrokeWidth.NORMAL, pattern=StrokeStyle.DASHED),
                                           default_size=Rect_Size(height=80, width=110),
                                           max_size=Rect_Size(height=180, width=144)),
     NodeTypeName.State: Node_Type_Attrs(corner_rounding=4,
@@ -94,7 +94,7 @@ node_types = {
                                                     size=9, slant=FontSlant.NORMAL,
                                                     weight=FontWeight.NORMAL))
                                         }),
-                                        line_style=Stroke(width=StrokeWidth.NORMAL, pattern=StrokeStyle.SOLID),
+                                        line_style=Stroke(color=Color.BLACK, width=StrokeWidth.NORMAL, pattern=StrokeStyle.SOLID),
                                         default_size=Rect_Size(height=50, width=110),
                                         max_size=Rect_Size(height=108, width=300)),
     NodeTypeName.O_class: Node_Type_Attrs(corner_rounding=0,
@@ -108,7 +108,7 @@ node_types = {
                                                       size=11, slant=FontSlant.NORMAL,
                                                       weight=FontWeight.NORMAL))
                                           }),
-                                          line_style=Stroke(width=StrokeWidth.NORMAL, pattern=StrokeStyle.SOLID),
+                                          line_style=Stroke(color=Color.BLACK, width=StrokeWidth.NORMAL, pattern=StrokeStyle.SOLID),
                                           default_size=Rect_Size(height=25, width=100),
                                           max_size=Rect_Size(height=60, width=300)),
     NodeTypeName.Domain: Node_Type_Attrs(corner_rounding=0,
@@ -122,7 +122,7 @@ node_types = {
                                                      size=11, slant=FontSlant.NORMAL,
                                                      weight=FontWeight.NORMAL))
                                          }),
-                                         line_style=Stroke(width=StrokeWidth.NORMAL, pattern=StrokeStyle.SOLID),
+                                         line_style=Stroke(color=Color.BLACK, width=StrokeWidth.NORMAL, pattern=StrokeStyle.SOLID),
                                          default_size=Rect_Size(height=60, width=100),
                                          max_size=Rect_Size(height=110, width=300)),
     NodeTypeName.EE: Node_Type_Attrs(corner_rounding=0,
@@ -138,7 +138,7 @@ node_types = {
                                                  size=11, slant=FontSlant.NORMAL,
                                                  weight=FontWeight.NORMAL))
                                      }),
-                                     line_style=Stroke(width=StrokeWidth.NORMAL, pattern=StrokeStyle.SOLID),
+                                     line_style=Stroke(color=Color.BLACK, width=StrokeWidth.NORMAL, pattern=StrokeStyle.SOLID),
                                      default_size=Rect_Size(height=25, width=100),
                                      max_size=Rect_Size(height=60, width=300))
 }

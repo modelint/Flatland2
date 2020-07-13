@@ -7,6 +7,11 @@ Attributes
 ---
 
 """
+from typing import TYPE_CHECKING
+from connector_type import ConnectorTypeName
+
+if TYPE_CHECKING:
+    from diagram import Diagram
 
 
 class Connector:
@@ -23,7 +28,10 @@ class Connector:
     Connector_type : Specifies characteristics of this Connector
     """
 
-    def __init__(self, diagram, connector_type):
+    def __init__(self, diagram: 'Diagram', connector_type: ConnectorTypeName):
         self.Diagram = diagram
         self.Connector_type = connector_type
+        self.Diagram.Grid.Connectors.append(self)
 
+    def render(self):
+        pass  # overriden

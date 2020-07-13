@@ -5,7 +5,7 @@ grid.py
 import flatland_exceptions
 from linear_geometry import expand_boundaries, span, step_edge_distance
 from geometry_types import Position
-from draw_types import Line, Stroke, StrokeStyle, StrokeWidth
+from draw_types import Line, Stroke, StrokeStyle, StrokeWidth, Color
 from layout_specification import default_cell_alignment, default_cell_padding, default_rut_positions
 from layout_specification import default_new_path_col_width, default_new_path_row_height
 from spanning_node import SpanningNode
@@ -13,7 +13,8 @@ from single_cell_node import SingleCellNode
 from connection_types import Orientation
 from itertools import product
 
-show_grid = False
+show_grid = True
+
 
 class Grid:
     """
@@ -50,6 +51,7 @@ class Grid:
     def __init__(self, diagram):
         self.Cells = []  # No rows or columns in grid yet
         self.Nodes = []  # No nodes in the grid yet
+        self.Connectors = []
         self.Row_boundaries = [0]
         self.Col_boundaries = [0]
         self.Cell_padding = default_cell_padding
@@ -66,7 +68,7 @@ class Grid:
         """
         if orientation == Orientation.Horizontal:
             # TODO: Consider expressing row/column boundaries in Canvas coordinates so this offset is not needed
-            margin_offset = self.Diagram.Canvas.Margin.bottom # row and column boundaries are relative to margin
+            margin_offset = self.Diagram.Canvas.Margin.bottom  # row and column boundaries are relative to margin
             low_boundary = self.Row_boundaries[lane - 1]
             lane_width = self.Row_boundaries[lane] - low_boundary
         else:
@@ -83,12 +85,13 @@ class Grid:
         tablet = self.Diagram.Canvas.Tablet
 
         if show_grid:
+            print("Drawing grid")
             # Draw rows
             left_extent = self.Diagram.Origin.x
             right_extent = self.Diagram.Origin.x + self.Diagram.Size.width
             for h in self.Row_boundaries:
                 tablet.Lines.append(Line(
-                    line_style=Stroke(width=StrokeWidth.THIN, pattern=StrokeStyle.SOLID),
+                    line_style=Stroke(width=StrokeWidth.THIN, color=Color.GRID_BLUE, pattern=StrokeStyle.SOLID),
                     from_here=Position(left_extent, h + self.Diagram.Origin.y),
                     to_there=Position(right_extent, h + self.Diagram.Origin.y)
                 )
@@ -99,7 +102,7 @@ class Grid:
             top_extent = bottom_extent + self.Diagram.Size.height
             for w in self.Col_boundaries:
                 tablet.Lines.append(Line(
-                    line_style=Stroke(width=StrokeWidth.THIN, pattern=StrokeStyle.SOLID),
+                    line_style=Stroke(width=StrokeWidth.THIN, color=Color.GRID_BLUE, pattern=StrokeStyle.SOLID),
                     from_here=Position(w + self.Diagram.Origin.x, bottom_extent),
                     to_there=Position(w + self.Diagram.Origin.x, top_extent)
                 )
@@ -107,6 +110,9 @@ class Grid:
 
         # Draw nodes
         [n.render() for n in self.Nodes]
+
+        # Draw connectors
+        [c.render() for c in self.Connectors]
 
     def add_row(self, cell_height):
         """Adds an empty row upward with the given height"""

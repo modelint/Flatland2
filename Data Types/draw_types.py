@@ -6,10 +6,17 @@ Flatland drawing data types
 from enum import Enum
 from collections import namedtuple
 
-Stroke = namedtuple('Stroke', 'width pattern')
+Stroke = namedtuple('Stroke', 'width color pattern')
 Line = namedtuple('Line', 'line_style from_here to_there')
 Text_Style = namedtuple('Text_Style', 'typeface size slant weight')
 Text_Line = namedtuple('Text_Line', 'lower_left style content')
+
+
+class Color(Enum):
+    BLACK = 1
+    GRID_BLUE = 2
+    CONN_PURPLE = 3
+    MARGIN_GOLD = 4
 
 
 class StrokeWidth(Enum):
