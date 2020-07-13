@@ -1,13 +1,20 @@
 """ anchored_stem.py """
 
+from notation import StemSemantic
+from names import StemTypeName
 from stem import Stem
-from connection_types import NodeFace
+from connection_types import NodeFace, AnchorPosition
 from layout_specification import default_stem_positions
 from geometry_types import Position
 from linear_geometry import step_edge_distance
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from node import Node
+    from connector import Connector
 
 
-def anchor_to_position(node, face, anchor_position):
+def anchor_to_position(node: 'Node', face: NodeFace, anchor_position: AnchorPosition) -> Position:
     """
     Compute the x or y coordinate of the user supplied anchor position.
     Using a static function since we can't initiale the superclass instance until we compute
@@ -23,7 +30,7 @@ def anchor_to_position(node, face, anchor_position):
     else:
         face_extent = node.Size.width
 
-    edge_offset = step_edge_distance(num_of_steps=default_stem_positions, extent=face_extent, step=anchor_position )
+    edge_offset = step_edge_distance(num_of_steps=default_stem_positions, extent=face_extent, step=anchor_position)
 
     if face == NodeFace.LEFT:
         x = node.Canvas_position.x
@@ -51,13 +58,10 @@ class AnchoredStem(Stem):
         Anchor position – The user specified relative postion on the Node Face
     """
 
-    def __init__(self, connector, stem_type, semantic, node, face, anchor_position):
-
-        anchor = anchor_to_position(node, face, anchor_position)
-        #TODO: Vine position should be computed based on decorator, same as anchor for now
-        vine = anchor
+    def __init__(self, connector: 'Connector', stem_type: StemTypeName, semantic: StemSemantic,
+                 node: 'Node', face: NodeFace, anchor_position: AnchorPosition):
+        vine = anchor = anchor_to_position(node, face, anchor_position)
+        # TODO: Vine position should be computed based on decorator, same as anchor for now
 
         # Anchored position is used to compute the root end position
-        Stem.__init__(self, connector, stem_type, semantic, node, face,
-                      anchor, vine)
-
+        Stem.__init__(self, connector, stem_type, semantic, node, face, anchor, vine)

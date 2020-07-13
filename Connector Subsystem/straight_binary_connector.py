@@ -1,12 +1,18 @@
 """
 straight_binary_connector.py
 """
+from notation import StemSemantic
 from binary_connector import BinaryConnector
 from anchored_stem import AnchoredStem
 from connection_types import HorizontalFace
 from floating_binary_stem import FloatingBinaryStem
 from tertiary_stem import TertiaryStem
-from draw_types import Line, Stroke, StrokeWidth, StrokeStyle
+from draw_types import Line, Stroke, StrokeWidth, StrokeStyle, Color
+from typing import TYPE_CHECKING
+from command_interface import New_Stem
+
+if TYPE_CHECKING:
+    from diagram import Diagram
 
 
 class StraightBinaryConnector(BinaryConnector):
@@ -32,7 +38,7 @@ class StraightBinaryConnector(BinaryConnector):
     where it touches the opposing face of its attached Node
     """
 
-    def __init__(self, diagram, projecting_stem, floating_stem, tertiary_stem=None):
+    def __init__(self, diagram: 'Diagram', projecting_stem: New_Stem, floating_stem: New_Stem, tertiary_stem=None):
         BinaryConnector.__init__(self, diagram, tertiary_stem)
 
         self.Projecting_stem = AnchoredStem(
@@ -66,8 +72,6 @@ class StraightBinaryConnector(BinaryConnector):
         self.Projecting_stem.render()
         self.Floating_stem.render()
 
-        self.render()
-
     def compute_axis(self):
         """
         Determines the x or y axis of the straight connector line where the Tertiary Stem attaches.
@@ -82,6 +86,7 @@ class StraightBinaryConnector(BinaryConnector):
     def render(self):
         # Create line from vine end of Projecting Binary Stem to vine end of Floating Binary Stem
         tablet = self.Diagram.Canvas.Tablet
+        print("Drawing binary connector")
         tablet.Lines.append(Line(
-            line_style=Stroke(StrokeWidth.THIN, pattern=StrokeStyle.SOLID),
+            line_style=Stroke(color=Color.CONN_PURPLE, width=StrokeWidth.THIN, pattern=StrokeStyle.SOLID),
             from_here=self.Projecting_stem.Vine_end, to_there=self.Floating_stem.Vine_end))

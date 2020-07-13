@@ -6,6 +6,9 @@ Data types to support Connectors and Stems
 
 from enum import Enum
 from collections import namedtuple
+from typing import NewType
+
+AnchorPosition = NewType('AnchorPosition', int)
 
 Path = namedtuple('Path', 'lane rut')
 

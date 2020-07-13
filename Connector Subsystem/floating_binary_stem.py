@@ -1,8 +1,15 @@
 """ floating_binary_stem.py """
 
+from notation import StemSemantic
+from names import StemTypeName
 from stem import Stem
 from connection_types import NodeFace
 from geometry_types import Position
+from command_interface import New_Stem
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from connector import Connector
 
 
 class FloatingBinaryStem(Stem):
@@ -13,7 +20,9 @@ class FloatingBinaryStem(Stem):
     the floating stem's attached node face.
 
     """
-    def __init__(self, connector, stem_type, semantic, node, face, projecting_stem):
+
+    def __init__(self, connector: 'Connector', stem_type: StemTypeName, semantic: StemSemantic,
+                 node: 'Node', face: NodeFace, projecting_stem: New_Stem):
         # We will use either the x or y of our opposing Anchored Stem and then set the other coordinate
         # to coincide with the Node face position attached to Floating Stem since this is a Straight Binary
         # Connector
@@ -33,11 +42,10 @@ class FloatingBinaryStem(Stem):
             y = node.Canvas_position.y
 
         # Stem initialized with our computed root end
+        vine = root = Position(x, y)
         Stem.__init__(
-            self, connector, stem_type, semantic, node, face, root_position=Position(x, y))
-
-        # TODO: For now they are the same. This changes when we begin decorating the Stems
-        self.Vine_end = self.Root_end
+            self, connector, stem_type, semantic, node, face, root_position=root, vine_position=vine)
+        # TODO: For now root and vine are the same. This changes when we begin decorating the Stems
 
     def render(self):
         """
