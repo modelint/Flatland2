@@ -13,7 +13,7 @@ from notation import StemSemantic
 from tree_connector import TreeConnector
 from connection_types import NodeFace, AnchorPosition
 
-from command_interface import *
+from command_interface import New_Stem, New_Branch_Set, New_Trunk_Branch
 
 
 # For diagnostics during development
@@ -76,7 +76,7 @@ def create_canvas(args):
         leaf_stems={leaf1_stem, leaf2_stem},
         graft=None, path=None, floating_leaf_stem=None
     )
-    branches = New_Branch_Set(trunk_branch=trunk_branch, offshoot_branches=None)
+    branches = New_Branch_Set(trunk_branch=trunk_branch, offshoot_branches=[])
 
     TreeConnector(diagram=flatland_canvas.Diagram, connector_type=ConnectorTypeName.gen, branches=branches)
 

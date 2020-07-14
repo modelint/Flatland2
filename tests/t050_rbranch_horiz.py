@@ -8,9 +8,9 @@ from single_cell_node import SingleCellNode
 from names import NodeTypeName, StemTypeName, ConnectorTypeName
 from notation import StemSemantic
 from tree_connector import TreeConnector
-from connection_types import NodeFace, Path
+from connection_types import NodeFace, Path, AnchorPosition
 
-from command_interface import *
+from command_interface import New_Stem, New_Branch_Set, New_Trunk_Branch
 
 
 # For diagnostics during development
@@ -62,18 +62,18 @@ def create_canvas(args):
                              grid=flatland_canvas.Diagram.Grid, row=1, column=3)
 
     trunk_stem = New_Stem(stem_type=StemTypeName.gen_superclass, semantic=StemSemantic.Super_class, node=trunk_node,
-                          face=NodeFace.BOTTOM, anchor=0)
+                          face=NodeFace.BOTTOM, anchor=AnchorPosition(0))
     leaf1_stem = New_Stem(stem_type=StemTypeName.gen_subclass, semantic=StemSemantic.Sub_class, node=l1_node,
-                          face=NodeFace.TOP, anchor=0)
+                          face=NodeFace.TOP, anchor=AnchorPosition(0))
     leaf2_stem = New_Stem(stem_type=StemTypeName.gen_subclass, semantic=StemSemantic.Sub_class, node=l2_node,
-                          face=NodeFace.TOP, anchor=0)
+                          face=NodeFace.TOP, anchor=AnchorPosition(0))
 
     trunk_branch = New_Trunk_Branch(
         trunk_stem=trunk_stem,
         leaf_stems={leaf1_stem, leaf2_stem},
         graft=None, path=Path(lane=2, rut=-1), floating_leaf_stem=None
     )
-    branches = New_Branch_Set(trunk_branch=trunk_branch, offshoot_branches=None)
+    branches = New_Branch_Set(trunk_branch=trunk_branch, offshoot_branches=[])
 
     TreeConnector(diagram=flatland_canvas.Diagram, connector_type=ConnectorTypeName.gen, branches=branches)
 

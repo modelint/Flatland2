@@ -7,7 +7,7 @@ from single_cell_node import SingleCellNode
 from names import NodeTypeName, StemTypeName
 from notation import StemSemantic
 from bending_binary_connector import BendingBinaryConnector
-from connection_types import NodeFace
+from connection_types import NodeFace, AnchorPosition
 from command_interface import New_Stem, New_Path
 
 
@@ -51,9 +51,9 @@ def create_canvas(args):
                             row=1, column=3)
 
     t_stem = New_Stem(stem_type=StemTypeName.class_mult, semantic=StemSemantic.Mult_Mc, node=t_node,
-                      face=NodeFace.TOP, anchor=0)
+                      face=NodeFace.TOP, anchor=AnchorPosition(0))
     p_stem = New_Stem(stem_type=StemTypeName.class_mult, semantic=StemSemantic.Mult_1, node=p_node,
-                      face=NodeFace.TOP, anchor=0)
+                      face=NodeFace.TOP, anchor=AnchorPosition(0))
     p = [New_Path(lane=2, rut=0)]
 
     BendingBinaryConnector(diagram=flatland_canvas.Diagram, anchored_stem_p=p_stem, anchored_stem_t=t_stem, paths=p)

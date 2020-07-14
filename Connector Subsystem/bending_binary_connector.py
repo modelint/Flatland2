@@ -9,6 +9,7 @@ from draw_types import StrokeWidth, StrokeStyle
 from geometry_types import Position
 from open_polygon import OpenPolygon
 from command_interface import New_Stem
+from names import ConnectorTypeName
 from typing import List, TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -24,9 +25,9 @@ class BendingBinaryConnector(BinaryConnector):
     just as easily have been labeled “A” and “B”.
     """
 
-    def __init__(self, diagram: 'Diagram', anchored_stem_t: New_Stem, anchored_stem_p: New_Stem,
-                 paths=None, tertiary_stem=None):
-        BinaryConnector.__init__(self, diagram, tertiary_stem)
+    def __init__(self, diagram: 'Diagram', connector_type: ConnectorTypeName, anchored_stem_t: New_Stem,
+                 anchored_stem_p: New_Stem, paths=None, tertiary_stem=None):
+        BinaryConnector.__init__(self, diagram, connector_type)
 
         self.Paths = paths if not None else []
 
@@ -65,8 +66,6 @@ class BendingBinaryConnector(BinaryConnector):
                 anchor_position=tertiary_stem.anchor,
                 parallel_segs=parallel_segs
             )
-
-        self.render()
 
     def compute_corners(self) -> List[Position]:
         if not self.Paths:  # Only one corner
@@ -119,5 +118,7 @@ class BendingBinaryConnector(BinaryConnector):
         """
         # Create line from vine end of T_stem to vine end of P_stem, bending along the way
         print("Drawing bending binary connector")
-        OpenPolygon(tablet=self.Diagram.Canvas.Tablet, style=StrokeWidth.THIN, width=StrokeStyle.SOLID,
+        OpenPolygon(tablet=self.Diagram.Canvas.Tablet, width=StrokeWidth.THIN, style=StrokeStyle.SOLID,
                     points=[self.T_stem.Vine_end] + self.Corners + [self.P_stem.Vine_end]).render()
+        if self.Tertiary_stem:
+            self.Tertiary_stem.render()

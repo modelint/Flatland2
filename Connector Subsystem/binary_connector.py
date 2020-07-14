@@ -18,5 +18,9 @@ class BinaryConnector(Connector):
     ---
     Tertiary_stem – An optional Tertiary Stem may be supplied with a user specified anchor position
     """
+
     def __init__(self, diagram: 'Diagram', connector_type: ConnectorTypeName):
         Connector.__init__(self, diagram, connector_type)
+
+    def render(self):
+        pass  # Overridden

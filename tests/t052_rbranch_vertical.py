@@ -7,9 +7,9 @@ from single_cell_node import SingleCellNode
 from names import NodeTypeName, StemTypeName, ConnectorTypeName
 from notation import StemSemantic
 from tree_connector import TreeConnector
-from connection_types import NodeFace, Path
+from connection_types import NodeFace, Path, AnchorPosition
 
-from command_interface import *
+from command_interface import New_Stem, New_Branch_Set, New_Trunk_Branch, New_Offshoot_Branch
 
 
 # For diagnostics during development
@@ -61,13 +61,6 @@ def create_canvas(args):
         ]
     ]
 
-    class_B4 = [
-        ['Saucer Wing'], [
-            'Aircraft {I, R1}',
-            'Pilot  {I2, R1}',
-            'Flight time : Duration'
-        ]
-    ]
     trunk_node = SingleCellNode(node_type_name=NodeTypeName.M_class, content=class_Trunk,
                                 grid=flatland_canvas.Diagram.Grid, row=2, column=2)
     l1_node = SingleCellNode(node_type_name=NodeTypeName.M_class, content=class_B1,
@@ -78,13 +71,13 @@ def create_canvas(args):
                              grid=flatland_canvas.Diagram.Grid, row=3, column=5)
 
     trunk_stem = New_Stem(stem_type=StemTypeName.gen_superclass, semantic=StemSemantic.Super_class, node=trunk_node,
-                          face=NodeFace.BOTTOM, anchor=0)
+                          face=NodeFace.BOTTOM, anchor=AnchorPosition(0))
     leaf1_stem = New_Stem(stem_type=StemTypeName.gen_subclass, semantic=StemSemantic.Sub_class, node=l1_node,
-                          face=NodeFace.TOP, anchor=0)
+                          face=NodeFace.TOP, anchor=AnchorPosition(0))
     leaf2_stem = New_Stem(stem_type=StemTypeName.gen_subclass, semantic=StemSemantic.Sub_class, node=l2_node,
-                          face=NodeFace.TOP, anchor=0)
+                          face=NodeFace.TOP, anchor=AnchorPosition(0))
     leaf3_stem = New_Stem(stem_type=StemTypeName.gen_subclass, semantic=StemSemantic.Sub_class, node=l3_node,
-                          face=NodeFace.LEFT, anchor=0)
+                          face=NodeFace.LEFT, anchor=AnchorPosition(0))
 
     trunk_branch = New_Trunk_Branch(
         trunk_stem=trunk_stem,

@@ -5,7 +5,7 @@ from collections import namedtuple
 
 from canvas import Canvas
 from single_cell_node import SingleCellNode
-from names import NodeTypeName, StemTypeName
+from names import NodeTypeName, StemTypeName, ConnectorTypeName
 from notation import StemSemantic
 from straight_binary_connector import StraightBinaryConnector
 from connection_types import NodeFace, AnchorPosition
@@ -55,8 +55,8 @@ def create_canvas(args):
     p_stem = New_Stem(stem_type=StemTypeName.class_mult, semantic=StemSemantic.Mult_1, node=p_node,
                       face=NodeFace.LEFT, anchor=None)
 
-    StraightBinaryConnector(diagram=flatland_canvas.Diagram, projecting_stem=t_stem, floating_stem=p_stem,
-                            tertiary_stem=None)
+    StraightBinaryConnector(diagram=flatland_canvas.Diagram, connector_type=ConnectorTypeName.assoc_class,
+                            projecting_stem=t_stem, floating_stem=p_stem, tertiary_stem=None)
 
     flatland_canvas.render()
 

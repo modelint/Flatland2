@@ -88,8 +88,7 @@ class TreeConnector(Connector):
                 this_branch = InterpolatedBranch(order, connector=self, hanging_stems=b.hanging_stems)
             self.Branches.append(this_branch)
 
-
-    def unpack_hanging_leaves(self, new_leaves: Set[ New_Stem ], new_graft_leaf: New_Stem) -> LeafGroup:
+    def unpack_hanging_leaves(self, new_leaves: Set[New_Stem], new_graft_leaf: New_Stem) -> LeafGroup:
         """
         Unpack all new anchored leaves for a branch
         :param new_graft_leaf: The optional user designated grafting leaf stem for the Branch
