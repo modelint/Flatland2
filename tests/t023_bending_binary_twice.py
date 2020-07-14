@@ -8,9 +8,8 @@ from names import NodeTypeName, StemTypeName
 from notation import StemSemantic
 from bending_binary_connector import BendingBinaryConnector
 from connection_types import NodeFace
+from command_interface import New_Stem, New_Path
 
-New_Stem = namedtuple('New_Stem', 'stem_type semantic node face anchor')
-New_Path = namedtuple('New_Path', 'lane rut')
 
 
 # For diagnostics during development

@@ -8,9 +8,7 @@ from names import NodeTypeName, StemTypeName
 from notation import StemSemantic
 from bending_binary_connector import BendingBinaryConnector
 from connection_types import NodeFace
-
-New_Stem = namedtuple('New_Stem', 'stem_type semantic node face anchor')
-New_Path = namedtuple('New_Path', 'lane rut')
+from command_interface import New_Stem, New_Path
 
 
 # For diagnostics during development
@@ -46,16 +44,17 @@ def create_canvas(args):
         ]
     ]
 
-    t_node = SingleCellNode(node_type_name=NodeTypeName.M_class, content=class_Aircraft, grid=flatland_canvas.Diagram.Grid,
-                        row=1, column=1)
+    t_node = SingleCellNode(node_type_name=NodeTypeName.M_class, content=class_Aircraft,
+                            grid=flatland_canvas.Diagram.Grid,
+                            row=1, column=1)
     p_node = SingleCellNode(node_type_name=NodeTypeName.M_class, content=class_Pilot, grid=flatland_canvas.Diagram.Grid,
-                        row=1, column=3)
+                            row=1, column=3)
 
     t_stem = New_Stem(stem_type=StemTypeName.class_mult, semantic=StemSemantic.Mult_Mc, node=t_node,
                       face=NodeFace.TOP, anchor=0)
     p_stem = New_Stem(stem_type=StemTypeName.class_mult, semantic=StemSemantic.Mult_1, node=p_node,
                       face=NodeFace.TOP, anchor=0)
-    p = [ New_Path(lane=2, rut=0) ]
+    p = [New_Path(lane=2, rut=0)]
 
     BendingBinaryConnector(diagram=flatland_canvas.Diagram, anchored_stem_p=p_stem, anchored_stem_t=t_stem, paths=p)
     flatland_canvas.render()

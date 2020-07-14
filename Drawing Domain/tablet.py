@@ -61,6 +61,10 @@ class Tablet:
             Color.CONN_PURPLE: (0.49, 0.20, 0.92),
             Color.MARGIN_GOLD: (0.86, 0.83, 0.12)
         }
+        self.Line_pattern_map = {
+            StrokeStyle.SOLID: [],
+            StrokeStyle.DASHED: [9, 9]
+        }
 
     def render(self):
         """Renders the tablet using Cairo for now"""
@@ -69,17 +73,14 @@ class Tablet:
         self.Context.set_source_rgb(*horrible_red)  # Should never appear unless app forgets to set color
         self.Context.set_line_join(cairo.LINE_JOIN_ROUND)
         for l in self.Lines:
-            # TODO: Use a dictionary to look this up
-            if l.line_style.pattern == StrokeStyle.DASHED:
-                self.Context.set_dash([9, 9])
-            else:
-                self.Context.set_dash([])
+            self.Context.set_dash(self.Line_pattern_map[l.line_style.pattern])
             self.Context.set_source_rgb(*self.color_map[l.line_style.color])
             self.Context.set_line_width(l.line_style.width.value)
             self.Context.move_to(*self.to_dc(l.from_here))
             self.Context.line_to(*self.to_dc(l.to_there))
             self.Context.stroke()
         for r in self.Rectangles:
+            self.Context.set_dash(self.Line_pattern_map[r.line_style.pattern])
             self.Context.set_source_rgb(*self.color_map[r.line_style.color])
             self.Context.set_line_width(r.line_style.width.value)
             # Invert y coordinate and use top left rather than bottom left origin

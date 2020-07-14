@@ -10,6 +10,7 @@ from tertiary_stem import TertiaryStem
 from draw_types import Line, Stroke, StrokeWidth, StrokeStyle, Color
 from typing import TYPE_CHECKING
 from command_interface import New_Stem
+from names import ConnectorTypeName
 
 if TYPE_CHECKING:
     from diagram import Diagram
@@ -38,8 +39,9 @@ class StraightBinaryConnector(BinaryConnector):
     where it touches the opposing face of its attached Node
     """
 
-    def __init__(self, diagram: 'Diagram', projecting_stem: New_Stem, floating_stem: New_Stem, tertiary_stem=None):
-        BinaryConnector.__init__(self, diagram, tertiary_stem)
+    def __init__(self, diagram: 'Diagram', connector_type: ConnectorTypeName, projecting_stem: New_Stem,
+                 floating_stem: New_Stem, tertiary_stem=None):
+        BinaryConnector.__init__(self, diagram, connector_type)
 
         self.Projecting_stem = AnchoredStem(
             connector=self,
@@ -90,3 +92,5 @@ class StraightBinaryConnector(BinaryConnector):
         tablet.Lines.append(Line(
             line_style=Stroke(color=Color.CONN_PURPLE, width=StrokeWidth.THIN, pattern=StrokeStyle.SOLID),
             from_here=self.Projecting_stem.Vine_end, to_there=self.Floating_stem.Vine_end))
+        if self.Tertiary_stem:
+            self.Tertiary_stem.render()

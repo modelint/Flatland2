@@ -1,17 +1,15 @@
 """
-t030_straight_binary_ternary.py
+t030_straight_binary_tertiary.py
 """
 from collections import namedtuple
 
 from canvas import Canvas
 from single_cell_node import SingleCellNode
-from names import NodeTypeName, StemTypeName
+from names import NodeTypeName, StemTypeName, ConnectorTypeName
 from notation import StemSemantic
 from straight_binary_connector import StraightBinaryConnector
-from connection_types import NodeFace
-
-New_Stem = namedtuple('New_Stem', 'stem_type semantic node face anchor')
-New_Path = namedtuple('New_Path', 'lane rut')
+from connection_types import NodeFace, AnchorPosition
+from command_interface import New_Stem
 
 
 # For diagnostics during development
@@ -63,14 +61,14 @@ def create_canvas(args):
                             grid=flatland_canvas.Diagram.Grid, row=2, column=2)
 
     t_stem = New_Stem(stem_type=StemTypeName.class_mult, semantic=StemSemantic.Mult_Mc, node=t_node,
-                      face=NodeFace.RIGHT, anchor=0)
+                      face=NodeFace.RIGHT, anchor=AnchorPosition(0))
     p_stem = New_Stem(stem_type=StemTypeName.class_mult, semantic=StemSemantic.Mult_1, node=p_node,
                       face=NodeFace.LEFT, anchor=None)
     a_stem = New_Stem(stem_type=StemTypeName.assoc_class_mult, semantic=StemSemantic.Mult_1, node=a_node,
-                      face=NodeFace.BOTTOM, anchor=0)
+                      face=NodeFace.BOTTOM, anchor=AnchorPosition(0))
 
-    StraightBinaryConnector(diagram=flatland_canvas.Diagram, projecting_stem=t_stem, floating_stem=p_stem,
-                            tertiary_stem=a_stem)
+    StraightBinaryConnector(diagram=flatland_canvas.Diagram, connector_type=ConnectorTypeName.assoc_class,
+                            projecting_stem=t_stem, floating_stem=p_stem, tertiary_stem=a_stem)
 
     flatland_canvas.render()
 
