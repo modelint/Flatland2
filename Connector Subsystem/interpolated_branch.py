@@ -51,7 +51,7 @@ class InterpolatedBranch(Branch):
         axis_orientation = Orientation.Horizontal if downward_stems else Orientation.Vertical
         high_stems = downward_stems if downward_stems else {s for s in hanging_stems if s.Node_face == NodeFace.LEFT}
         low_stems = hanging_stems - high_stems
-        if not low_stems and high_stems:
+        if not (low_stems and high_stems):
             raise BranchCannotBeInterpolated
         lowest_high_face = min({s.Node.Face_position(s.Node_face) for s in high_stems})
         highest_low_face = max({s.Node.Face_position(s.Node_face) for s in low_stems})

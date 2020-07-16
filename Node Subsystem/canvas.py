@@ -75,6 +75,6 @@ class Canvas:
 
     def __repr__(self):
         return (
-            f"""Canvas size {self.Sheet_name} (W{self.Size[0]} x H{self.Size[1]}) with orientation {self.Orientation}
-        and point size {self.Point_size}
-        using global padding: {self.Margin}""")
+            f"""Size {self.Sheet_name} (W{self.Size[0]} x H{self.Size[1]}) orient {self.Orientation}
+        point size {self.Point_size}
+        padding: {self.Margin}""")

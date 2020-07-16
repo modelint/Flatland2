@@ -22,29 +22,34 @@ class Branch:
         self.Axis_orientation = axis_orientation
 
     @property
-    def Line_segment(self):
+    def Shoot(self) -> Line_Segment:
         branches = self.Connector.Branches
         prev_axis = None if self.Order == 0 else branches[self.Order - 1].Axis
         next_axis = None if self.Order == len(branches) - 1 else branches[self.Order + 1].Axis
+        positions = {a for a in {prev_axis, next_axis} if a}
         if self.Axis_orientation == Orientation.Horizontal:
             y = self.Axis
-            x1 = prev_axis if prev_axis else min({s.Vine_end.x for s in self.Hanging_stems})
-            x2 = next_axis if next_axis else max({s.Vine_end.x for s in self.Hanging_stems})
+            positions = positions.union({s.Vine_end.x for s in self.Hanging_stems})
+            x1 = min(positions)
+            x2 = max(positions)
             return Line_Segment(from_position=Position(x=x1, y=y), to_position=Position(x=x2, y=y))
         else:
             x = self.Axis
-            y1 = prev_axis if prev_axis else min({s.Vine_end.y for s in self.Hanging_stems})
-            y2 = next_axis if next_axis else max({s.Vine_end.y for s in self.Hanging_stems})
+            positions = positions.union({s.Vine_end.y for s in self.Hanging_stems})
+            y1 = min(positions)
+            y2 = max(positions)
         return Line_Segment(from_position=Position(x=x, y=y1), to_position=Position(x=x, y=y2))
 
     def render(self):
+        print("Line segment is:", self.Shoot)
         tablet = self.Connector.Diagram.Canvas.Tablet
         # Draw the axis
         print("Drawing branch axis")
         tablet.Lines.append(Line(
             line_style=Stroke(width=StrokeWidth.THIN, color=Color.CONN_PURPLE, pattern=StrokeStyle.SOLID),
-            from_here=self.Line_segment.from_position, to_there=self.Line_segment.to_position)
+            from_here=self.Shoot.from_position, to_there=self.Shoot.to_position)
         )
+
         # Draw the stems
         for s in self.Hanging_stems:
             if self.Axis_orientation == Orientation.Horizontal:

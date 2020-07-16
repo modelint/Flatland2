@@ -23,6 +23,9 @@ class SingleCellNode(Node):
         self.Column = column
         self.Grid.place_single_cell_node(self)
 
+    def __repr__(self):
+        return f'Grid [{self.Row}, {self.Column}] @ ({round(self.Canvas_position.x,2)}, {round(self.Canvas_position.y,2)}), W {self.Size.width} x H {round(self.Size.height,2)}'
+
     @property
     def Canvas_position(self):
         """Position of lower left corner on the Canvas"""
