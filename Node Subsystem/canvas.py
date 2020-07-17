@@ -74,7 +74,5 @@ class Canvas:
         self.Tablet.render()
 
     def __repr__(self):
-        return (
-            f"""Size {self.Sheet_name} (W{self.Size[0]} x H{self.Size[1]}) orient {self.Orientation}
-        point size {self.Point_size}
-        padding: {self.Margin}""")
+        return f'Sheet: {self.Sheet_name} W{self.Size.width} x H{self.Size.height} Orientation: {self.Orientation} ' \
+            f'Points: H{self.Point_size.height} x W{self.Point_size.width} {self.Margin}'
