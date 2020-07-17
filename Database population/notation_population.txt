@@ -1,0 +1,486 @@
+
+Sheet
+    Name: letter
+    Units: inch
+    Size: (W8.5, H11)
+
+    Name: tabloid
+    Units: inch
+    Size: (W17, H11)
+
+    Name: C
+    Units: inch
+    Size: (W22, H17)
+
+    Name: D
+    Units: inch
+    Size: (W34, H22)
+
+    Name: E
+    Units: inch
+    Size: (W44, H34)
+
+    Name: A4
+    Units: cm
+    Size: (H297, W210)
+
+    Name: A3
+    Units: cm
+    Size: (H420, W297)
+
+    Name: A2
+    Units: cm
+    Size: (H594, W420)
+
+    Name: A1
+    Units: cm
+    Size: (H841, W594)
+
+
+Notation
+    Name: Shlaer-Mellor
+    About: Source of Executable UML / xUML modeling semantics
+    Why use it: Designed for fast easy hand drawing. Great for whiteboards and notes!
+
+    Name: Starr
+    About: Inspired by Shlaer-Mellor but without the little c's to drag around on class diagrams
+    Why use it: Stealth mode! Mimimal drawing clutter to put the focus on the subject. Easy to draw online
+
+    Name: xUML
+    About: AKA, Executable UML. Usage of UML to represent executable semantics
+    Why use it: Standards conformance. You are showing diagram to someone who knows, uses or must use UML
+
+Diagram Type
+    Name: class diagram
+    Abbreviation: CD
+    About: Show data, logic and constraints in a domain
+    Node Type ->> class, imported class
+    Connector Type ->> binary association, generalization
+    Notation ->> Shlaer-Mellor, Starr, xUML
+
+    Name: state machine diagram
+    Abbreviation: SMD
+    About: lifecycle of a class or assigner relationship
+    Node Type ->> state
+    Connector Type ->> initial transition, deletion transition, transition
+    Notation ->> xUML
+
+    Name: class collaboration diagram
+    Abbreviation: CCD
+    About: Shows interactions among classes and external entities in a domain
+    Node Type ->> overview class, external entity
+    Connector Type ->> collaboration
+    Notation ->> Starr, xUML
+
+    Name: domain diagram
+    Abbreviation: DD
+    About: Illustrates your logical subject matter 'stack' as a network of platform independent domains with requirements dependencies
+    Node Type ->> domain
+    Connector Type ->> bridge
+    Notation ->> Starr, xUML
+
+
+Node Type
+    Name: class
+    About: Abstraction of a bunch of things with the same properies, behavior and subject to same constraints and policies
+
+    Name: imported class
+    About: Used when you have a relationship to a class in some other subsystem of your domain.
+
+    Name: overview class
+    About: Used to represent class in a collaboration or other non-class diagram
+
+    Name external entity
+    About: Proxy for an external domain or some aspect of an external domain
+
+    Name: state
+    About: A context of some duration during an instance's existence
+
+    Name: domain
+    About: A distinct subject matter with its own vocabulary and rules, like 'Linear Algebra' or 'Configuration Management'
+
+Connector Type
+    Name: binary association
+    About: Connects an anchor point on one node to an anchor point on the same or another node
+    Stem Type ->> class mult
+
+    Name: associative relationship
+    About: Same properties as a binary association with an added association class
+    Stem Type ->> class mult, associative mult
+
+    Name: generalization
+    About: A superset class compeletely split into disjoint subset classes
+    Stem Type ->> superclass, subclass
+
+    Name: initial transition
+    About: Designates an initial state
+    Stem Type ->>
+
+    Name: deletion transition
+    About: Designates implicit instance deletion after a state executes its activity
+
+    Name: transition
+    About: Defines a path from one state to another
+
+    Name: bridge
+    About: Defines a dependency on requirements from one domain to another
+
+    Name: collaboration
+    About: Represents a path of communication between two nodes on a collaboration diagram
+
+Stem Type
+    Name: class mult
+    About: How many instances may be associated
+
+    Name: associative mult
+    About: How many association class instances per pair of associated instances
+
+    Name: superclass
+    About: The superset of all subclass instances
+
+    Name: subclass
+    About: A disjoint subset of the superclass set of instances
+
+    Name: from state
+    About: Points to the source state in a transition
+
+    Name: to state
+    About: Points to the destination state in a transition
+
+    Name: to initial state
+    About: Points to a designated state as an initial state
+
+    Name: from deletion state
+    About: Points away from a final state to indicate deletion
+
+Semantic
+    Name: target state
+
+    Name: initial pseudo state
+
+    Name: final pseudo state
+
+    Name: Mc mult
+
+    Name: 1 mult
+
+    Name: 1c mult
+
+    Name: M mult
+
+    Name: generalization
+
+    Name: dependency
+
+    Name: collaboration
+
+Stem Notation
+    Semantic: target state
+    Diagram type: state
+    Notation ->> xUML
+
+    Semantic: initial pseudo state
+    Diagram type: state
+    Notation ->> xUML
+
+    Semantic: final pseudo state
+    Diagram type: state
+    Notation ->> xUML
+
+    Semantic: Mc mult
+    Diagram type: class
+    Notation ->> xUML, Starr, Shlaer-Mellor
+
+    Semantic: 1c mult
+    Diagram type: class
+    Notation ->> xUML, Starr, Shlaer-Mellor
+
+    Semantic: 1 mult
+    Diagram type: class
+    Notation ->> xUML, Starr, Shlaer-Mellor
+
+    Semantic: M mult
+    Diagram type: class
+    Notation ->> xUML, Starr, Shlaer-Mellor
+
+    Semantic: generalization
+    Diagram type: class
+    Notation ->> xUML, Starr, Shlaer-Mellor
+
+    Semantic: dependency
+    Diagram type: domain
+    Notation ->> xUML, Starr
+
+    Semantic: collaboration
+    Diagram type: collaboration
+    Notation ->> xUML, Starr
+
+Decorated Stem End
+    Stem type: class mult
+    Diagram type: class
+    Notation: Starr
+    Semantic ->> Mc mult, 1c multplicity, M mult, 1 mult
+    End: root
+    Clearance: 16
+
+    Stem type: class mult
+    Diagram type: class
+    Notation: xUML
+    Semantic ->> Mc mult, 1c multplicity, M mult, 1 mult
+    End: root
+    Clearance: 20
+
+    Stem type: to state
+    Diagram type: state
+    Notation: xUML
+    Semantic ->> target state, initial state
+    End: root
+    Clearance: 12
+
+Stem Decoration:
+    Stem type: class mult
+    Semantic: 1 mult
+    Diagram type: class
+    Notation: Starr
+    Symbol ->> solid arrow
+    End: root
+
+    Stem type: class mult
+    Semantic: 1 mult
+    Diagram type: class
+    Notation: xUML
+    Symbol ->> 1
+    End: root
+
+    Stem type: class mult
+    Semantic: 1 mult
+    Diagram type: class
+    Notation: Shlaer-Mellor
+    Symbol ->> open arrow
+    End: root
+
+    Stem type: class mult
+    Semantic: 1c mult
+    Diagram type: class
+    Notation: Starr
+    Symbol ->> hollow arrow
+    End: root
+
+    Stem type: class mult
+    Semantic: 1c mult
+    Diagram type: class
+    Notation: xUML
+    Symbol ->> 0..1
+    End: root
+
+    Stem type: class mult
+    Semantic: 1c mult
+    Diagram type: class
+    Notation: Shlaer-Mellor
+    Symbol ->> open arrow, c
+    End: root
+
+    Stem type: class mult
+    Semantic: M mult
+    Diagram type: class
+    Notation: Starr
+    Symbol ->> double solid arrow
+    End: root
+
+    Stem type: class mult
+    Semantic: M mult
+    Diagram type: class
+    Notation: xUML
+    Symbol ->> 1..*
+    End: root
+
+    Stem type: class mult
+    Semantic: M mult
+    Diagram type: class
+    Notation: Shlaer-Mellor
+    Symbol ->> double open arrow
+    End: root
+
+    Stem type: class mult
+    Semantic: Mc mult
+    Diagram type: class
+    Notation: Starr
+    Symbol ->> double solid arrow
+    End: root
+
+    Stem type: class mult
+    Semantic: Mc mult
+    Diagram type: class
+    Notation: xUML
+    Symbol ->> 0..*
+    End: root
+
+    Stem type: class mult
+    Semantic: Mc mult
+    Diagram type: class
+    Notation: Shlaer-Mellor
+    Symbol ->> double hollow arrow, c
+    End: root
+
+    Stem type: associative mult
+    Semantic: 1 mult
+    Diagram type: class
+    Notation: Starr
+    Symbol ->>: solid arrow
+    End: root
+
+    Stem type: associative mult
+    Semantic: M mult
+    Diagram type: class
+    Notation: Starr
+    Symbol ->>: double solid arrow
+    End: root
+
+    Stem type: associative mult
+    Semantic: M mult
+    Diagram type: class
+    Notation: xUML
+    Symbol ->> {M}
+    End: root
+
+    Stem type: associative mult
+    Semantic: M mult
+    Diagram type: class
+    Notation: Shlaer-Mellor
+    Symbol ->> double hollow arrow
+    End: root
+
+    Stem type: associative mult
+    Semantic: M mult
+    Diagram type: class
+    Notation: Shlaer-Mellor
+    Symbol ->> double hollow arrow
+    End: root
+
+    Stem type: generalization
+    Semantic: superclass
+    Diagram type: class
+    Notation: Starr
+    Symbol ->> gen arrow
+    End: root
+
+    Stem type: generalization
+    Semantic: superclass
+    Diagram type: class
+    Notation: xUML
+    Symbol ->> gen arrow
+    End: root
+
+    Stem type: generalization
+    Semantic: superclass
+    Diagram type: class
+    Notation: Shlaer-Mellor
+    Symbol ->> superclass cross, is a
+    End: root
+
+    Stem type: to state
+    Semantic: target state
+    Diagram type: state
+    Notation: xUML
+    Symbol ->> solid arrow
+    End: root
+
+    Stem type: to initial state
+    Semantic: target state
+    Diagram type: state
+    Notation: xUML
+    Symbol ->> solid arrow
+    End: root
+
+    Stem type: to initial state
+    Semantic: target state
+    Diagram type: state
+    Notation: xUML
+    Symbol ->> circled dot
+    End: vine
+
+    Stem type: from deletion state
+    Semantic: solid small dot
+    Diagram type: state
+    Notation: xUML
+    Symbol ->> solid small dot
+    End: vine
+
+Arrowhead Symbol
+    Name: solid arrow
+    Base: 7
+    Height: 9
+    Stroke: normal
+    Fill: solid
+
+    Name: hollow arrow
+    Base: 7
+    Height: 9
+    Stroke: normal
+    Fill: hollow
+
+    Name: open arrow
+    Base: 7
+    Height: 9
+    Stroke: normal
+    Fill: open
+
+    Name: gen arrow
+    Base: 15
+    Height: 12
+    Stroke: normal
+    Fill: hollow
+
+Circle Symbol
+    Name: solid small dot
+    Radius: 8.5
+    Solid: True
+    Stroke: normal
+
+    Name: open large circle
+    Radius: 14.5
+    Solid: False
+    Stroke: normal
+
+Cross Symbol
+    Name: superclass cross
+    Face offset: 10
+    Width: 20
+    Stroke: normal
+
+Compound Symbol
+    Name: double solid arrow
+    Simple shapes ->> solid arrow, solid arrow
+    Stack: next
+
+    Name: double hollow arrow
+    Simple shapes ->> hollow arrow, hollow arrow
+    Stack: next
+
+    Name: double open arrow
+    Simple shapes ->> open arrow, open arrow
+    Stack: adjacent
+
+    Name: circled dot
+    Simple shapes ->> open large circle, solid small dot
+    Stack: layered
+
+Text Symbol
+    Name: 0..1
+
+    Name: 1
+
+    Name: 0..*
+
+    Name: 0..1
+
+    Name: is a
+
+    Name: c
+
+    Name: {M}
+
+    Name: {disjoint, complete}
+
+
+
