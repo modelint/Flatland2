@@ -2,25 +2,28 @@
 sheet.py – Standard and non-standard sheet sizes
 
 """
+from sqlalchemy import create_engine, select, MetaData
 from geometry_types import Rect_Size
 
-
-# All sheet and canvas related constants are kept together here for easy review and editing
-us_sheet_sizes = {
-    'letter': Rect_Size(width=8.5, height=11),  # 612 x 792 pts
-    'tabloid': Rect_Size(height=11, width=17),
-    'C': Rect_Size(height=17, width=22),
-    'D': Rect_Size(height=22, width=34),
-    'E': Rect_Size(height=34, width=44)
-}
-
+us_sheet_sizes = {}
+int_sheet_sizes = {}
 default_us_sheet = 'tabloid'
+default_int_sheet = 'A3'
 
-euro_sheet_A_sizes = {
-    'A4': Rect_Size(width=210, height=297),
-    'A3': Rect_Size(width=297, height=420),
-    'A2': Rect_Size(width=420, height=594),
-    'A1': Rect_Size(width=594, height=841)
-}
 
-default_euro_sheet = 'A3'
+def load_sizes():
+    engine = create_engine('sqlite:///../Database population/sheet_data.db')
+    conn = engine.connect()
+    meta = MetaData()
+    meta.reflect(bind=engine)
+    sheets = meta.tables['Sheet']
+
+    s_us = select([sheets]).where(sheets.c.Group == 'US')
+    sheet_rows = conn.execute(s_us)
+    for r in sheet_rows:
+        us_sheet_sizes[r['Name']] = Rect_Size(width=float(r['Width']), height=float(r['Height']))
+
+    s_int = select([sheets]).where(sheets.c.Group == 'INT')
+    sheet_rows = conn.execute(s_int)
+    for r in sheet_rows:
+        int_sheet_sizes[r['Name']] = Rect_Size(width=int(r['Width']), height=int(r['Height']))

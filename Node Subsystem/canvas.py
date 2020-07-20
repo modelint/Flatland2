@@ -4,9 +4,10 @@ canvas.py
 This is the Flatland (and not the cairo) Canvas class
 """
 import sys
+import sheet
 from geometry_types import Padding, Alignment, Rect_Size, Position, Rectangle
 from draw_types import Stroke, StrokeStyle, StrokeWidth, Color
-from sheet import us_sheet_sizes, euro_sheet_A_sizes, default_us_sheet
+from sheet import us_sheet_sizes, int_sheet_sizes, default_us_sheet
 from diagram import Diagram
 from tablet import Tablet
 
@@ -39,17 +40,21 @@ class Canvas:
 
     """
 
-    def __init__(self, diagram_type, notation, standard_sheet_name, orientation,
+    def __init__(self, db, diagram_type, notation, standard_sheet_name, orientation,
                  drawoutput=sys.stdout.buffer, show_margin=False):
+        self.Database = db
         self.Sheet_name = standard_sheet_name
         self.Orientation = orientation
+        sheet.load_sizes()
         self.Size = us_sheet_sizes.get(standard_sheet_name)
         if self.Size:
             factor = points_in_inch
         else:
-            self.Size = euro_sheet_A_sizes.get(standard_sheet_name, us_sheet_sizes[default_us_sheet])
+            self.Size = int_sheet_sizes.get(standard_sheet_name, us_sheet_sizes[default_us_sheet])
             factor = points_in_cm
-        self.Point_size = Rect_Size(height=int(self.Size[0] * factor), width=int(self.Size[1] * factor))
+        # Set point size height and width based on portrait vs. landscape orientation
+        h, w = (self.Size[0], self.Size[1]) if self.Orientation == 'portrait' else (self.Size[1], self.Size[0])
+        self.Point_size = Rect_Size(height=int(h * factor), width=int(w * factor))
         self.Margin = default_canvas_margin
         self.Diagram = Diagram(self, diagram_type, notation)
         self.Notation = notation

@@ -21,7 +21,7 @@ def step_edge_distance(num_of_steps, extent, step):
     All negative steps will have a value less than 50 and all positive steps will be greater than 50.
     To make this work we divide the line segment into equally spaced increments by dividing the extent by the total
     number of steps plus one. With 5 steps then, we get 6 increments each 20 pt wide. There will be three on each
-    side of the zero step. This means the number line will be -2, -1, 0, 1, 2 giving us our five step positions.
+    side of the zero step. This means the number line will be -2, -1, 0, 1, 2 giving US our five step positions.
 
     Given a step number, return the distance coordinate. In our example, step 0 will return 50 pt.
     Step -1 will return 30 pt and so on. Note that no step will return either the extent or 0 pt since

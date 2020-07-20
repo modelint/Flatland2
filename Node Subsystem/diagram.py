@@ -7,6 +7,7 @@ from diagram_type import diagram_types
 from notation import user_notation_names
 from geometry_types import Position, Padding, Rect_Size
 from grid import Grid
+from sqlalchemy import select
 
 default_diagram_type = 'class'
 

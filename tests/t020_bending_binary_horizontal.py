@@ -4,11 +4,14 @@ t020_bending_binary_horizontal.py
 from collections import namedtuple
 from canvas import Canvas
 from single_cell_node import SingleCellNode
-from names import NodeTypeName, StemTypeName
+from names import NodeTypeName, StemTypeName, ConnectorTypeName
 from notation import StemSemantic
 from bending_binary_connector import BendingBinaryConnector
 from connection_types import NodeFace, AnchorPosition
 from command_interface import New_Stem, New_Path
+from flatlanddb import FlatlandDB
+
+db = FlatlandDB(rebuild=True)
 
 
 # For diagnostics during development
@@ -56,7 +59,8 @@ def create_canvas(args):
                       face=NodeFace.TOP, anchor=AnchorPosition(0))
     p = [New_Path(lane=2, rut=0)]
 
-    BendingBinaryConnector(diagram=flatland_canvas.Diagram, anchored_stem_p=p_stem, anchored_stem_t=t_stem, paths=p)
+    BendingBinaryConnector(diagram=flatland_canvas.Diagram, connector_type=ConnectorTypeName.binary_assoc,
+                           anchored_stem_p=p_stem, anchored_stem_t=t_stem, paths=p)
     flatland_canvas.render()
 
 

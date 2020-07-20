@@ -51,28 +51,28 @@ Notation
     Why use it: Standards conformance. You are showing diagram to someone who knows, uses or must use UML
 
 Diagram Type
-    Name: class diagram
+    Name: class
     Abbreviation: CD
     About: Show data, logic and constraints in a domain
     Node Type ->> class, imported class
     Connector Type ->> binary association, generalization
     Notation ->> Shlaer-Mellor, Starr, xUML
 
-    Name: state machine diagram
+    Name: state machine
     Abbreviation: SMD
     About: lifecycle of a class or assigner relationship
     Node Type ->> state
     Connector Type ->> initial transition, deletion transition, transition
     Notation ->> xUML
 
-    Name: class collaboration diagram
+    Name: class collaboration
     Abbreviation: CCD
     About: Shows interactions among classes and external entities in a domain
     Node Type ->> overview class, external entity
     Connector Type ->> collaboration
     Notation ->> Starr, xUML
 
-    Name: domain diagram
+    Name: domain
     Abbreviation: DD
     About: Illustrates your logical subject matter 'stack' as a network of platform independent domains with requirements dependencies
     Node Type ->> domain

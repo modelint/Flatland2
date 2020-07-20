@@ -78,7 +78,7 @@ class TreeConnector(Connector):
 
         self.Branches = []
         for i, b in enumerate(branches_to_make):
-            order = Index(i)  # Cast int to Index type
+            order = Index(i)  # Cast INT to Index type
             if b.path:
                 this_branch = RutBranch(order, connector=self, path=b.path, hanging_stems=b.hanging_stems)
             elif b.grafting_stem:
