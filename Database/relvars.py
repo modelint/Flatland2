@@ -2,34 +2,36 @@
 relvars.py – Relation variables (relvars / tables) in the flatland database
 """
 from sqlalchemy import Table, Column, String, Integer
-from sqlalchemy import ForeignKey, UniqueConstraint, PrimaryKeyConstraint, ForeignKeyConstraint
+from sqlalchemy import ForeignKey, UniqueConstraint, PrimaryKeyConstraint, ForeignKeyConstraint, CheckConstraint
 
 
 def define(db):
     return {
         'sheet': Table('Sheet', db.MetaData,
-                       Column('Name', String(20), nullable=False, unique=True, primary_key=True),
+                       Column('Name', String(20), nullable=False, primary_key=True),
                        Column('Group', String(3), nullable=False),
                        Column('Height', String(8), nullable=False),
                        Column('Width', String(8), nullable=False)
                        ),
         'notation': Table('Notation', db.MetaData,
-                          Column('Name', String, nullable=False, unique=True, primary_key=True),
+                          Column('Name', String, nullable=False, primary_key=True),
                           Column('About', String, nullable=False),
                           Column('Why use it', String, nullable=False)
                           ),
         'diagram_type': Table('Diagram Type', db.MetaData,
-                              Column('Name', String, nullable=False, unique=True, primary_key=True),
+                              Column('Name', String, nullable=False, primary_key=True),
                               Column('About', String, nullable=False)
                               ),
         'diagram_notation': Table('Diagram Notation', db.MetaData,
-                                  Column('Diagram type', String, ForeignKey('Diagram Type.Name'), nullable=False),
-                                  Column('Notation', String, ForeignKey('Notation.Name'), nullable=False),
+                                  Column('Diagram type', String,
+                                         ForeignKey('Diagram Type.Name', name='R32_diagram_type'), nullable=False),
+                                  Column('Notation', String,
+                                         ForeignKey('Notation.Name', name='R32_notation'), nullable=False),
                                   PrimaryKeyConstraint('Diagram type', 'Notation', name='I1')
                                   ),
         'node_type': Table('Node Type', db.MetaData,
                            Column('Name', String, nullable=False),
-                           Column('Diagram type', String, ForeignKey('Diagram Type.Name'), nullable=False),
+                           Column('Diagram type', String, ForeignKey('Diagram Type.Name', name='R15'), nullable=False),
                            Column('About', String, nullable=False),
                            Column('Corner rounding', Integer, nullable=False),
                            Column('Border', String, nullable=False),
@@ -48,10 +50,87 @@ def define(db):
                                   Column('Pad left', Integer, nullable=False),
                                   Column('Pad right', Integer, nullable=False),
                                   Column('Text style', String(15), nullable=False),
-                                  Column('Node type', String, ForeignKey('Node Type.Name'), nullable=False),
-                                  Column('Diagram type', String, ForeignKey('Node Type.Diagram type'), nullable=False),
+                                  Column('Node type', String, ForeignKey('Node Type.Name', name='R4'), nullable=False),
+                                  Column('Diagram type', String, ForeignKey('Node Type.Diagram type', name='R4_2'),
+                                         nullable=False),
                                   Column('Stack order', Integer, nullable=False),
                                   PrimaryKeyConstraint('Stack order', 'Node type', 'Diagram type', name='I1'),
                                   UniqueConstraint('Name', 'Node type', 'Diagram type', name='I2')
+                                  ),
+        'connector_type': Table('Connector Type', db.MetaData,
+                                Column('Name', String, nullable=False),
+                                Column('About', String, nullable=False),
+                                Column('Geometry', String, nullable=False),
+                                Column('Diagram type', String, ForeignKey('Diagram Type.Name', name='R50'),
+                                       nullable=False),
+                                PrimaryKeyConstraint('Name', 'Diagram type', name='I1')
+                                ),
+        'stem_type': Table('Stem Type', db.MetaData,
+                           Column('Name', String, nullable=False),
+                           Column('About', String, nullable=False),
+                           Column('Diagram type', String, ForeignKey('Diagram Type.Name', name='R71'), nullable=False),
+                           PrimaryKeyConstraint('Name', 'Diagram type', name='I1')
+                           ),
+        'stem_semantic': Table('Stem Semantic', db.MetaData,
+                               Column('Name', String, primary_key=True, unique=True, nullable=False)
+                               ),
+        'stem_notation': Table('Stem Notation', db.MetaData,
+                               Column('Semantic', String, ForeignKey('Stem Semantic.Name', name='R60_stem_semantic'),
+                                      nullable=False),
+                               Column('Diagram type', String,
+                                      ForeignKey('Diagram Notation.Diagram type', name='R60_diagram_notation'),
+                                      nullable=False),
+                               Column('Notation', String,
+                                      ForeignKey('Diagram Notation.Notation', name='R60_2_diagram_notation'),
+                                      nullable=False),
+                               PrimaryKeyConstraint('Semantic', 'Diagram type', 'Notation', name='I1')
+                               ),
+        'decorated_stem_end': Table('Decorated Stem End', db.MetaData,
+                                    Column('Stem type', String, ForeignKey('Stem Type.Name', name='R55_stem_type'),
+                                           nullable=False),
+                                    Column('Semantic', String,
+                                           ForeignKey('Stem Notation.Semantic', name='R55_stem_notation'),
+                                           nullable=False),
+                                    Column('Diagram type', String, nullable=False),
+                                    Column('Notation', String,
+                                           ForeignKey('Stem Notation.Notation', name='R55_2_stem_notation'),
+                                           nullable=False),
+                                    Column('End', String(4),
+                                           CheckConstraint('End=="root" or End=="vine"', name='Type_Stem_End'),
+                                           nullable=False),
+                                    PrimaryKeyConstraint('Stem type', 'Semantic', 'Diagram type', 'Notation', 'End',
+                                                         name='I1'),
+                                    ForeignKeyConstraint(('Diagram type',), ('Stem Notation.Diagram type',),
+                                                         name='R55_3_stem_notation'),
+                                    ForeignKeyConstraint(('Diagram type',), ('Stem Type.Diagram type',),
+                                                         name='R55_2_stem_type'),
+                                    ),
+        'symbol': Table('Symbol', db.MetaData,
+                        Column('Name', String, nullable=False),
+                        Column('Length', Integer, nullable=False),
+                        PrimaryKeyConstraint('Name', name='I1')
+                        ),
+        'simple_shape_symbol': Table('Simple Shape Symbol', db.MetaData,
+                                     Column('Name', String, ForeignKey('Symbol.Name', name='R57'), nullable=False),
+                                     Column('Stroke', String, nullable=False),
+                                     PrimaryKeyConstraint('Name', name='I1')
+                                     ),
+        'text_symbol': Table('Text Symbol', db.MetaData,
+                             Column('Name', String, ForeignKey('Symbol.Name', name='R57'), nullable=False),
+                             PrimaryKeyConstraint('Name', name='I1')
+                             ),
+        'compound_shape_symbol': Table('Compound Shape Symbol', db.MetaData,
+                                       Column('Name', String, ForeignKey('Symbol.Name', name='R57'), nullable=False),
+                                       ),
+        'shape_draw_order': Table('Shape Draw Order', db.MetaData,
+                                  Column('Compound shape', String, ForeignKey('Compound Shape Symbol.Name',
+                                                                              name='R56_compound'), nullable=False),
+                                  Column('Stacked shape', String, ForeignKey('Simple Shape Symbol.Name',
+                                                                             name='R56_simple'), nullable=False),
+                                  Column('Order', Integer, nullable=False),
+                                  Column('Stack', String(10), nullable=False),
+                                  CheckConstraint('Stack=="adjacent" or Stack=="layered" or Stack="last"',
+                                                  name='Type_Stem_End'),
+                                  PrimaryKeyConstraint('Compound shape', 'Order', name='I1')
                                   )
     }

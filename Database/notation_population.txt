@@ -131,27 +131,43 @@ Connector Type
 Stem Type
     Name: class mult
     About: How many instances may be associated
+    Diagram type: class
 
     Name: associative mult
     About: How many association class instances per pair of associated instances
+    Diagram type: class
 
     Name: superclass
     About: The superset of all subclass instances
+    Diagram type: class
 
     Name: subclass
     About: A disjoint subset of the superclass set of instances
+    Diagram type: class
 
     Name: from state
     About: Points to the source state in a transition
+    Diagram type: state machine
 
     Name: to state
     About: Points to the destination state in a transition
+    Diagram type: state machine
 
     Name: to initial state
     About: Points to a designated state as an initial state
+    Diagram type: state machine
 
     Name: from deletion state
     About: Points away from a final state to indicate deletion
+    Diagram type: state machine
+
+    Name: to service
+    About: Points toward a domain that fullfills the requirements of a client domain
+    Diagram type: domain
+
+    Name: to collaborator
+    About: Attaches to a communicating entity
+    Diagram type: collaboration
 
 Semantic
     Name: target state
@@ -176,15 +192,15 @@ Semantic
 
 Stem Notation
     Semantic: target state
-    Diagram type: state
+    Diagram type: state machine
     Notation ->> xUML
 
     Semantic: initial pseudo state
-    Diagram type: state
+    Diagram type: state machine
     Notation ->> xUML
 
     Semantic: final pseudo state
-    Diagram type: state
+    Diagram type: state machine
     Notation ->> xUML
 
     Semantic: Mc mult
@@ -219,16 +235,23 @@ Decorated Stem End
     Stem type: class mult
     Diagram type: class
     Notation: Starr
-    Semantic ->> Mc mult, 1c multplicity, M mult, 1 mult
+    Semantic ->> Mc mult, 1c mult, M mult, 1 mult
     End: root
     Clearance: 16
 
     Stem type: class mult
     Diagram type: class
     Notation: xUML
-    Semantic ->> Mc mult, 1c multplicity, M mult, 1 mult
+    Semantic ->> Mc mult, 1c mult, M mult, 1 mult
     End: root
     Clearance: 20
+
+    Stem type: class mult
+    Diagram type: class
+    Notation: Shlaer-Mellor
+    Semantic ->> Mc mult, 1c mult, M mult, 1 mult
+    End: root
+    Clearance: 16
 
     Stem type: to state
     Diagram type: state
