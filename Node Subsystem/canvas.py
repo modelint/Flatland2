@@ -4,10 +4,9 @@ canvas.py
 This is the Flatland (and not the cairo) Canvas class
 """
 import sys
-import sheet
+from sqlalchemy import select
 from geometry_types import Padding, Alignment, Rect_Size, Position, Rectangle
 from draw_types import Stroke, StrokeStyle, StrokeWidth, Color
-from sheet import us_sheet_sizes, int_sheet_sizes, default_us_sheet
 from diagram import Diagram
 from tablet import Tablet
 
@@ -16,6 +15,7 @@ points_in_cm = 28.3465
 points_in_inch = 72
 default_canvas_margin = Padding(top=10, bottom=10, left=10, right=10)
 global_alignment = Alignment(vertical='center', horizontal='center')
+default_sheet = 'tabloid'
 
 
 class Canvas:
@@ -45,15 +45,20 @@ class Canvas:
         self.Database = db
         self.Sheet_name = standard_sheet_name
         self.Orientation = orientation
-        sheet.load_sizes()
-        self.Size = us_sheet_sizes.get(standard_sheet_name)
-        if self.Size:
+        sheets = db.MetaData.tables['Sheet']
+        query = select([sheets]).where(sheets.c.Name == self.Sheet_name)
+        found = self.Database.Connection.execute(query).fetchone()
+        if not found:
+            query = select([sheets]).where(sheets.c.Name == default_sheet)
+            found = self.Database.Connection.execute(query).fetchone()
+        assert(found, "Sheet not found in database")
+        self.Size = found.Name
+        if found.Group == 'US':
             factor = points_in_inch
-        else:
-            self.Size = int_sheet_sizes.get(standard_sheet_name, us_sheet_sizes[default_us_sheet])
+        elif found.Group == 'INT':
             factor = points_in_cm
         # Set point size height and width based on portrait vs. landscape orientation
-        h, w = (self.Size[0], self.Size[1]) if self.Orientation == 'portrait' else (self.Size[1], self.Size[0])
+        h, w = (found.Height, found.Width) if self.Orientation == 'landscape' else (found.Width, found.Height)
         self.Point_size = Rect_Size(height=int(h * factor), width=int(w * factor))
         self.Margin = default_canvas_margin
         self.Diagram = Diagram(self, diagram_type, notation)

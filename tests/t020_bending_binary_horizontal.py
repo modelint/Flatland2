@@ -20,6 +20,7 @@ def create_canvas(args):
     # These args could come from the command line or be supplied directly in
     # this file for diagnostic purposes
     flatland_canvas = Canvas(
+        db=db,
         diagram_type=args.diagram,
         notation=args.notation,
         standard_sheet_name=args.sheet,
