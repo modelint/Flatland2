@@ -1,5 +1,5 @@
 """
-compound_shape_symbol_instances.py
+compound_symbol_instances.py
 """
 population = [
     {'Name': 'double solid arrow'},

@@ -1,5 +1,5 @@
 """
-decorated_stem_end_instances.py
+stem_end_decoration_instances.py
 """
 population = [
     # Class diagram
@@ -7,21 +7,21 @@ population = [
     # Starr notation
     # Binary multiplicity
     {'Stem type': 'class mult', 'Diagram type': 'class', 'Notation': 'Starr',
-     'Semantic': 'Mc mult', 'End': 'root'},
+     'Semantic': 'Mc mult', 'Symbol': 'double hollow arrow', 'End': 'root'},
     {'Stem type': 'class mult', 'Diagram type': 'class', 'Notation': 'Starr',
-     'Semantic': '1c mult', 'End': 'root'},
+     'Semantic': '1c mult', 'Symbol': 'hollow arrow', 'End': 'root'},
     {'Stem type': 'class mult', 'Diagram type': 'class', 'Notation': 'Starr',
-     'Semantic': '1 mult', 'End': 'root'},
+     'Semantic': '1 mult', 'Symbol': 'solid arrow', 'End': 'root'},
     {'Stem type': 'class mult', 'Diagram type': 'class', 'Notation': 'Starr',
-     'Semantic': 'M mult', 'End': 'root'},
+     'Semantic': 'M mult', 'Symbol': 'double solid arrow', 'End': 'root'},
     # Associative multiplicity
     {'Stem type': 'associative mult', 'Diagram type': 'class', 'Notation': 'Starr',
-     'Semantic': '1 mult', 'End': 'vine'},
+     'Semantic': '1 mult', 'Symbol': 'solid arrow', 'End': 'vine'},
     {'Stem type': 'associative mult', 'Diagram type': 'class', 'Notation': 'Starr',
-     'Semantic': 'M mult', 'End': 'vine'},
+     'Semantic': 'M mult', 'Symbol': 'double solid arrow', 'End': 'vine'},
     # Generalization
     {'Stem type': 'superclass', 'Diagram type': 'class', 'Notation': 'Starr',
-     'Semantic': 'generalization', 'End': 'root'},
+     'Semantic': 'generalization', 'Symbol': 'gen arrow', 'End': 'root'},
 
     # xUML notation
     # Binary multiplicity

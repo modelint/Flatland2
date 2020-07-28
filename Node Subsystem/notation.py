@@ -17,9 +17,9 @@ class Notation(Enum):
 
 
 user_notation_names = {
-    'SM' : Notation.SM,
-    'Starr' : Notation.Starr,
-    'xUML' : Notation.xUML
+    'SM': Notation.SM,
+    'Starr': Notation.Starr,
+    'xUML': Notation.xUML
 }
 
 

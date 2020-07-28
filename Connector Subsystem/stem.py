@@ -2,34 +2,18 @@
 stem.py
 """
 
-from connection_types import NodeFace, StemEnd
+from sqlalchemy import select
 from geometry_types import Position
-from layout_specification import default_unary_branch_length, undecorated_stem_clearance
-from connector_type import ConnectionRole
-from decorated_stem_end import decorated_stem_ends, DecoratedStemEndID
+from drawn_stem_end import DrawnStemEnd
+from stem_type import StemTypeName
+from connection_types import NodeFace, DecoratedStemEnd
+from notation import StemSemantic
 
+from typing import TYPE_CHECKING
 
-def compute_vine_position(connector_type, diagram_type, stem_type):
-    # We need the distance of the Vine end away from the node face
-    # This is determined by the Stem Type Usage role, so we look that up first
-    # For a free usage, this is just the standard length
-    # For an opposing usage, this is the clearance distance
-    # For a tee usage, this is determined after working out where the connector is drawn
-    # for a trunk usage, it is the clearance distance
-    # for a branch usage, it is the clearance distance
-    # We factor in the direction (horizontal or vertical) and add to either the Root_end x or y coordinate
-
-    # Look up the role that this Stem Type plays in the specified Connector Type
-    role = stem_type_usages[
-        StemTypeUsageID(
-            connector_type=connector_type, diagram_type=diagram_type,
-            stem_type=stem_type
-        )]
-
-    if role == ConnectionRole.free:
-        stem_length = default_unary_branch_length
-
-    return 1  # TODO: Not the real value, just for testing. Not used for rendering
+if TYPE_CHECKING:
+    from connector import Connector
+    from node import Node
 
 
 class Stem:
@@ -51,7 +35,8 @@ class Stem:
     """
 
     def __init__(self,
-                 connector, stem_type, semantic, node, node_face, root_position, vine_position):
+                 connector: 'Connector', stem_type: StemTypeName, semantic: StemSemantic, node: 'Node',
+                 node_face: NodeFace, root_position: Position, vine_position: Position):
         self.Connector = connector
         self.Stem_type = stem_type
         self.Node = node
@@ -62,7 +47,18 @@ class Stem:
 
     def render(self):
         """
-        Draw self
+        Draw a stem decoration at either, both or neither end
+        If there are no stem decorations to draw, just draw a short line from the root to the vine end
+        using the connector line style and the default node face offset value
         """
-        # Overriden by the subclass
-        pass
+        # Draw each decorated stem end
+        db = self.Connector.Diagram.Canvas.Database
+        decorated_stem_ends = db.MetaData.tables['Decorated Stem End']
+        q = select([decorated_stem_ends])
+        found = db.Connection.execute(q)
+        for i in found:
+            dse = DecoratedStemEnd(stem_type=i['Stem type'], semantic=i.Semantic, diagram_type=i['Diagram type'],
+                                   notation=i.Notation, end=i.End)
+            drawn_stem_end = DrawnStemEnd(self, decorated_stem_end=dse)
+        if not found:
+            pass  # Set vine at no_decoration_offset, Draw line from root to vine

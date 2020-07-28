@@ -5,8 +5,6 @@ connector_type_instances.py
 population = [
     {'Name': 'binary association', 'Diagram type': 'class', 'Geometry': 'binary',
      'About': 'Connects an anchor point on one node to an anchor point on the same or another node'},
-    {'Name': 'associative relationship', 'Diagram type': 'class', 'Geometry': 'tertiary',
-     'About': 'Same properties as a binary association with an added association class'},
     {'Name': 'generalization', 'Diagram type': 'class', 'Geometry': 'tree',
      'About': 'A superset class compeletely split into disjoint subset classes'},
     {'Name': 'initial transition', 'Diagram type': 'state machine', 'Geometry': 'unary',

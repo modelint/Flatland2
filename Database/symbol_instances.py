@@ -4,26 +4,18 @@ symbol_instances.py
 population = [
     # Simple Shape Symbols
     # Arrowhead Symbols
-    {'Name': 'solid arrow', 'Length': 9},
-    {'Name': 'hollow arrow', 'Length': 9},
-    {'Name': 'open arrow', 'Length': 9},
-    {'Name': 'gen arrow', 'Length': 12},
+    {'Name': 'solid arrow', 'Shape': 'arrow'},
+    {'Name': 'hollow arrow', 'Shape': 'arrow'},
+    {'Name': 'open arrow', 'Shape': 'arrow'},
+    {'Name': 'gen arrow', 'Shape': 'arrow'},
     # Circle Symbols
-    {'Name': 'solid small dot', 'Length': 17},
-    {'Name': 'open large circle', 'Length': 29},
+    {'Name': 'solid small dot', 'Shape': 'circle'},
+    {'Name': 'open large circle', 'Shape': 'circle'},
     # Cross Symbols
-    {'Name': 'superclass cross', 'Length': 10},
+    {'Name': 'superclass cross', 'Shape': 'cross'},
     # Compound Symbols
-    {'Name': 'double solid arrow', 'Length': 18},
-    {'Name': 'double hollow arrow', 'Length': 18},
-    {'Name': 'double open arrow', 'Length': 18},
-    {'Name': 'circled dot', 'Length': 29},
-    # Text Symbols
-    {'Name': '0..1', 'Length': 20},
-    {'Name': '1', 'Length': 20},
-    {'Name': '0..*', 'Length': 20},
-    {'Name': 'is a', 'Length': 20},
-    {'Name': 'c', 'Length': 20},
-    {'Name': '{M}', 'Length': 20},
-    {'Name': '{disjoint, complete}', 'Length': 20}
+    {'Name': 'double solid arrow', 'Shape': 'compound'},
+    {'Name': 'double hollow arrow', 'Shape': 'compound'},
+    {'Name': 'double open arrow', 'Shape': 'compound'},
+    {'Name': 'circled dot', 'Shape': 'compound'}
 ]

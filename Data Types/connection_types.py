@@ -11,6 +11,7 @@ from typing import NewType
 AnchorPosition = NewType('AnchorPosition', int)
 
 Path = namedtuple('Path', 'lane rut')
+DecoratedStemEnd = namedtuple('DecoratedStemEnd', 'stem_type semantic diagram_type notation end')
 
 
 class Orientation(Enum):
