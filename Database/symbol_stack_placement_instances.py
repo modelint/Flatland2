@@ -1,5 +1,5 @@
 """
-symbol_stack_placement.py
+symbol_stack_placement_instances.py
 """
 population = [
     # Double solid arrow

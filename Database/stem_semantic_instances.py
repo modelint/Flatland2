@@ -3,17 +3,17 @@ stem_semantic_instances.py
 """
 
 population = [
-    {'Name': 'target state'},
-    {'Name': 'source state'},
-    {'Name': 'initial pseudo state'},
-    {'Name': 'final pseudo state'},
-    {'Name': 'Mc mult'},
-    {'Name': '1c mult'},
-    {'Name': '1 mult'},
-    {'Name': 'M mult'},
-    {'Name': 'superclass'},
-    {'Name': 'subclass'},
-    {'Name': 'provide'},
-    {'Name': 'require'},
-    {'Name': 'collaboration'}
+    {'Name': 'target state', 'Diagram type': 'state machine'},
+    {'Name': 'source state', 'Diagram type': 'state machine'},
+    {'Name': 'initial pseudo state', 'Diagram type': 'state machine'},
+    {'Name': 'final pseudo state', 'Diagram type': 'state machine'},
+    {'Name': 'Mc mult', 'Diagram type': 'class'},
+    {'Name': '1c mult', 'Diagram type': 'class'},
+    {'Name': '1 mult', 'Diagram type': 'class'},
+    {'Name': 'M mult', 'Diagram type': 'class'},
+    {'Name': 'superclass', 'Diagram type': 'class'},
+    {'Name': 'subclass', 'Diagram type': 'class'},
+    {'Name': 'provide', 'Diagram type': 'domain'},
+    {'Name': 'require', 'Diagram type': 'domain'},
+    {'Name': 'collaboration', 'Diagram type': 'collaboration'},
 ]
