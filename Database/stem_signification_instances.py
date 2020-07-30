@@ -7,7 +7,6 @@ population = [
     {'Stem type': 'to initial state', 'Semantic': 'initial pseudo state', 'Diagram type': 'state machine'},
     {'Stem type': 'from deletion state', 'Semantic': 'final pseudo state', 'Diagram type': 'state machine'},
     {'Stem type': 'class mult', 'Semantic': 'Mc mult', 'Diagram type': 'class'},
-    {'Stem type': 'class mult', 'Semantic': 'Mc mult', 'Diagram type': 'class'},
     {'Stem type': 'class mult', 'Semantic': '1c mult', 'Diagram type': 'class'},
     {'Stem type': 'class mult', 'Semantic': '1 mult', 'Diagram type': 'class'},
     {'Stem type': 'class mult', 'Semantic': 'M mult', 'Diagram type': 'class'},

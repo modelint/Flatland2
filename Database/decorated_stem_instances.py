@@ -67,8 +67,6 @@ population = [
     # Generalization
     {'Stem type': 'superclass', 'Diagram type': 'class', 'Notation': 'Shlaer-Mellor',
      'Semantic': 'gen super', 'Stroke': 'normal'},
-    {'Stem type': 'superclass', 'Diagram type': 'class', 'Notation': 'Shlaer-Mellor',
-     'Semantic': 'gen super', 'Stroke': 'normal'},
 
     # State machine diagram
     {'Stem type': 'to state', 'Diagram type': 'state machine', 'Notation': 'xUML',

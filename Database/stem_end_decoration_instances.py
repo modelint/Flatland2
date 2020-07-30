@@ -24,58 +24,46 @@ population = [
      'Semantic': 'generalization', 'Symbol': 'gen arrow', 'End': 'root'},
 
     # xUML notation
-    # Binary multiplicity
-    {'Stem type': 'class mult', 'Diagram type': 'class', 'Notation': 'xUML',
-     'Semantic': 'Mc mult', 'End': 'root'},
-    {'Stem type': 'class mult', 'Diagram type': 'class', 'Notation': 'xUML',
-     'Semantic': '1c mult', 'End': 'root'},
-    {'Stem type': 'class mult', 'Diagram type': 'class', 'Notation': 'xUML',
-     'Semantic': '1 mult', 'End': 'root'},
-    {'Stem type': 'class mult', 'Diagram type': 'class', 'Notation': 'xUML',
-     'Semantic': 'M mult', 'End': 'root'},
-    # Associative multiplicity (no notation for 1 multiplicity associative)
-    {'Stem type': 'associative mult', 'Diagram type': 'class', 'Notation': 'xUML',
-     'Semantic': 'M mult', 'End': 'vine'},
     # Generalization
     {'Stem type': 'superclass', 'Diagram type': 'class', 'Notation': 'xUML',
-     'Semantic': 'generalization', 'End': 'root'},
+     'Semantic': 'generalization', 'Symbol': 'gen arrow', 'End': 'root'},
 
     # Shlaer-Mellor notation
     {'Stem type': 'class mult', 'Diagram type': 'class', 'Notation': 'Shlaer-Mellor',
-     'Semantic': 'Mc mult', 'End': 'root'},
+     'Semantic': 'Mc mult', 'Symbol': 'double open arrow', 'End': 'root'},
     {'Stem type': 'class mult', 'Diagram type': 'class', 'Notation': 'Shlaer-Mellor',
-     'Semantic': '1c mult', 'End': 'root'},
+     'Semantic': '1c mult', 'Symbol': 'open arrow', 'End': 'root'},
     {'Stem type': 'class mult', 'Diagram type': 'class', 'Notation': 'Shlaer-Mellor',
-     'Semantic': '1 mult', 'End': 'root'},
+     'Semantic': '1 mult', 'Symbol': 'open arrow', 'End': 'root'},
     {'Stem type': 'class mult', 'Diagram type': 'class', 'Notation': 'Shlaer-Mellor',
-     'Semantic': 'M mult', 'End': 'root'},
+     'Semantic': 'M mult', 'Symbol': 'double open arrow', 'End': 'root'},
     # Associative multiplicity
     {'Stem type': 'associative mult', 'Diagram type': 'class', 'Notation': 'Shlaer-Mellor',
-     'Semantic': '1 mult', 'End': 'vine'},
+     'Semantic': '1 mult', 'Symbol': 'open arrow', 'End': 'vine'},
     {'Stem type': 'associative mult', 'Diagram type': 'class', 'Notation': 'Shlaer-Mellor',
-     'Semantic': 'M mult', 'End': 'vine'},
+     'Semantic': 'M mult', 'Symbol': 'double open arrow', 'End': 'vine'},
     # Generalization
     {'Stem type': 'superclass', 'Diagram type': 'class', 'Notation': 'Shlaer-Mellor',
-     'Semantic': 'generalization', 'End': 'root'},
+     'Semantic': 'generalization', 'Symbol': 'superclass cross', 'End': 'vine'},
 
     # State machine diagram
     {'Stem type': 'to state', 'Diagram type': 'state machine', 'Notation': 'xUML',
-     'Semantic': 'target state', 'End': 'root'},
+     'Semantic': 'target state', 'Symbol': 'solid arrow', 'End': 'root'},
 
     # Both ends of unary stem are decoreated for xUML initial transition
     {'Stem type': 'to initial state', 'Diagram type': 'state machine', 'Notation': 'xUML',
-     'Semantic': 'initial pseudo state', 'End': 'root'},
+     'Semantic': 'initial pseudo state', 'Symbol': 'solid arrow', 'End': 'root'},
     {'Stem type': 'to initial state', 'Diagram type': 'state machine', 'Notation': 'xUML',
-     'Semantic': 'initial pseudo state', 'End': 'vine'},
+     'Semantic': 'initial pseudo state', 'Symbol': 'solid small dot', 'End': 'vine'},
 
     {'Stem type': 'from deletion state', 'Diagram type': 'state machine', 'Notation': 'xUML',
-     'Semantic': 'final pseudo state', 'End': 'vine'},
+     'Semantic': 'final pseudo state', 'Symbol': 'circled dot', 'End': 'vine'},
 
     # Domain diagram
     # Starr
     {'Stem type': 'to service', 'Diagram type': 'state machine', 'Notation': 'Starr',
-     'Semantic': 'dependency', 'End': 'root'},
+     'Semantic': 'dependency', 'Symbol': 'solid arrow', 'End': 'root'},
     # xUML
     {'Stem type': 'to service', 'Diagram type': 'state machine', 'Notation': 'xUML',
-     'Semantic': 'dependency', 'End': 'root'}
+     'Semantic': 'dependency', 'Symbol': 'open arrow', 'End': 'root'}
 ]
