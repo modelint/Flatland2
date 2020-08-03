@@ -2,7 +2,6 @@
 binary_connector.py
 """
 from connector import Connector
-from names import ConnectorTypeName
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -19,7 +18,7 @@ class BinaryConnector(Connector):
     Tertiary_stem – An optional Tertiary Stem may be supplied with a user specified anchor position
     """
 
-    def __init__(self, diagram: 'Diagram', connector_type: ConnectorTypeName):
+    def __init__(self, diagram: 'Diagram', connector_type: str):
         Connector.__init__(self, diagram, connector_type)
 
     def render(self):

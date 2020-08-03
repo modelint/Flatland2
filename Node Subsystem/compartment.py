@@ -1,7 +1,12 @@
 """ compartment.py """
 
-from geometry_types import Rect_Size, Position, Rectangle
+from geometry_types import Rect_Size, Position, Rectangle, Alignment, Padding
 from draw_types import Text_Line
+from typing import TYPE_CHECKING, List, Dict
+from compartment_type import CompartmentType
+
+if TYPE_CHECKING:
+    from node import Node
 
 
 class Compartment:
@@ -10,13 +15,24 @@ class Compartment:
 
     Attributes
     ---
-
+    Name - Compartment type name indicating overall purpose of compartment (Title, Attributes, Methods, etc)
+    Alignment - Alignment of text block within the compartment
+    Padding - Extra space between text block and Node boundary
+    Text style - Font, size, etc of text
     """
 
-    def __init__(self, node, name, content):
-        self.Name = name
+    def __init__(self, node: 'Node', ctype_data: Dict, content: List[str]):
+        #
+        self.Name = ctype_data['Name']
+        self.Alignment = Alignment(
+            vertical=ctype_data['Vertical alignment'], horizontal=ctype_data['Horizontal_alignment'])
+        self.Padding = Padding(
+            top=ctype_data['Pad top'], bottom=ctype_data['Pad bottom'],
+            right=ctype_data['Pad right'], left=ctype_data['Pad left']
+        )
+        self.Text_style = ctype_data['Text style']
         self.Node = node
-        self.Type = self.Node.Node_type.compartments[self.Name]
+        self.Type = CompartmentType(ctype_data)
         # self.Type: Compartment_Type_Attrs = self.Node.Node_type.compartments[self.Name]
         self.Content = content  # list of text lines
         self.leading = 4  # Temporary default leading in points ( change later to be font specific

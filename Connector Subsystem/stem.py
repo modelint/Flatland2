@@ -2,11 +2,11 @@
 stem.py
 """
 
-from sqlalchemy import select
+from sqlalchemy import select, and_
 from geometry_types import Position
-from drawn_stem_end import DrawnStemEnd
+from rendered_symbol import RenderedSymbol
 from stem_type import StemTypeName
-from connection_types import NodeFace, DecoratedStemEnd
+from connection_types import NodeFace
 from notation import StemSemantic
 
 from typing import TYPE_CHECKING
@@ -51,14 +51,19 @@ class Stem:
         If there are no stem decorations to draw, just draw a short line from the root to the vine end
         using the connector line style and the default node face offset value
         """
-        # Draw each decorated stem end
+        # Create a Rendered Symbol for each Stem End Decoration
         db = self.Connector.Diagram.Canvas.Database
-        decorated_stem_ends = db.MetaData.tables['Decorated Stem End']
-        q = select([decorated_stem_ends])
+        stem_end_decs = db.MetaData.tables['Stem End Decoration']
+        q = select([stem_end_decs.c.Symbol, stem_end_decs.c.End], stem_end_decs.c.Growth).where(and_(
+            stem_end_decs.c['Stem type'] == self.Stem_type,
+            stem_end_decs.c['Semantic'] == self.Semantic,
+            stem_end_decs.c['Diagram type'] == self.Connector.Diagram.Diagram_type,
+            stem_end_decs.c['Notation'] == self.Connector.Diagram.Notation
+        )
+        )
         found = db.Connection.execute(q)
         for i in found:
-            dse = DecoratedStemEnd(stem_type=i['Stem type'], semantic=i.Semantic, diagram_type=i['Diagram type'],
-                                   notation=i.Notation, end=i.End)
-            drawn_stem_end = DrawnStemEnd(self, decorated_stem_end=dse)
+            RenderedSymbol(stem=self, end=i['End'], symbol=i['Symbol'], growth=i['Growth'] )
         if not found:
+            print("No rendered symbols")
             pass  # Set vine at no_decoration_offset, Draw line from root to vine

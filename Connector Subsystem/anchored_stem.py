@@ -12,6 +12,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from node import Node
     from connector import Connector
+    from rendered_symbol import RenderedSymbol
 
 
 def anchor_to_position(node: 'Node', face: NodeFace, anchor_position: AnchorPosition) -> Position:
@@ -60,6 +61,7 @@ class AnchoredStem(Stem):
 
     def __init__(self, connector: 'Connector', stem_type: StemTypeName, semantic: StemSemantic,
                  node: 'Node', face: NodeFace, anchor_position: AnchorPosition):
+
         vine = anchor = anchor_to_position(node, face, anchor_position)
         # TODO: Vine position should be computed based on decorator, same as anchor for now
 

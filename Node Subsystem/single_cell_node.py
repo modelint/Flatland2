@@ -2,7 +2,12 @@
 
 from linear_geometry import align_on_axis
 from node import Node
-from geometry_types import Position
+from geometry_types import Position, Alignment
+
+from typing import TYPE_CHECKING, List, Optional
+
+if TYPE_CHECKING:
+    from grid import Grid
 
 
 class SingleCellNode(Node):
@@ -15,7 +20,8 @@ class SingleCellNode(Node):
     Column : Placed at this column
     """
 
-    def __init__(self, node_type_name, content, grid, row, column, local_alignment=None):
+    def __init__(self, node_type_name: str, content: List[str], grid: 'Grid', row: int, column: int,
+                 local_alignment: Optional[Alignment]):
         super().__init__(node_type_name, content, grid, local_alignment)
         assert row > 0, "Negative row"
         assert column > 0, "Negative column"
@@ -24,7 +30,7 @@ class SingleCellNode(Node):
         self.Grid.place_single_cell_node(self)
 
     def __repr__(self):
-        return f'Grid [{self.Row}, {self.Column}] @ ({round(self.Canvas_position.x,2)}, {round(self.Canvas_position.y,2)}), W {self.Size.width} x H {round(self.Size.height,2)}'
+        return f'Grid [{self.Row}, {self.Column}] @ ({round(self.Canvas_position.x, 2)}, {round(self.Canvas_position.y, 2)}), W {self.Size.width} x H {round(self.Size.height, 2)}'
 
     @property
     def Canvas_position(self):
@@ -35,12 +41,11 @@ class SingleCellNode(Node):
             boundaries=self.Grid.Col_boundaries, from_grid_unit=self.Column, to_grid_unit=self.Column,
             from_padding=self.Grid.Cell_padding.left, to_padding=self.Grid.Cell_padding.right,
             node_extent=self.Size.width
-        ) + self.Grid.Diagram.Origin.x # +  self.Grid.Col_boundaries[self.Column-1]
+        ) + self.Grid.Diagram.Origin.x  # +  self.Grid.Col_boundaries[self.Column-1]
         lower_left_y = align_on_axis(
             axis_alignment=self.Local_alignment.vertical.value,
             boundaries=self.Grid.Row_boundaries, from_grid_unit=self.Row, to_grid_unit=self.Row,
             from_padding=self.Grid.Cell_padding.bottom, to_padding=self.Grid.Cell_padding.top,
             node_extent=self.Size.height
-        ) + self.Grid.Diagram.Origin.y # + self.Grid.Row_boundaries[self.Row-1]
+        ) + self.Grid.Diagram.Origin.y  # + self.Grid.Row_boundaries[self.Row-1]
         return Position(x=lower_left_x, y=lower_left_y)
-

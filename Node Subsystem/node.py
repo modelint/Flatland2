@@ -1,12 +1,21 @@
 """
 node.py
 """
-from geometry_types import Rect_Size, Position
-from node_type import node_types
+from geometry_types import Rect_Size, Position, Alignment
 from compartment import Compartment
-import flatland_exceptions
+from flatland_exceptions import UnknownNodeType, IncompatibleNodeType, EmptyTitleCompartment
 from layout_specification import default_cell_alignment
 from connection_types import NodeFace
+from flatlanddb import FlatlandDB as fdb
+from typing import TYPE_CHECKING, List, Optional
+from collections import namedtuple
+from node_type import NodeType
+from sqlalchemy import select, and_
+
+if TYPE_CHECKING:
+    from grid import Grid
+
+NodeType = namedtuple('NodeType', 'Name, About, Corner_rounding, Border, Default_size, Max_size')
 
 
 class Node:
@@ -23,21 +32,37 @@ class Node:
     Local_alignment : Position of the node in the spanned area, vertical and horizontal
     """
 
-    def __init__(self, node_type_name, content, grid, local_alignment):
-        if not content:
-            raise flatland_exceptions.NoContentForCompartment
-        self.Content = content
-        try:
-            self.Node_type = node_types[node_type_name]
-        except IndexError:
-            raise flatland_exceptions.UnknownNodeType
+    def __init__(self, node_type_name: str, content: List[str], grid: 'Grid', local_alignment: Optional[Alignment]):
         self.Grid = grid
+
+        # Validate node type name
+        # Check that the node type and its diagram type name are in the database
+        ntypes = fdb.MetaData.tables['Node Type']
+        q = select([ntypes.c['Name'], ntypes.c['Diagram type']]).where(ntypes.c['Name'] == node_type_name)
+        i = fdb.Connection.execute(q).fetchone()
+        if not i:
+            raise UnknownNodeType(node_type_name)
+        if i['Diagram type'] != self.Grid.Diagram.Diagram_type:
+            raise IncompatibleNodeType(node_type_name, self.Grid.Diagram.Diagram_type)
+        # All good, so save the name of the Node Type
+        self.Node_type = NodeType(dict(i))
+
         # Create a compartment for each element of content
         # If content is missing, make less compartments
-        self.Compartments = [
-            Compartment(node=self, name=comp_name, content=text)
-            for text, comp_name in zip(self.Content, self.Node_type.compartments.keys())
-        ]
+        # First, get a list of the compartment type rows from the database
+        ctypes = fdb.MetaData.tables['Compartment Type']
+        q = select([ctypes]).where(
+            and_(ctypes.c['Node type'] == self.Node_type, ctypes.c['Diagram type'] == self.Grid.Diagram.Diagram_type)
+        ).order_by('Stack order')
+        found = fdb.Connection.execute(q).fetchall()
+        # We take the found ctypes and the text content, which is a list of text blocks, both ordered top to bottom
+        # as they will appear in the Node, and zip these lists together to get tuples (text, instance)
+        # For each tuple, we can create an instance of Compartment
+        # The list of newly created compartments is then assigned to the Node's Compartments attribute
+        self.Compartments = [Compartment(node=self, ctype_data=dict(i), content=text)
+                             for text, i in zip(content, found)]
+        # The Node will be aligned in the Cell according to either the specified local alignment or, if none,
+        # the default cell alignment that we got from the global Layout Specification
         self.Local_alignment = local_alignment if local_alignment else default_cell_alignment
 
     @property
@@ -61,7 +86,7 @@ class Node:
         # Return a rectangle with the
         return Rect_Size(height=node_height, width=max_width)
 
-    def Face_position(self, face : NodeFace ):
+    def Face_position(self, face: NodeFace):
         """
         Returns the position of the specified face on the x or y axis
         :param face : A node face
@@ -82,6 +107,6 @@ class Node:
         print("Drawing node")
         # Start at the bottom of the node and render each compartment upward
         comp_y = self.Canvas_position.y
-        for c in self.Compartments[::-1]: # Reverse the compartment order to bottom up
+        for c in self.Compartments[::-1]:  # Reverse the compartment order to bottom up
             c.render(Position(x=self.Canvas_position.x, y=comp_y))
-            comp_y += c.Size.height # bottom of next compartment is top of this one
+            comp_y += c.Size.height  # bottom of next compartment is top of this one

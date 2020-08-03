@@ -1,13 +1,15 @@
 """
 diagram.py
 """
-import flatland_exceptions
-from names import user_diagram_names
-from diagram_type import diagram_types
-from notation import user_notation_names
+from flatland_exceptions import NotationUnsupportedForDiagramType, UnsupportedDiagramType
 from geometry_types import Position, Padding, Rect_Size
 from grid import Grid
-from sqlalchemy import select
+from typing import TYPE_CHECKING
+from flatlanddb import FlatlandDB as fdb
+from sqlalchemy import select, and_
+
+if TYPE_CHECKING:
+    from canvas import Canvas
 
 default_diagram_type = 'class'
 
@@ -31,27 +33,27 @@ class Diagram:
 
     """
 
-    def __init__(self, canvas, diagram_type_name, notation_name):
+    def __init__(self, canvas: 'Canvas', diagram_type_name: str, notation_name: str):
         self.Canvas = canvas
-        try:  # map user entered string to enum
-            supported_diagram_type = user_diagram_names[diagram_type_name]
-        except KeyError:
-            raise flatland_exceptions.UnsupportedDiagramType
 
-        # it must be in here or we need to update the diagram types file
-        self.Diagram_type = supported_diagram_type
-        # self.Diagram_type = diagram_types[supported_diagram_type]
+        # Validate diagram type name
+        dtypes = fdb.MetaData.tables['Diagram Type']
+        q = dtypes.select(dtypes.c['Name'] == diagram_type_name)
+        i = fdb.Connection.execute(q).fetchone()
+        if not i:
+            raise UnsupportedDiagramType
+        self.Diagram_type = diagram_type_name
 
-        try:  # map user entered notation string to enum
-            notation = user_notation_names[notation_name]
-        except KeyError:
-            raise flatland_exceptions.UnsupportedNotation
-
-        # if notation in self.Diagram_type['notations']:
-        if notation in diagram_types[self.Diagram_type]['notations']:
-            self.Notation = notation
-        else:  # Our diagram type does not support this notation
-            raise flatland_exceptions.NotationUnsupportedForDiagramType
+        # Validate notation for this diagram type
+        dnots = fdb.MetaData.tables['Diagram Notation']
+        q = select([dnots]).where(
+            and_(dnots.c['Notation'] == notation_name,
+                 dnots.c['Diagram type'] == self.Diagram_type)
+        )
+        i = fdb.Connection.execute(q).fetchone()
+        if not i:
+            raise NotationUnsupportedForDiagramType
+        self.Notation = notation_name
 
         self.Grid = Grid(diagram=self)  # Start with an empty grid
         self.Padding = Padding(top=0, bottom=0, left=0, right=0)
@@ -60,12 +62,13 @@ class Diagram:
             y=self.Canvas.Margin.bottom + self.Padding.bottom
         )
         self.Size = Rect_Size(  # extent from origin to right or upper canvas margin
-            width=self.Canvas.Point_size.width - self.Origin.x - self.Canvas.Margin.right,
-            height=self.Canvas.Point_size.height - self.Origin.y - self.Canvas.Margin.top
+            width=self.Canvas.Size.width - self.Origin.x - self.Canvas.Margin.right,
+            height=self.Canvas.Size.height - self.Origin.y - self.Canvas.Margin.top
         )
 
     def render(self):
         self.Grid.render()
 
     def __repr__(self):
-        return f'Diagram: {self.Diagram_type}'
+        return f'Diagram: {self.Diagram_type}, Notation: {self.Notation}, Grid: {self.Grid}, Padding: {self.Padding},' \
+               f'Origin: {self.Origin}, Size: {self.Size}'

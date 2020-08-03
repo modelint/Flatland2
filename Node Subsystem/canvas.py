@@ -4,18 +4,17 @@ canvas.py
 This is the Flatland (and not the cairo) Canvas class
 """
 import sys
-from sqlalchemy import select
-from geometry_types import Padding, Alignment, Rect_Size, Position, Rectangle
+from diagram_layout_specification import DiagramLayoutSpecification as diagram_layout
+from connector_layout_specification import ConnectorLayoutSpecification as connector_layout
+from geometry_types import , Rect_Size, Position, Rectangle
 from draw_types import Stroke, StrokeStyle, StrokeWidth, Color
 from diagram import Diagram
 from tablet import Tablet
+from sheet import Sheet
 
 # All sheet and canvas related constants are kept together here for easy review and editing
 points_in_cm = 28.3465
 points_in_inch = 72
-default_canvas_margin = Padding(top=10, bottom=10, left=10, right=10)
-global_alignment = Alignment(vertical='center', horizontal='center')
-default_sheet = 'tabloid'
 
 
 class Canvas:
@@ -40,30 +39,26 @@ class Canvas:
 
     """
 
-    def __init__(self, db, diagram_type, notation, standard_sheet_name, orientation,
+    def __init__(self, diagram_type, notation, standard_sheet_name, orientation,
                  drawoutput=sys.stdout.buffer, show_margin=False):
-        self.Database = db
-        self.Sheet_name = standard_sheet_name
+        # Load layout specifications
+        diagram_layout()
+        connector_layout()
+
+        self.Sheet = Sheet(standard_sheet_name)
         self.Orientation = orientation
-        sheets = db.MetaData.tables['Sheet']
-        query = select([sheets]).where(sheets.c.Name == self.Sheet_name)
-        found = self.Database.Connection.execute(query).fetchone()
-        if not found:
-            query = select([sheets]).where(sheets.c.Name == default_sheet)
-            found = self.Database.Connection.execute(query).fetchone()
-        assert(found, "Sheet not found in database")
-        self.Size = found.Name
-        if found.Group == 'US':
-            factor = points_in_inch
-        elif found.Group == 'INT':
-            factor = points_in_cm
+        factor = points_in_inch if self.Sheet.Group == 'US' else points_in_cm
+
         # Set point size height and width based on portrait vs. landscape orientation
-        h, w = (found.Height, found.Width) if self.Orientation == 'landscape' else (found.Width, found.Height)
-        self.Point_size = Rect_Size(height=int(h * factor), width=int(w * factor))
-        self.Margin = default_canvas_margin
+        h, w = (self.Sheet.Size.height, self.Sheet.Size.width) if self.Orientation == 'landscape' else (
+            self.Sheet.Size.width, self.Sheet.Size.height)
+        self.Size = Rect_Size(
+            height=int(round(h * factor)),
+            width=int(round(w * factor))
+        )
+        self.Margin = diagram_layout.Default_margin
         self.Diagram = Diagram(self, diagram_type, notation)
-        self.Notation = notation
-        self.Tablet = Tablet(size=self.Point_size, output_file=drawoutput)
+        self.Tablet = Tablet(size=self.Size, output_file=drawoutput)
         self.Show_margin = show_margin
 
     def render(self):
@@ -71,8 +66,8 @@ class Canvas:
         if self.Show_margin:
             # Draw a thin rectangle to represent the margin boundary
             drawable_origin = Position(x=self.Margin.left, y=self.Margin.bottom)
-            draw_area_height = self.Point_size.height - self.Margin.top - self.Margin.bottom
-            draw_area_width = self.Point_size.width - self.Margin.left - self.Margin.right
+            draw_area_height = self.Size.height - self.Margin.top - self.Margin.bottom
+            draw_area_width = self.Size.width - self.Margin.left - self.Margin.right
             draw_area_size = Rect_Size(height=draw_area_height, width=draw_area_width)
             self.Tablet.Rectangles.append(
                 Rectangle(line_style=Stroke(width=StrokeWidth.THIN, color=Color.MARGIN_GOLD, pattern=StrokeStyle.SOLID),
@@ -84,5 +79,5 @@ class Canvas:
         self.Tablet.render()
 
     def __repr__(self):
-        return f'Sheet: {self.Sheet_name} W{self.Size.width} x H{self.Size.height} Orientation: {self.Orientation} ' \
-            f'Points: H{self.Point_size.height} x W{self.Point_size.width} {self.Margin}'
+        return f'Sheet: {self.Sheet}, Orientation: {self.Orientation}, '\
+               f'Canvas size: h{self.Size.height} pt x w{self.Size.width} pt Margin: {self.Margin}'

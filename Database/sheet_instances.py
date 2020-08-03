@@ -3,16 +3,16 @@ sheet_instances.py
 """
 
 population = [
-    # US sizes in landscape
-    {'Name': 'letter', 'Group': 'US', 'Height': '8.5', 'Width': '11'},
-    {'Name': 'tabloid', 'Group': 'US', 'Height': '11', 'Width': '17'},
-    {'Name': 'C', 'Group': 'US', 'Height': '17', 'Width': '22'},
-    {'Name': 'D', 'Group': 'US', 'Height': '22', 'Width': '34'},
-    {'Name': 'E', 'Group': 'US', 'Height': '34', 'Width': '44'},
+    # us sizes in landscape
+    {'Name': 'letter', 'Group': 'us', 'Height': '8.5', 'Width': '11'},
+    {'Name': 'tabloid', 'Group': 'us', 'Height': '11', 'Width': '17'},
+    {'Name': 'C', 'Group': 'us', 'Height': '17', 'Width': '22'},
+    {'Name': 'D', 'Group': 'us', 'Height': '22', 'Width': '34'},
+    {'Name': 'E', 'Group': 'us', 'Height': '34', 'Width': '44'},
 
     # International sizes landscape
-    {'Name': 'A4', 'Group': 'INT', 'Height': '210', 'Width': '297'},
-    {'Name': 'A3', 'Group': 'INT', 'Height': '297', 'Width': '420'},
-    {'Name': 'A2', 'Group': 'INT', 'Height': '420', 'Width': '594'},
-    {'Name': 'A1', 'Group': 'INT', 'Height': '594', 'Width': '841'}
+    {'Name': 'A4', 'Group': 'int', 'Height': '210', 'Width': '297'},
+    {'Name': 'A3', 'Group': 'int', 'Height': '297', 'Width': '420'},
+    {'Name': 'A2', 'Group': 'int', 'Height': '420', 'Width': '594'},
+    {'Name': 'A1', 'Group': 'int', 'Height': '594', 'Width': '841'}
 ]

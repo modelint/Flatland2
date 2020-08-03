@@ -25,7 +25,7 @@ class BendingBinaryConnector(BinaryConnector):
     just as easily have been labeled “A” and “B”.
     """
 
-    def __init__(self, diagram: 'Diagram', connector_type: ConnectorTypeName, anchored_stem_t: New_Stem,
+    def __init__(self, diagram: 'Diagram', connector_type: str, anchored_stem_t: New_Stem,
                  anchored_stem_p: New_Stem, paths=None, tertiary_stem=None):
         BinaryConnector.__init__(self, diagram, connector_type)
 

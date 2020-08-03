@@ -5,32 +5,39 @@ import os
 from sqlalchemy import create_engine, MetaData
 
 
+def Create_relvars():
+    import relvars
+    FlatlandDB.Relvars = relvars.define(db=FlatlandDB)
+    FlatlandDB.MetaData.create_all(FlatlandDB.Engine)
+
+
+def Populate():
+    for instances, relvar in FlatlandDB.Relvars.items():
+        i = __import__(instances + '_instances')
+        FlatlandDB.Connection.execute(relvar.insert(), i.population)
+
+
 class FlatlandDB:
+    File = 'flatland.db'
+    MetaData = None
+    Connection = None
+    Engine = None
+    Relvars = None
+
     def __init__(self, rebuild=True):
-        self.File = 'flatland.db'
         if rebuild:
-            if os.path.exists(self.File):
-                os.remove(self.File)
+            if os.path.exists(FlatlandDB.File):
+                os.remove(FlatlandDB.File)
 
-        self.Engine = create_engine(f'sqlite:///{self.File}', echo=True)
-        self.Connection = self.Engine.connect()
-        self.MetaData = MetaData(self.Engine)
+        FlatlandDB.Engine = create_engine(f'sqlite:///{FlatlandDB.File}', echo=True)
+        FlatlandDB.Connection = FlatlandDB.Engine.connect()
+        FlatlandDB.MetaData = MetaData(FlatlandDB.Engine)
         if rebuild:
-            self.Relvars = self.Create_relvars()
-            self.Populate()
+            Create_relvars()
+            Populate()
         else:
-            self.MetaData.reflect()
-
-    def Create_relvars(self):
-        import relvars
-        r = relvars.define(self)
-        self.MetaData.create_all(self.Engine)
-        return r
-
-    def Populate(self):
-        for instances, relvar in self.Relvars.items():
-            i = __import__(instances+'_instances')
-            self.Connection.execute(relvar.insert(), i.population)
+            FlatlandDB.MetaData.reflect()
 
 
-db = FlatlandDB()
+if __name__ == "__main__":
+    FlatlandDB()

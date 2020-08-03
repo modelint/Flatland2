@@ -1,7 +1,7 @@
 """
 relvars.py – Relation variables (relvars / tables) in the flatland database
 """
-from sqlalchemy import Table, Column, String, Integer, Boolean
+from sqlalchemy import Table, Column, String, Integer, Boolean, Enum
 from sqlalchemy import ForeignKey, UniqueConstraint, PrimaryKeyConstraint, ForeignKeyConstraint, CheckConstraint
 
 
@@ -9,10 +9,46 @@ def define(db):
     return {
         'sheet': Table('Sheet', db.MetaData,
                        Column('Name', String(20), nullable=False, primary_key=True),
-                       Column('Group', String(3), nullable=False),
+                       # US or International names and units
+                       Column('Group', Enum('us', 'int'), nullable=False),
+                       # Based on landscape, so Width should be >= Height
+                       # Sizes as string since all metric units are integer and some US values are
+                       # half sizes such as 8.5".  Converted to numeric on load from DB
                        Column('Height', String(8), nullable=False),
                        Column('Width', String(8), nullable=False)
                        ),
+        'diagram_layout_specification': Table('Diagram Layout Specification', db.MetaData,
+                                              Column('Name', String(20), nullable=False, primary_key=True),
+                                              Column('Default margin top', Integer, nullable=False),
+                                              Column('Default margin bottom', Integer, nullable=False),
+                                              Column('Default margin left', Integer, nullable=False),
+                                              Column('Default margin right', Integer, nullable=False),
+                                              Column('Default diagram origin x', Integer, nullable=False),
+                                              Column('Default diagram origin y', Integer, nullable=False),
+                                              Column('Default cell padding top', Integer, nullable=False),
+                                              Column('Default cell padding bottom', Integer, nullable=False),
+                                              Column('Default cell padding left', Integer, nullable=False),
+                                              Column('Default cell padding right', Integer, nullable=False),
+                                              Column('Default cell alignment vertical', Enum('bottom', 'center', 'top'),
+                                                     nullable=False),
+                                              Column('Default cell alignment horizontal',
+                                                     Enum('left', 'center', 'right'),
+                                                     nullable=False),
+                                              ),
+        'connector_layout_specification': Table('Connector Layout Specification', db.MetaData,
+                                                Column('Name', String(20), nullable=False, primary_key=True),
+                                                Column('Default stem positions', Integer,
+                                                       CheckConstraint('"Default stem positions" > 0' and
+                                                                       '"Default stem positions" % 2 != 0',
+                                                                       name='Stem_positions_odd'),
+                                                       nullable=False),
+                                                Column('Default rut positions', Integer,
+                                                       CheckConstraint('"Default rut positions" > 0' and
+                                                                       '"Default rut positions" % 2 != 0',
+                                                                       name='Rut_positions_odd'),
+                                                       nullable=False),
+                                                Column('Runaround lane width', Integer, nullable=False),
+                                                ),
         'notation': Table('Notation', db.MetaData,
                           Column('Name', String, nullable=False, primary_key=True),
                           Column('About', String, nullable=False),
@@ -83,6 +119,7 @@ def define(db):
                            Column('About', String, nullable=False),
                            Column('Diagram type', String, nullable=False),
                            Column('Connector type', String, nullable=False),
+                           Column('Length', Integer, nullable=False),
                            PrimaryKeyConstraint('Name', 'Diagram type', name='I1'),
                            ForeignKeyConstraint(('Connector type', 'Diagram type'),
                                                 ['Connector Type.Name', 'Connector Type.Diagram type'], name='R59')
@@ -112,9 +149,7 @@ def define(db):
                                      Column('Notation', String, nullable=False),
                                      Column('Symbol', String, ForeignKey('Symbol.Name', name='R58_symbol'),
                                             nullable=False),
-                                     Column('End', String(4),
-                                            CheckConstraint('End=="root" or End=="vine"', name='Type_Stem_End'),
-                                            nullable=False),
+                                     Column('End', Enum('root', 'vine'), nullable=False),
                                      PrimaryKeyConstraint('Stem type', 'Semantic', 'Diagram type', 'Notation', 'Symbol',
                                                           'End', name='I1'),
                                      ForeignKeyConstraint(('Stem type', 'Semantic', 'Diagram type', 'Notation'),
@@ -129,7 +164,7 @@ def define(db):
                                 Column('Notation', String, nullable=False),
                                 Column('Stroke', String, nullable=False),
                                 PrimaryKeyConstraint('Stem type', 'Semantic', 'Diagram type', 'Notation', name='I1'),
-                                ForeignKeyConstraint(('Stem type', 'Diagram type', 'Semantic'),
+                                ForeignKeyConstraint(('Stem type', 'Semantic', 'Diagram type'),
                                                      ['Stem Signification.Stem type', 'Stem Signification.Semantic',
                                                       'Stem Signification.Diagram type'], name='R55_stem_sig'),
                                 ForeignKeyConstraint(('Diagram type', 'Notation'),
@@ -156,10 +191,8 @@ def define(db):
                             ),
         'symbol': Table('Symbol', db.MetaData,
                         Column('Name', String, ForeignKey('Decoration.Name', name='R104'), nullable=False),
-                        Column('Shape', String, nullable=False),
-                        PrimaryKeyConstraint('Name', name='I1'),
-                        CheckConstraint('Shape =="circle" or Shape=="arrow" or Shape="cross" or Shape="compound"',
-                                        name='Subclass Symbol')
+                        Column('Shape', Enum('circle', 'arrow', 'cross', 'compound'), nullable=False),
+                        PrimaryKeyConstraint('Name', name='I1')
                         ),
         'simple_symbol': Table('Simple Symbol', db.MetaData,
                                Column('Name', String, ForeignKey('Symbol.Name', name='R103'), nullable=False),
@@ -172,9 +205,7 @@ def define(db):
                                      nullable=False),
                               Column('Base', Integer, nullable=False),
                               Column('Height', Integer, nullable=False),
-                              Column('Fill', String, nullable=False),
-                              CheckConstraint('Fill =="solid" or Fill=="hollow" or Fill="open"',
-                                              name='Hollow Solid Open'),
+                              Column('Fill', Enum('solid', 'hollow', 'open'), nullable=False)
                               ),
         'circle_symbol': Table('Circle Symbol', db.MetaData,
                                Column('Name', String, ForeignKey('Simple Symbol.Name', name='R100'), primary_key=True,
@@ -194,7 +225,7 @@ def define(db):
                        ),
         'compound_symbol': Table('Compound Symbol', db.MetaData,
                                  Column('Name', String, ForeignKey('Symbol.Name', name='R103'),
-                                        priimary_key=True, nullable=False),
+                                        primary_key=True, nullable=False),
                                  ),
         'symbol_stack_placement': Table('Symbol Stack Placement', db.MetaData,
                                         Column('Position', Integer, nullable=False),
@@ -203,10 +234,8 @@ def define(db):
                                                nullable=False),
                                         Column('Simple symbol', String,
                                                ForeignKey('Simple Symbol.Name', name='R101_simple'), nullable=False),
-                                        Column('Arrange', String(10), nullable=False),
+                                        Column('Arrange', Enum('adjacent', 'layer', 'last'), nullable=False),
                                         Column('Offset', Integer, nullable=False),
-                                        CheckConstraint('Arrange=="adjacent" or Arrange=="layer" or Arrange="last"',
-                                                        name='Adjacent Layer Layer Last'),
                                         PrimaryKeyConstraint('Position', 'Compound symbol', name='I1')
                                         )
     }

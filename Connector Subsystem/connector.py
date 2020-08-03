@@ -7,11 +7,15 @@ Attributes
 ---
 
 """
+from flatland_exceptions import UnknownConnectorType, IncompatibleConnectorType
+from collections import namedtuple
 from typing import TYPE_CHECKING
-from connector_type import ConnectorTypeName
+from flatlanddb import FlatlandDB as fdb
 
 if TYPE_CHECKING:
     from diagram import Diagram
+
+ConnectorType = namedtuple('ConnectorType', 'Name About Geometry')
 
 
 class Connector:
@@ -28,10 +32,23 @@ class Connector:
     Connector_type : Specifies characteristics of this Connector
     """
 
-    def __init__(self, diagram: 'Diagram', connector_type: ConnectorTypeName):
+    def __init__(self, diagram: 'Diagram', connector_type: str):
         self.Diagram = diagram
-        self.Connector_type = connector_type
+
+        # Validate connector type
+        ctypes = fdb.MetaData.tables['Connector Type']
+        q = ctypes.select(ctypes.c['Name'] == connector_type)
+        i = fdb.Connection.execute(q).fetchone()
+        if not i:
+            raise UnknownConnectorType
+        # if i['Diagram type'] != self.Diagram.Diagram_type:
+        #     raise IncompatibleConnectorType
+
+        self.Connector_type = ConnectorType(Name=i['Name'], About=i['About'], Geometry=i['Geometry'])
         self.Diagram.Grid.Connectors.append(self)
 
     def render(self):
         pass  # overriden
+
+    def __repr__(self):
+        return f'ID: {id(self)}, Diagram: {self.Diagram}, Type: {self.Connector_type.Name}'

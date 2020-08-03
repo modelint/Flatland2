@@ -1,17 +1,17 @@
 """
 t020_bending_binary_horizontal.py
 """
-from collections import namedtuple
+# from collections import namedtuple
+#from single_cell_node import SingleCellNode
+
+# from notation import StemSemantic
+# from bending_binary_connector import BendingBinaryConnector
+# from connection_types import NodeFace, AnchorPosition
+# from command_interface import New_Stem, New_Path
 from canvas import Canvas
-from single_cell_node import SingleCellNode
-from names import NodeTypeName, StemTypeName, ConnectorTypeName
-from notation import StemSemantic
-from bending_binary_connector import BendingBinaryConnector
-from connection_types import NodeFace, AnchorPosition
-from command_interface import New_Stem, New_Path
 from flatlanddb import FlatlandDB
 
-db = FlatlandDB(rebuild=True)
+FlatlandDB()
 
 
 # For diagnostics during development
@@ -20,7 +20,6 @@ def create_canvas(args):
     # These args could come from the command line or be supplied directly in
     # this file for diagnostic purposes
     flatland_canvas = Canvas(
-        db=db,
         diagram_type=args.diagram,
         notation=args.notation,
         standard_sheet_name=args.sheet,
@@ -48,21 +47,21 @@ def create_canvas(args):
         ]
     ]
 
-    t_node = SingleCellNode(node_type_name=NodeTypeName.M_class, content=class_Aircraft,
-                            grid=flatland_canvas.Diagram.Grid,
-                            row=1, column=1)
-    p_node = SingleCellNode(node_type_name=NodeTypeName.M_class, content=class_Pilot, grid=flatland_canvas.Diagram.Grid,
-                            row=1, column=3)
-
-    t_stem = New_Stem(stem_type=StemTypeName.class_mult, semantic=StemSemantic.Mult_Mc, node=t_node,
-                      face=NodeFace.TOP, anchor=AnchorPosition(0))
-    p_stem = New_Stem(stem_type=StemTypeName.class_mult, semantic=StemSemantic.Mult_1, node=p_node,
-                      face=NodeFace.TOP, anchor=AnchorPosition(0))
-    p = [New_Path(lane=2, rut=0)]
-
-    BendingBinaryConnector(diagram=flatland_canvas.Diagram, connector_type=ConnectorTypeName.binary_assoc,
-                           anchored_stem_p=p_stem, anchored_stem_t=t_stem, paths=p)
-    flatland_canvas.render()
+    # t_node = SingleCellNode(node_type_name='class', content=class_Aircraft,
+    #                         grid=flatland_canvas.Diagram.Grid,
+    #                         row=1, column=1)
+    # p_node = SingleCellNode(node_type_name=NodeTypeName.M_class, content=class_Pilot, grid=flatland_canvas.Diagram.Grid,
+    #                         row=1, column=3)
+    #
+    # t_stem = New_Stem(stem_type='class mult', semantic='Mc mult', node=t_node,
+    #                   face=NodeFace.TOP, anchor=AnchorPosition(0))
+    # p_stem = New_Stem(stem_type='class mult', semantic='1 mult', node=p_node,
+    #                   face=NodeFace.TOP, anchor=AnchorPosition(0))
+    # p = [New_Path(lane=2, rut=0)]
+    #
+    # BendingBinaryConnector(diagram=flatland_canvas.Diagram, connector_type='binary association',
+    #                        anchored_stem_p=p_stem, anchored_stem_t=t_stem, paths=p)
+    #flatland_canvas.render()
 
 
 if __name__ == "__main__":
