@@ -243,6 +243,9 @@ def define(db):
                                         PrimaryKeyConstraint('Position', 'Compound symbol', name='I1')
                                         ),
         # Tablet domain
+        'drawing_type': Table('Drawing Type', db.MetaData,
+                              Column('Name', String, primary_key=True, nullable=False),
+                              ),
         'asset': Table('Asset', db.MetaData,
                        Column('Name', String, nullable=False),
                        Column('Drawing type', String, nullable=False),
@@ -270,7 +273,7 @@ def define(db):
                               ),
         'presentation_style': Table('Presentation Style', db.MetaData,
                                     Column('Name', String, nullable=False),
-                                    Column('Drawing type', String, ForeignKey('Drawing type.Name', name='R1'),
+                                    Column('Drawing type', String, ForeignKey('Drawing Type.Name', name='R1'),
                                            nullable=False),
                                     PrimaryKeyConstraint('Name', 'Drawing type', name='I1')
                                     ),
@@ -278,7 +281,7 @@ def define(db):
                                    Column('Asset', String, nullable=False),
                                    Column('Style', String, nullable=False),
                                    Column('Drawing type', String, nullable=False),
-                                   Column('Text_style', String, nullable=False),
+                                   Column('Text style', String, nullable=False),
                                    PrimaryKeyConstraint('Asset', 'Style', 'Drawing type', name='I1'),
                                    ForeignKeyConstraint(('Asset', 'Drawing type'),
                                                         ['Asset.Name', 'Asset.Drawing type'],
