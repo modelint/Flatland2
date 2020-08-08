@@ -7,17 +7,32 @@ class FlatlandException(Exception):
     pass
 
 
-class UnknownConnectorType(FlatlandException):
+class FlatlandDBException(FlatlandException):
     pass
 
 
-class IncompatibleNodeType(FlatlandException):
-    def __init__(self, node_type_name, diagram_type_name):
-        self.node_type_name = node_type_name
-        self.diagram_type_name = diagram_type_name
+class UnknownSheetGroup(FlatlandDBException):
+    pass
+
+
+class BadRowNumber(FlatlandException):
+    def __init__(self, col_num):
+        self.col_num = col_num
 
     def __str__(self):
-        return f'Node Type: "{self.node_type_name}" is not defined for Diagram Type: "{self.diagram_type_name}"'
+        return f'Illegal Row number: [{col_num}]'
+
+
+class BadColNumber(FlatlandException):
+    def __init__(self, col_num):
+        self.col_num = col_num
+
+    def __str__(self):
+        return f'Illegal Col number: [{col_num}]'
+
+
+class UnknownConnectorType(FlatlandException):
+    pass
 
 
 class IncompatibleConnectorType(FlatlandException):
@@ -54,11 +69,12 @@ class CellOccupiedFE(FlatlandException):
 
 
 class UnknownNodeType(FlatlandException):
-    def __init__(self, node_type_name):
+    def __init__(self, node_type_name, diagram_type_name):
         self.node_type_name = node_type_name
+        self.diagram_type_name = diagram_type_name
 
     def __str__(self):
-        return f'Node Type: {self.node_type_name} is undefined for any Diagram Type'
+        return f'Node Type: {self.node_type_name} is undefined for Diagram Type: {self.diagram_type_name}'
 
 
 class UnknownSheetSize(FlatlandException):

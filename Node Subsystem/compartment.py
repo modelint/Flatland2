@@ -1,8 +1,8 @@
 """ compartment.py """
 
-from geometry_types import Rect_Size, Position, Rectangle, Alignment, Padding
+from geometry_types import Rect_Size, Position, Rectangle
 from draw_types import Text_Line
-from typing import TYPE_CHECKING, List, Dict
+from typing import TYPE_CHECKING, List
 from compartment_type import CompartmentType
 
 if TYPE_CHECKING:
@@ -20,20 +20,10 @@ class Compartment:
     Padding - Extra space between text block and Node boundary
     Text style - Font, size, etc of text
     """
-
-    def __init__(self, node: 'Node', ctype_data: Dict, content: List[str]):
+    def __init__(self, node: 'Node', ctype: CompartmentType, content: List[str]):
         #
-        self.Name = ctype_data['Name']
-        self.Alignment = Alignment(
-            vertical=ctype_data['Vertical alignment'], horizontal=ctype_data['Horizontal_alignment'])
-        self.Padding = Padding(
-            top=ctype_data['Pad top'], bottom=ctype_data['Pad bottom'],
-            right=ctype_data['Pad right'], left=ctype_data['Pad left']
-        )
-        self.Text_style = ctype_data['Text style']
+        self.Type = ctype
         self.Node = node
-        self.Type = CompartmentType(ctype_data)
-        # self.Type: Compartment_Type_Attrs = self.Node.Node_type.compartments[self.Name]
         self.Content = content  # list of text lines
         self.leading = 4  # Temporary default leading in points ( change later to be font specific
         self.Line_height = None  # Unknown until Text block size computed
@@ -44,13 +34,13 @@ class Compartment:
         longest_line = max(self.Content, key=len)
         # Have the tablet compute the total ink area given the text style
         line_ink_area: Rect_Size = self.Node.Grid.Diagram.Canvas.Tablet.text_size(
-            style=self.Type.text_style, text_line=longest_line)
+            style=self.Type.Text_style, text_line=longest_line)
 
         self.Line_height = line_ink_area.height
 
-        block_width = line_ink_area.width + self.Type.padding.left + self.Type.padding.right
+        block_width = line_ink_area.width + self.Type.Padding.left + self.Type.Padding.right
         block_height = ((line_ink_area.height + self.leading) * len(self.Content)
-                        + self.Type.padding.top + self.Type.padding.bottom)
+                        + self.Type.Padding.top + self.Type.Padding.bottom)
         # Now add the padding specified for this compartment type
         return Rect_Size(width=block_width, height=block_height)
 
@@ -69,9 +59,9 @@ class Compartment:
         )
         # Append each line of text into the tablet text list
         assert self.Line_height # It should have been set by now
-        ypos = lower_left_corner.y + self.Type.padding.bottom
-        xpos = lower_left_corner.x + self.Type.padding.left
+        ypos = lower_left_corner.y + self.Type.Padding.bottom
+        xpos = lower_left_corner.x + self.Type.Padding.left
         for line in self.Content[::-1]:  # Reverse order since we are positioning lines from the bottom up
             self.Node.Grid.Diagram.Canvas.Tablet.Text.append(Text_Line(
-                lower_left=Position(xpos, ypos), content=line, style=self.Type.text_style))
+                lower_left=Position(xpos, ypos), content=line, style=self.Type.Text_style))
             ypos += self.leading + self.Line_height

@@ -1,8 +1,10 @@
 """ single_cell_node.py """
 
+from flatland_exceptions import BadColNumber, BadRowNumber
 from linear_geometry import align_on_axis
 from node import Node
 from geometry_types import Position, Alignment
+from general_types import LaneNum
 
 from typing import TYPE_CHECKING, List, Optional
 
@@ -20,17 +22,20 @@ class SingleCellNode(Node):
     Column : Placed at this column
     """
 
-    def __init__(self, node_type_name: str, content: List[str], grid: 'Grid', row: int, column: int,
-                 local_alignment: Optional[Alignment]):
-        super().__init__(node_type_name, content, grid, local_alignment)
-        assert row > 0, "Negative row"
-        assert column > 0, "Negative column"
+    def __init__(self, node_type_name: str, content: List[List[str]], grid: 'Grid', row: int, column: int,
+                 local_alignment: Optional[Alignment] = None):
+        Node.__init__(self, node_type_name, content, grid, local_alignment)
+        if row <= 0:
+            raise BadRowNumber
+        if column <= 0:
+            raise BadColNumber
         self.Row = row
         self.Column = column
         self.Grid.place_single_cell_node(self)
 
     def __repr__(self):
-        return f'Grid [{self.Row}, {self.Column}] @ ({round(self.Canvas_position.x, 2)}, {round(self.Canvas_position.y, 2)}), W {self.Size.width} x H {round(self.Size.height, 2)}'
+        return f'Grid [{self.Row}, {self.Column}] @ ({round(self.Canvas_position.x, 2)}, ' \
+               f'{round(self.Canvas_position.y, 2)}), W {self.Size.width} x H {round(self.Size.height, 2)}'
 
     @property
     def Canvas_position(self):

@@ -251,8 +251,8 @@ class Grid:
         vertical_padding = self.Cell_padding.top + self.Cell_padding.bottom
         new_cell_height = node.Size.height + vertical_padding
         new_cell_width = node.Size.width + horizontal_padding
-        default_cell_height = node.Node_type.default_size.height
-        default_cell_width = node.Node_type.default_size.width
+        default_cell_height = node.Node_type.Default_size.height
+        default_cell_width = node.Node_type.Default_size.width
 
         # Check for horizontal overlap
         if not columns_to_add:

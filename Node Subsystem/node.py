@@ -3,19 +3,13 @@ node.py
 """
 from geometry_types import Rect_Size, Position, Alignment
 from compartment import Compartment
-from flatland_exceptions import UnknownNodeType, IncompatibleNodeType, EmptyTitleCompartment
-from layout_specification import default_cell_alignment
 from connection_types import NodeFace
-from flatlanddb import FlatlandDB as fdb
 from typing import TYPE_CHECKING, List, Optional
-from collections import namedtuple
 from node_type import NodeType
-from sqlalchemy import select, and_
+from diagram_layout_specification import DiagramLayoutSpecification as diagram_layout
 
 if TYPE_CHECKING:
     from grid import Grid
-
-NodeType = namedtuple('NodeType', 'Name, About, Corner_rounding, Border, Default_size, Max_size')
 
 
 class Node:
@@ -32,38 +26,17 @@ class Node:
     Local_alignment : Position of the node in the spanned area, vertical and horizontal
     """
 
-    def __init__(self, node_type_name: str, content: List[str], grid: 'Grid', local_alignment: Optional[Alignment]):
+    def __init__(self, node_type_name: str, content: List[List[str]], grid: 'Grid', local_alignment: Optional[Alignment]):
         self.Grid = grid
+        self.Node_type = NodeType(node_type_name, self.Grid.Diagram.Diagram_type)
+        # Node Type will load all of its Compartment Types from the database
 
-        # Validate node type name
-        # Check that the node type and its diagram type name are in the database
-        ntypes = fdb.MetaData.tables['Node Type']
-        q = select([ntypes.c['Name'], ntypes.c['Diagram type']]).where(ntypes.c['Name'] == node_type_name)
-        i = fdb.Connection.execute(q).fetchone()
-        if not i:
-            raise UnknownNodeType(node_type_name)
-        if i['Diagram type'] != self.Grid.Diagram.Diagram_type:
-            raise IncompatibleNodeType(node_type_name, self.Grid.Diagram.Diagram_type)
-        # All good, so save the name of the Node Type
-        self.Node_type = NodeType(dict(i))
+        # Create a list of compartments ordered top to bottom based on Node Type's Compartment Types
+        self.Compartments = [Compartment(node=self, ctype=t, content=c) for t, c in zip(self.Node_type.Compartment_types, content)]
 
-        # Create a compartment for each element of content
-        # If content is missing, make less compartments
-        # First, get a list of the compartment type rows from the database
-        ctypes = fdb.MetaData.tables['Compartment Type']
-        q = select([ctypes]).where(
-            and_(ctypes.c['Node type'] == self.Node_type, ctypes.c['Diagram type'] == self.Grid.Diagram.Diagram_type)
-        ).order_by('Stack order')
-        found = fdb.Connection.execute(q).fetchall()
-        # We take the found ctypes and the text content, which is a list of text blocks, both ordered top to bottom
-        # as they will appear in the Node, and zip these lists together to get tuples (text, instance)
-        # For each tuple, we can create an instance of Compartment
-        # The list of newly created compartments is then assigned to the Node's Compartments attribute
-        self.Compartments = [Compartment(node=self, ctype_data=dict(i), content=text)
-                             for text, i in zip(content, found)]
         # The Node will be aligned in the Cell according to either the specified local alignment or, if none,
-        # the default cell alignment that we got from the global Layout Specification
-        self.Local_alignment = local_alignment if local_alignment else default_cell_alignment
+        # the default cell alignment that we got from the Diagram Layout Specification
+        self.Local_alignment = local_alignment if local_alignment else diagram_layout.Default_cell_alignment
 
     @property
     def Canvas_position(self):
@@ -79,7 +52,7 @@ class Node:
         # For all compartments in this node, get the max height and width
         crects = [c.Text_block_size for c in self.Compartments]
         # Get the max of each compartment width and the default node type width
-        max_width = max([r.width for r in crects] + [self.Node_type.default_size.width])
+        max_width = max([r.width for r in crects] + [self.Node_type.Default_size.width])
         # Height is the sum of all compartment heights
         # Ignore the default node type height for now
         node_height = sum([r.height for r in crects])

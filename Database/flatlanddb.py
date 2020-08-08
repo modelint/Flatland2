@@ -18,7 +18,7 @@ def Populate():
 
 
 class FlatlandDB:
-    File = 'flatland.db'
+    File = os.path.expandvars("$FLATLAND3_PYCHARM/Database/flatland.db")
     MetaData = None
     Connection = None
     Engine = None

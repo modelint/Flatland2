@@ -2,18 +2,34 @@
 node_type.py
 """
 
-from typing import Dict
+from flatland_exceptions import UnknownNodeType
 from geometry_types import Rect_Size
+from flatlanddb import FlatlandDB as fdb
+from sqlalchemy import select, and_
+from compartment_type import create_compartment_types
 
 
 class NodeType:
-    def __init__(self, ntype_data: Dict):
-        self.Name = ntype_data['Name']
-        self.About = ntype_data['About']
-        self.Why_use_it = ntype_data['Why use it']
-        self.Corner_rounding = ntype_data['Corner rounding']
-        self.Border = ntype_data['Border']
-        self.Default_size = Rect_Size(height=ntype_data['Default height'], width=ntype_data['Default width'])
-        self.Max_size = Rect_Size(height=ntype_data['Max height'], width=ntype_data['Max width'])
-        self.Corner_margine = ntype_data['Corner margin']
+    def __init__(self, node_type_name, diagram_type_name):
 
+        ntypes = fdb.MetaData.tables['Node Type']
+        q = select([ntypes]).where(
+            and_( ntypes.c.Name == node_type_name, ntypes.c['Diagram type'] == diagram_type_name )
+        )
+        i = fdb.Connection.execute(q).fetchone()
+        if not i:
+            raise UnknownNodeType(node_type_name, diagram_type_name)
+
+        self.Name = i.Name
+        self.About = i.About
+        self.Corner_rounding = i['Corner rounding']
+        self.Border = i.Border
+        self.Default_size = Rect_Size(height=i['Default height'], width=i['Default width'])
+        self.Max_size = Rect_Size(height=i['Max height'], width=i['Max width'])
+        self.Diagram_type = diagram_type_name
+
+        self.Compartment_types = create_compartment_types(self)
+
+    def __repr__(self):
+        return f'Name: {self.Name}, Corner rounding: {self.Corner_rounding}, Border: {self.Border}, ' \
+               f'Default size: {self.Default_size}, Max size: {self.Max_size}'

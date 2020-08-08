@@ -2,7 +2,7 @@
 t020_bending_binary_horizontal.py
 """
 # from collections import namedtuple
-#from single_cell_node import SingleCellNode
+from single_cell_node import SingleCellNode
 
 # from notation import StemSemantic
 # from bending_binary_connector import BendingBinaryConnector
@@ -21,6 +21,7 @@ def create_canvas(args):
     # this file for diagnostic purposes
     flatland_canvas = Canvas(
         diagram_type=args.diagram,
+        presentation_style='informal',
         notation=args.notation,
         standard_sheet_name=args.sheet,
         orientation=args.orientation,
@@ -47,9 +48,9 @@ def create_canvas(args):
         ]
     ]
 
-    # t_node = SingleCellNode(node_type_name='class', content=class_Aircraft,
-    #                         grid=flatland_canvas.Diagram.Grid,
-    #                         row=1, column=1)
+    t_node = SingleCellNode(node_type_name='class', content=class_Aircraft,
+                            grid=flatland_canvas.Diagram.Grid,
+                            row=1, column=1)
     # p_node = SingleCellNode(node_type_name=NodeTypeName.M_class, content=class_Pilot, grid=flatland_canvas.Diagram.Grid,
     #                         row=1, column=3)
     #
@@ -61,7 +62,7 @@ def create_canvas(args):
     #
     # BendingBinaryConnector(diagram=flatland_canvas.Diagram, connector_type='binary association',
     #                        anchored_stem_p=p_stem, anchored_stem_t=t_stem, paths=p)
-    #flatland_canvas.render()
+    flatland_canvas.render()
 
 
 if __name__ == "__main__":

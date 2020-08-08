@@ -33,8 +33,9 @@ class Diagram:
 
     """
 
-    def __init__(self, canvas: 'Canvas', diagram_type_name: str, notation_name: str):
+    def __init__(self, canvas: 'Canvas', diagram_type_name: str, presentation_style: str, notation_name: str):
         self.Canvas = canvas
+        self.Presentation_style = presentation_style
 
         # Validate diagram type name
         dtypes = fdb.MetaData.tables['Diagram Type']

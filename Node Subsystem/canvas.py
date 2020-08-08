@@ -6,11 +6,11 @@ This is the Flatland (and not the cairo) Canvas class
 import sys
 from diagram_layout_specification import DiagramLayoutSpecification as diagram_layout
 from connector_layout_specification import ConnectorLayoutSpecification as connector_layout
-from geometry_types import , Rect_Size, Position, Rectangle
+from geometry_types import Rect_Size, Position, Rectangle
 from draw_types import Stroke, StrokeStyle, StrokeWidth, Color
 from diagram import Diagram
 from tablet import Tablet
-from sheet import Sheet
+from sheet import Sheet, Group
 
 # All sheet and canvas related constants are kept together here for easy review and editing
 points_in_cm = 28.3465
@@ -39,7 +39,7 @@ class Canvas:
 
     """
 
-    def __init__(self, diagram_type, notation, standard_sheet_name, orientation,
+    def __init__(self, diagram_type, presentation_style, notation, standard_sheet_name, orientation,
                  drawoutput=sys.stdout.buffer, show_margin=False):
         # Load layout specifications
         diagram_layout()
@@ -47,7 +47,7 @@ class Canvas:
 
         self.Sheet = Sheet(standard_sheet_name)
         self.Orientation = orientation
-        factor = points_in_inch if self.Sheet.Group == 'US' else points_in_cm
+        factor = points_in_inch if self.Sheet.Group == Group.US else points_in_cm
 
         # Set point size height and width based on portrait vs. landscape orientation
         h, w = (self.Sheet.Size.height, self.Sheet.Size.width) if self.Orientation == 'landscape' else (
@@ -57,7 +57,7 @@ class Canvas:
             width=int(round(w * factor))
         )
         self.Margin = diagram_layout.Default_margin
-        self.Diagram = Diagram(self, diagram_type, notation)
+        self.Diagram = Diagram(self, diagram_type, presentation_style, notation)
         self.Tablet = Tablet(size=self.Size, output_file=drawoutput)
         self.Show_margin = show_margin
 

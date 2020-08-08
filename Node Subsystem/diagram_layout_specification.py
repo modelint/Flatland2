@@ -3,8 +3,13 @@ diagram_layout_specification.py
 """
 
 from flatlanddb import FlatlandDB as fdb
-from geometry_types import Padding, Position, Alignment
+from geometry_types import Padding, Position, Alignment, HorizAlign, VertAlign
 from sqlalchemy import select
+
+# To convert db string values to our alignment enums
+# We can't just use enum values themselves since int values are used by linear geometry, so we need this addtional map
+halign_map = {"left": HorizAlign.LEFT, "center": HorizAlign.CENTER, "right": HorizAlign.RIGHT}
+valign_map = {"top": VertAlign.TOP, "center": VertAlign.CENTER, "bottom": VertAlign.BOTTOM}
 
 
 class DiagramLayoutSpecification:
@@ -37,6 +42,6 @@ class DiagramLayoutSpecification:
         )
 
         DiagramLayoutSpecification.Default_cell_alignment = Alignment(
-            vertical=i['Default cell alignment vertical'],
-            horizontal=i['Default cell alignment horizontal']
+            vertical=halign_map[i['Default cell alignment vertical']],
+            horizontal=valign_map[i['Default cell alignment horizontal']]
         )

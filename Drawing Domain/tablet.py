@@ -5,8 +5,11 @@ from draw_types import Line, Text_Line, Text_Style, FontWeight, FontSlant, Color
 from geometry_types import Rectangle, Rect_Size, Position
 from typing import List
 import cairo
+from styledb import StyleDB
 
-horrible_red = (1.0, 0.0, 0.0)  # Horrible red to show were we forgot to set color
+def load_styles():
+    """Load all styles from the tablet database"""
+    pass
 
 
 class Tablet:
@@ -45,7 +48,10 @@ class Tablet:
     Font_slant_map : Translates Flatland font slant enums to Cairo enums
     """
 
-    def __init__(self, size, output_file):
+    def __init__(self, size, output_file, drawing_type, pstyle):
+
+        StyleDB()  # Load all of the draw styles from the flatland database
+
         self.Size = size
         self.Lines: List[Line] = []
         self.Rectangles: List[Rectangle] = []
@@ -53,18 +59,17 @@ class Tablet:
         self.Output_file = output_file
         self.PDF_sheet = cairo.PDFSurface(self.Output_file, self.Size.width, self.Size.height)
         self.Context = cairo.Context(self.PDF_sheet)
-        self.Font_weight_map = {FontWeight.NORMAL: cairo.FontWeight.NORMAL, FontWeight.BOLD: cairo.FontWeight.BOLD}
-        self.Font_slant_map = {FontSlant.NORMAL: cairo.FontSlant.NORMAL, FontSlant.ITALIC: cairo.FontSlant.ITALIC}
-        self.color_map = {
-            Color.BLACK: (0.0, 0.0, 0.0),
-            Color.GRID_BLUE: (0.2, 0.73, 0.92),
-            Color.CONN_PURPLE: (0.49, 0.20, 0.92),
-            Color.MARGIN_GOLD: (0.86, 0.83, 0.12)
-        }
-        self.Line_pattern_map = {
-            StrokeStyle.SOLID: [],
-            StrokeStyle.DASHED: [9, 9]
-        }
+        self.Drawing_type = drawing_type  # class diagram, state diagram, etc
+        self.Present_using = pstyle  # informal, sexy, etc
+
+    def add_shape(self, shape, size):
+        """Adds a shape to the tablet"""
+        lstyle = styles[self.Present_using][shape]
+        pass
+
+    def add_text(self, block, text):
+        """Adds text to the tablet"""
+        pass
 
     def render(self):
         """Renders the tablet using Cairo for now"""
