@@ -49,6 +49,6 @@ class TertiaryStem(AnchoredStem):
         tablet = self.Connector.Diagram.Canvas.Tablet
         # TODO: Look up the notation specified line style, for now always using UML dashed style
         print("Drawing tertiary connector")
-        tablet.Lines.append(Line(
+        tablet.Line_segments.append(Line(
             line_style=Stroke(color=Color.CONN_PURPLE, width=StrokeWidth.THIN, pattern=StrokeStyle.DASHED),
             from_here=self.Root_end, to_there=self.Vine_end))

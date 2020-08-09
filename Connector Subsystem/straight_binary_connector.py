@@ -89,7 +89,7 @@ class StraightBinaryConnector(BinaryConnector):
         # Create line from vine end of Projecting Binary Stem to vine end of Floating Binary Stem
         tablet = self.Diagram.Canvas.Tablet
         print("Drawing binary connector")
-        tablet.Lines.append(Line(
+        tablet.Line_segments.append(Line(
             line_style=Stroke(color=Color.CONN_PURPLE, width=StrokeWidth.THIN, pattern=StrokeStyle.SOLID),
             from_here=self.Projecting_stem.Vine_end, to_there=self.Floating_stem.Vine_end))
         if self.Tertiary_stem:

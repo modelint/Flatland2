@@ -1,7 +1,6 @@
 """ compartment.py """
 
-from geometry_types import Rect_Size, Position, Rectangle
-from draw_types import Text_Line
+from geometry_types import Rect_Size, Position
 from typing import TYPE_CHECKING, List
 from compartment_type import CompartmentType
 
@@ -25,21 +24,22 @@ class Compartment:
         self.Type = ctype
         self.Node = node
         self.Content = content  # list of text lines
-        self.leading = 4  # Temporary default leading in points ( change later to be font specific
         self.Line_height = None  # Unknown until Text block size computed
+        self.Leading = None  # Unknown until Text block size computed
 
     @property
     def Text_block_size(self):
         """ Compute the size of the text block with required internal compartment padding """
+        tablet = self.Node.Grid.Diagram.Canvas.Tablet
         longest_line = max(self.Content, key=len)
         # Have the tablet compute the total ink area given the text style
-        line_ink_area: Rect_Size = self.Node.Grid.Diagram.Canvas.Tablet.text_size(
-            style=self.Type.Text_style, text_line=longest_line)
+        line_ink_area, leading = tablet.text_size(asset='compartment ' + self.Type.Name, text_line=longest_line)
 
         self.Line_height = line_ink_area.height
+        self.Leading = leading
 
         block_width = line_ink_area.width + self.Type.Padding.left + self.Type.Padding.right
-        block_height = ((line_ink_area.height + self.leading) * len(self.Content)
+        block_height = ((line_ink_area.height + leading) * len(self.Content)
                         + self.Type.Padding.top + self.Type.Padding.bottom)
         # Now add the padding specified for this compartment type
         return Rect_Size(width=block_width, height=block_height)
@@ -52,16 +52,14 @@ class Compartment:
 
     def render(self, lower_left_corner: Position):
         """ Create rectangle on the tablet and add each line of text"""
+        tablet = self.Node.Grid.Diagram.Canvas.Tablet
+        tablet.add_rectangle(asset=self.Type.Name, lower_left=lower_left_corner, size=self.Size)
 
-        self.Node.Grid.Diagram.Canvas.Tablet.Rectangles.append(
-            Rectangle(line_style=self.Node.Node_type.line_style, lower_left=lower_left_corner,
-                      size=self.Size)
-        )
         # Append each line of text into the tablet text list
-        assert self.Line_height # It should have been set by now
+        # TODO: Add text block capability to the tablet
+        assert self.Line_height  # It should have been set by now
         ypos = lower_left_corner.y + self.Type.Padding.bottom
         xpos = lower_left_corner.x + self.Type.Padding.left
         for line in self.Content[::-1]:  # Reverse order since we are positioning lines from the bottom up
-            self.Node.Grid.Diagram.Canvas.Tablet.Text.append(Text_Line(
-                lower_left=Position(xpos, ypos), content=line, style=self.Type.Text_style))
-            ypos += self.leading + self.Line_height
+            tablet.add_text(asset=self.Type.Name, lower_left=Position(xpos, ypos), text=line)
+            ypos += self.Leading + self.Line_height

@@ -99,7 +99,7 @@ class Grid:
             left_extent = self.Diagram.Origin.x
             right_extent = self.Diagram.Origin.x + self.Diagram.Size.width
             for h in self.Row_boundaries:
-                tablet.Lines.append(Line(
+                tablet.Line_segments.append(Line(
                     line_style=Stroke(width=StrokeWidth.THIN, color=Color.GRID_BLUE, pattern=StrokeStyle.SOLID),
                     from_here=Position(left_extent, h + self.Diagram.Origin.y),
                     to_there=Position(right_extent, h + self.Diagram.Origin.y)
@@ -110,7 +110,7 @@ class Grid:
             bottom_extent = self.Diagram.Origin.y
             top_extent = bottom_extent + self.Diagram.Size.height
             for w in self.Col_boundaries:
-                tablet.Lines.append(Line(
+                tablet.Line_segments.append(Line(
                     line_style=Stroke(width=StrokeWidth.THIN, color=Color.GRID_BLUE, pattern=StrokeStyle.SOLID),
                     from_here=Position(w + self.Diagram.Origin.x, bottom_extent),
                     to_there=Position(w + self.Diagram.Origin.x, top_extent)

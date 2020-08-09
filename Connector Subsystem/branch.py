@@ -45,7 +45,7 @@ class Branch:
         tablet = self.Connector.Diagram.Canvas.Tablet
         # Draw the axis
         print("Drawing branch axis")
-        tablet.Lines.append(Line(
+        tablet.Line_segments.append(Line(
             line_style=Stroke(width=StrokeWidth.THIN, color=Color.CONN_PURPLE, pattern=StrokeStyle.SOLID),
             from_here=self.Shoot.from_position, to_there=self.Shoot.to_position)
         )
@@ -60,7 +60,7 @@ class Branch:
                 y = s.Vine_end.y
 
             print("Drawing branch stem")
-            tablet.Lines.append(Line(
+            tablet.Line_segments.append(Line(
                 line_style=Stroke(width=StrokeWidth.THIN, color=Color.CONN_PURPLE, pattern=StrokeStyle.SOLID),
                 from_here=s.Vine_end, to_there=Position(x, y))
             )

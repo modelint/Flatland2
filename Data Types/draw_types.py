@@ -7,7 +7,7 @@ from enum import Enum
 from collections import namedtuple
 
 Stroke = namedtuple('Stroke', 'width color pattern')
-Line = namedtuple('Line', 'line_style from_here to_there')
+Line_Segment = namedtuple('Line_Segment', 'from_here to_there')
 Text_Style = namedtuple('Text_Style', 'typeface size slant weight')
 Text_Line = namedtuple('Text_Line', 'lower_left style content')
 
