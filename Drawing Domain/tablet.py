@@ -15,6 +15,9 @@ _Line_Segment = namedtuple('_Line_Segment', 'from_here to_there style')
 _Rectangle = namedtuple('_Rectangle', 'upper_left size border_style')
 _Text_line = namedtuple('_Text_line', 'lower_left text style')
 
+Cairo_font_weight = {'normal': cairo.FontWeight.NORMAL, 'bold': cairo.FontWeight.BOLD}
+Cairo_font_slant = {'normal': cairo.FontSlant.NORMAL, 'italic': cairo.FontSlant.ITALIC}
+
 # TODO: Make the Tablet a singleton with class based attributes and remove link from Canvas
 
 
@@ -84,7 +87,7 @@ class Tablet:
         self.PDF_sheet = cairo.PDFSurface(self.Output_file, self.Size.width, self.Size.height)
         self.Context = cairo.Context(self.PDF_sheet)
 
-    def add_line_segment(self, asset: str, from_here:Position, to_there: Position):
+    def add_line_segment(self, asset: str, from_here: Position, to_there: Position):
         """
         Convert line segment coordinates to device coordinates and combine with the Line Style defined
         for the Asset in the selected Preentation Style
@@ -101,21 +104,22 @@ class Tablet:
         Adds a rectangle to the tablet and converts the lower left corner to device coordinates
         """
         # Flip lower left corner to device coordinates
-        ll_dc = Position(x=self.to_dc(lower_left.x), y=self.to_dc(lower_left.y))
+        ll_dc = self.to_dc(Position(x=lower_left.x, y=lower_left.y))
 
         # Use upper left corner instead
-        ul = Position(x=ll_dc.x, y=self.Size.height - ll_dc.lower_left.y - size.height)
+        ul = Position(x=ll_dc.x, y=ll_dc.y - size.height)
 
-        self.Rectangles.append(_Rectangle( upper_left=ul, size=size, border_style=StyleDB.shape_presentation[asset]))
+        self.Rectangles.append(_Rectangle(upper_left=ul, size=size, border_style=StyleDB.shape_presentation[asset]))
 
     def add_text(self, asset: str, lower_left: Position, text: str):
         """
         Adds a line of text to the tablet at the specified lower left corner location which will be converted
         to device coordinates
         """
-        self.Text.append(_Text_line(lower_left=Position(x=self.to_dc(lower_left.x), y=self.to_dc(lower_left.y)),
-                                    text=text, style=StyleDB.text_presentation[asset]) )
-
+        self.Text.append(
+            _Text_line(lower_left=self.to_dc(lower_left), text=text, style=StyleDB.text_presentation[asset])
+        )
+        print('Text added')
 
     def render(self):
         """Renders the tablet using Cairo for now"""
@@ -123,22 +127,41 @@ class Tablet:
         # For now, always assume output to cairo
         self.Context.set_line_join(cairo.LINE_JOIN_ROUND)
         for l in self.Line_segments:
-            self.Context.set_dash(l.style.pattern)
-            self.Context.set_source_rgb(*l.style.color)
-            self.Context.set_line_width(l.style.width)
+            # Set the dash pattern
+            pname = StyleDB.line_style[l.style].pattern  # name of line style's pattern
+            pvalue = StyleDB.dash_pattern[pname]  # find pattern value in dash pattern dict
+            self.Context.set_dash(pvalue)  # If pvalue is [], line will be solid
+            # Set color and width
+            cname = StyleDB.line_style[l.style].color
+            c = StyleDB.rgbF[cname]
+            self.Context.set_source_rgb(*c)
+            w = StyleDB.line_style[l.style].width
+            self.Context.set_line_width(w)
+            # Set line segment and draw
             self.Context.move_to(*l.from_here)
             self.Context.line_to(*l.to_there)
             self.Context.stroke()
         for r in self.Rectangles:
-            self.Context.set_dash(r.border_style.pattern)
-            self.Context.set_source_rgb(*r.border_style.color)
-            self.Context.set_line_width(r.border_style.width)
-            self.Context.rectangle(x=r.upper_left.x, y=r.upper_left.y, width=r.size.width, height=r.size.height)
+            # Set the dash pattern
+            pname = StyleDB.line_style[r.border_style].pattern  # name of border line style's pattern
+            pvalue = StyleDB.dash_pattern[pname]  # find pattern value in dash pattern dict
+            self.Context.set_dash(pvalue)  # If pvalue is [], line will be solid
+            # Set color and width
+            cname = StyleDB.line_style[r.border_style].color
+            c = StyleDB.rgbF[cname]
+            self.Context.set_source_rgb(*c)
+            w = StyleDB.line_style[r.border_style].width
+            self.Context.set_line_width(w)
+            # Set rectangle extents and draw
+            self.Context.rectangle(r.upper_left.x, r.upper_left.y, r.size.width, r.size.height)
             self.Context.stroke()
         for t in self.Text:
-            self.Context.select_font_face(family=t.style.typeface, slant=t.style.slant, weight=t.style.weight)
-            self.Context.set_font_size(t.style.size)
-            self.Context.move_to(x=t.lower_left.x, y=self.Size.height - t.lower_left.y)
+            style = StyleDB.text_style[t.style]
+            self.Context.select_font_face(
+                style.typeface, Cairo_font_slant[style.slant], Cairo_font_weight[style.weight]
+            )
+            self.Context.set_font_size(style.size)
+            self.Context.move_to(t.lower_left.x, t.lower_left.y)
             self.Context.show_text(t.text)
 
     def text_size(self, asset: str, text_line: str) -> (Rect_Size, int):
@@ -148,9 +171,12 @@ class Tablet:
         :param text_line: Text that would be rendered
         :return: Size of the text line ink area and the text style's leading value
         """
-        style = StyleDB.text_presentation[asset] # Look up the text style for this asset
+        style_name = StyleDB.text_presentation[asset]  # Look up the text style for this asset
+        style = StyleDB.text_style[style_name]
         # Configure the Cairo context with style properties and the text line
-        self.Context.select_font_face( style.typeface, style.slant, style.weight )
+        self.Context.select_font_face(
+            style.typeface, Cairo_font_slant[style.slant], Cairo_font_weight[style.weight],
+        )
         self.Context.set_font_size(style.size)
         te = self.Context.text_extents(text_line)
         return Rect_Size(height=te.height, width=te.width), style.leading
@@ -160,8 +186,11 @@ class Tablet:
         To display coordinates – Convert tablet bottom_left origin coordinate to
         display coordinate where top-left origin is used.
         """
-        assert (tablet_coord.y <= self.Size.height), "Tablet bounds exceeded"
+        assert tablet_coord.y <= self.Size.height, "Tablet bounds exceeded"
+        assert tablet_coord.x >= 0, "Negative x value"
+        assert tablet_coord.y >= 0, "Negative y value"
         return Position(x=tablet_coord.x, y=self.Size.height - tablet_coord.y)
 
     def __repr__(self):
-        return f'Tablet size: {self.Size}\nLine_segments:\n{self.Line_segments}\nRectangles:\n{self.Rectangles}\nText:\n{self.Text}'
+        return f'Size: {self.Size}, Presentation: {self.Presentation}, Drawing: {self.Drawing_type},' \
+               f'Output: {self.Output_file}'

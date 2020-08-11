@@ -29,6 +29,7 @@ class StyleDB:
         load_line_styles()
         load_text_styles()
         load_asset_presentations(drawing_type=drawing_type, presentation=presentation)
+        print("presentations loaded")
 
 
 def load_colors():
@@ -44,7 +45,10 @@ def load_dash_patterns():
     q = select([patterns])
     f = fdb.Connection.execute(q).fetchall()
     for i in f:
-        StyleDB.dash_pattern[i.Name] = Dash_Pattern( solid=i.Solid, blank=i.Blank )
+        if not i.Solid and not i.Blank:
+            StyleDB.dash_pattern[i.Name] = []
+        else:
+            StyleDB.dash_pattern[i.Name] = Dash_Pattern( solid=i.Solid, blank=i.Blank )
 
 
 def load_text_styles():

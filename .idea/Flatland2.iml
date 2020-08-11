@@ -8,6 +8,11 @@
       <sourceFolder url="file://$MODULE_DIR$/Geometry Domain" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Connector Subsystem" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Database" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Database/Population" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Database/Population/Connector" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Database/Population/Decorator" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Database/Population/Drawing" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Database/Population/Node" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
