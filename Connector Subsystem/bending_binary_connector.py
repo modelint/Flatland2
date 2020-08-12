@@ -5,11 +5,9 @@ from binary_connector import BinaryConnector
 from tertiary_stem import TertiaryStem
 from anchored_stem import AnchoredStem
 from connection_types import HorizontalFace, Orientation
-from draw_types import StrokeWidth, StrokeStyle
 from geometry_types import Position
 from open_polygon import OpenPolygon
 from command_interface import New_Stem
-from names import ConnectorTypeName
 from typing import List, TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -118,7 +116,7 @@ class BendingBinaryConnector(BinaryConnector):
         """
         # Create line from vine end of T_stem to vine end of P_stem, bending along the way
         print("Drawing bending binary connector")
-        OpenPolygon(tablet=self.Diagram.Canvas.Tablet, width=StrokeWidth.THIN, style=StrokeStyle.SOLID,
+        OpenPolygon(tablet=self.Diagram.Canvas.Tablet, asset='binary connector',
                     points=[self.T_stem.Vine_end] + self.Corners + [self.P_stem.Vine_end]).render()
         if self.Tertiary_stem:
             self.Tertiary_stem.render()

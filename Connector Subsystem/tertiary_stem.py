@@ -5,10 +5,7 @@ tertiary_stem.py
 from anchored_stem import AnchoredStem
 from connection_types import HorizontalFace, NodeFace, AnchorPosition
 from geometry_types import Position
-from draw_types import Line, Stroke, StrokeWidth, StrokeStyle, Color
 from typing import TYPE_CHECKING, Set
-from names import StemTypeName
-from notation import StemSemantic
 
 if TYPE_CHECKING:
     from node import Node
@@ -20,7 +17,7 @@ class TertiaryStem(AnchoredStem):
     An Anchored Stem that reaches from a Node face at its root end and attaches its vine end to a Binary Connector.
     """
 
-    def __init__(self, connector: 'BinaryConnector', stem_type: StemTypeName, semantic: StemSemantic,
+    def __init__(self, connector: 'BinaryConnector', stem_type: str, semantic: str,
                  node: 'Node', face: NodeFace, anchor_position: AnchorPosition, parallel_segs: Set[tuple]):
         AnchoredStem.__init__(
             self, connector, stem_type, semantic, node, face, anchor_position)
@@ -49,6 +46,4 @@ class TertiaryStem(AnchoredStem):
         tablet = self.Connector.Diagram.Canvas.Tablet
         # TODO: Look up the notation specified line style, for now always using UML dashed style
         print("Drawing tertiary connector")
-        tablet.Line_segments.append(Line(
-            line_style=Stroke(color=Color.CONN_PURPLE, width=StrokeWidth.THIN, pattern=StrokeStyle.DASHED),
-            from_here=self.Root_end, to_there=self.Vine_end))
+        tablet.add_line_segment(asset='assoc stem', from_here=self.Root_end, to_there=self.Vine_end)

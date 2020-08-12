@@ -5,9 +5,7 @@ stem.py
 from sqlalchemy import select, and_
 from geometry_types import Position
 from rendered_symbol import RenderedSymbol
-from stem_type import StemTypeName
 from connection_types import NodeFace
-from notation import StemSemantic
 
 from typing import TYPE_CHECKING
 
@@ -35,7 +33,7 @@ class Stem:
     """
 
     def __init__(self,
-                 connector: 'Connector', stem_type: StemTypeName, semantic: StemSemantic, node: 'Node',
+                 connector: 'Connector', stem_type: str, semantic: str, node: 'Node',
                  node_face: NodeFace, root_position: Position, vine_position: Position):
         self.Connector = connector
         self.Stem_type = stem_type

@@ -1,13 +1,11 @@
 """
 t020_bending_binary_horizontal.py
 """
-# from collections import namedtuple
 from single_cell_node import SingleCellNode
 
-# from notation import StemSemantic
-# from bending_binary_connector import BendingBinaryConnector
-# from connection_types import NodeFace, AnchorPosition
-# from command_interface import New_Stem, New_Path
+from bending_binary_connector import BendingBinaryConnector
+from connection_types import NodeFace, AnchorPosition
+from command_interface import New_Stem, New_Path
 from canvas import Canvas
 from flatlanddb import FlatlandDB
 
@@ -48,20 +46,19 @@ def create_canvas(args):
         ]
     ]
 
-    t_node = SingleCellNode(node_type_name='class', content=class_Aircraft,
-                            grid=flatland_canvas.Diagram.Grid,
+    t_node = SingleCellNode(node_type_name='class', content=class_Aircraft, grid=flatland_canvas.Diagram.Grid,
                             row=1, column=1)
-    # p_node = SingleCellNode(node_type_name=NodeTypeName.M_class, content=class_Pilot, grid=flatland_canvas.Diagram.Grid,
-    #                         row=1, column=3)
-    #
-    # t_stem = New_Stem(stem_type='class mult', semantic='Mc mult', node=t_node,
-    #                   face=NodeFace.TOP, anchor=AnchorPosition(0))
-    # p_stem = New_Stem(stem_type='class mult', semantic='1 mult', node=p_node,
-    #                   face=NodeFace.TOP, anchor=AnchorPosition(0))
-    # p = [New_Path(lane=2, rut=0)]
-    #
-    # BendingBinaryConnector(diagram=flatland_canvas.Diagram, connector_type='binary association',
-    #                        anchored_stem_p=p_stem, anchored_stem_t=t_stem, paths=p)
+    p_node = SingleCellNode(node_type_name='class', content=class_Pilot, grid=flatland_canvas.Diagram.Grid,
+                            row=1, column=3)
+
+    t_stem = New_Stem(stem_type='class mult', semantic='Mc mult', node=t_node,
+                      face=NodeFace.TOP, anchor=AnchorPosition(0))
+    p_stem = New_Stem(stem_type='class mult', semantic='1 mult', node=p_node,
+                      face=NodeFace.TOP, anchor=AnchorPosition(0))
+    p = [New_Path(lane=2, rut=0)]
+
+    BendingBinaryConnector(diagram=flatland_canvas.Diagram, connector_type='binary association',
+                           anchored_stem_p=p_stem, anchored_stem_t=t_stem, paths=p)
     flatland_canvas.render()
 
 
