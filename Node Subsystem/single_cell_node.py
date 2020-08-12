@@ -16,14 +16,23 @@ class SingleCellNode(Node):
     """
     A node enveloped by a single Cell
 
-    Attributes
-    ---
-    Row : Placed in this row
-    Column : Placed at this column
-    """
+        Attributes
 
+        - row -- Placed in this row
+        - column -- Placed at this column
+    """
     def __init__(self, node_type_name: str, content: List[List[str]], grid: 'Grid', row: int, column: int,
                  local_alignment: Optional[Alignment] = None):
+        """
+        Constructor
+
+        :param node_type_name:
+        :param content:
+        :param grid:
+        :param row:
+        :param column:
+        :param local_alignment:
+        """
         Node.__init__(self, node_type_name, content, grid, local_alignment)
         if row <= 0:
             raise BadRowNumber

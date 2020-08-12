@@ -21,7 +21,7 @@ def create_canvas(args):
     # this file for diagnostic purposes
     flatland_canvas = Canvas(
         diagram_type=args.diagram,
-        presentation_style='informal',
+        presentation=args.presentation,
         notation=args.notation,
         standard_sheet_name=args.sheet,
         orientation=args.orientation,
@@ -71,8 +71,10 @@ if __name__ == "__main__":
     # function that is called from the command line
     from collections import namedtuple
 
-    Canvas_Args = namedtuple("Canvas_Args", "diagram notation sheet orientation file")
+    Canvas_Args = namedtuple("Canvas_Args", "diagram notation presentation sheet orientation file")
 
     test_input = Canvas_Args(
-        diagram="class", notation="xUML", sheet="letter", orientation="landscape", file="ftest.pdf")
+        diagram="class", notation="xUML", presentation="default", sheet="letter",
+        orientation="landscape", file="ftest.pdf"
+    )
     create_canvas(args=test_input)

@@ -15,7 +15,21 @@ class Group(Enum):
 
 
 class Sheet:
+    """
+    A US or international standard sheet size.
+
+        Attributes
+
+        - Name -- A name like A3, tabloid, letter, D, etc
+        - Group -- Either *us* or *int* to distinguish between measurement units
+        - Size --  Sheet dimensions float since us has 8.5 x 11 or int for international mm units
+    """
     def __init__(self, name):
+        """
+        Constructor
+
+        :param name:  A standard sheet name in our database such as letter, tabloid, A3, etc
+        """
         sheets = fdb.MetaData.tables['Sheet']
         query = select([sheets]).where(sheets.c.Name == name)
         i = fdb.Connection.execute(query).fetchone()

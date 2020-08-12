@@ -33,9 +33,17 @@ class Diagram:
 
     """
 
-    def __init__(self, canvas: 'Canvas', diagram_type_name: str, presentation_style: str, notation_name: str):
+    def __init__(self, canvas: 'Canvas', diagram_type_name: str, presentation: str, notation_name: str):
+        """
+        Constructor
+
+        :param canvas: Reference to the Canvas
+        :param diagram_type_name: A supported type of model diagram such as class, state machine, collaboration
+        :param presentation: A predefined set of style specifications such as default, diagnostic, fullcolor
+        :param notation_name: A supported notation such as xUML, Starr, Shlaer-Mellor
+        """
         self.Canvas = canvas
-        self.Presentation_style = presentation_style
+        self.Presentation = presentation
 
         # Validate diagram type name
         dtypes = fdb.MetaData.tables['Diagram Type']

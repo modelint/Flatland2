@@ -17,22 +17,32 @@ class Node:
     This is a rectangular diagram symbol consisting of one or more UML style Compartments
     stacked in a vertical order.
 
-    Attributes
-    ---
-    Content : The unformatted text that will be drawn into the Node's Compartments
-              organized as a dictionary with the keys as compartment names such as 'class name', 'attributes', etc.
-    Grid : The Node is positioned into this Grid
-    Compartments : Each compartment to be filled in
-    Local_alignment : Position of the node in the spanned area, vertical and horizontal
+        Attributes
+
+        - Content -- The unformatted text that will be drawn into the Node's Compartments organized as a dictionary
+          with the keys as compartment names such as 'class name', 'attributes', etc.
+        - Grid -- The Node is positioned into this Grid
+        - Compartments -- Each compartment to be filled in
+        - Local_alignment -- Position of the node in the spanned area, vertical and horizontal
     """
 
-    def __init__(self, node_type_name: str, content: List[List[str]], grid: 'Grid', local_alignment: Optional[Alignment]):
+    def __init__(self, node_type_name: str, content: List[List[str]], grid: 'Grid',
+                 local_alignment: Optional[Alignment]):
+        """
+        Constructor
+
+        :param node_type_name: A name such as class, state, imported class, etc
+        :param content: A list of text blocks, each a list of text lines to be displayed in node Compartments
+        :param grid: Reference to the Grid
+        :param local_alignment: Overrides default alignment within Cell or Cell range
+        """
         self.Grid = grid
         self.Node_type = NodeType(node_type_name, self.Grid.Diagram.Diagram_type)
         # Node Type will load all of its Compartment Types from the database
 
         # Create a list of compartments ordered top to bottom based on Node Type's Compartment Types
-        self.Compartments = [Compartment(node=self, ctype=t, content=c) for t, c in zip(self.Node_type.Compartment_types, content)]
+        self.Compartments = [Compartment(node=self, ctype=t, content=c) for t, c in
+                             zip(self.Node_type.Compartment_types, content)]
 
         # The Node will be aligned in the Cell according to either the specified local alignment or, if none,
         # the default cell alignment that we got from the Diagram Layout Specification

@@ -3,16 +3,16 @@ asset_instances.py
 """
 
 population = [
-    {'Name': 'local compartment', 'Form': 'shape', 'Drawing type': 'class diagram'},
+    {'Name': 'class compartment', 'Form': 'shape', 'Drawing type': 'class diagram'},
     {'Name': 'solid connector', 'Form': 'shape', 'Drawing type': 'class diagram'},
     {'Name': 'label', 'Form': 'text', 'Drawing type': 'class diagram'},
     {'Name': 'rel name', 'Form': 'text', 'Drawing type': 'class diagram'},
     {'Name': 'rel phrase', 'Form': 'text', 'Drawing type': 'class diagram'},
-    {'Name': 'imported compartment', 'Form': 'shape', 'Drawing type': 'class diagram'},
+    {'Name': 'imported class compartment', 'Form': 'shape', 'Drawing type': 'class diagram'},
     {'Name': 'see also', 'Form': 'text', 'Drawing type': 'class diagram'},
     {'Name': 'class name', 'Form': 'text', 'Drawing type': 'class diagram'},
-    {'Name': 'class attributes', 'Form': 'text', 'Drawing type': 'class diagram'},
-    {'Name': 'class methods', 'Form': 'text', 'Drawing type': 'class diagram'},
+    {'Name': 'attributes', 'Form': 'text', 'Drawing type': 'class diagram'},
+    {'Name': 'methods', 'Form': 'text', 'Drawing type': 'class diagram'},
     {'Name': 'assoc dash', 'Form': 'shape', 'Drawing type': 'class diagram'},
     {'Name': 'grid', 'Form': 'shape', 'Drawing type': 'class diagram'},
     {'Name': 'margin', 'Form': 'shape', 'Drawing type': 'class diagram'},

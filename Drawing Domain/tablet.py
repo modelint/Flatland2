@@ -1,7 +1,6 @@
 """
 tablet.py – Flatland draws to this and then the tablet can be drawn using cairo or some other draw framework
 """
-from draw_types import Text_Line, Text_Style, FontWeight, FontSlant, Color, StrokeStyle
 from geometry_types import Rect_Size, Position
 from typing import List
 import cairo
@@ -53,17 +52,18 @@ class Tablet:
     changes to text styles, colors, line patterns etc can be perfomred by updating the Drawing Domain's style
     database.
 
-    Attributes:
-        Size : The size of the whatever surface (PDF, RGB, SVG, etc) Tablet supports.
-        Line_segments : A list of geometric lines each with start and end coordinates.
-        Rectangles : A list of rectangles each with a lower left corner, height and width
-        Text : A list of text lines (new lines are not supported)
-        Output_file : A filename or output stream object to be output as a drawing
-        PDF_sheet : For now we only support PDF output as defined in Cairo.  So this is a Cairo surface
-        Context : A Cairo context object for drawing on the PDF sheet
+        Attributes
+
+        - Size -- The size of the whatever surface (PDF, RGB, SVG, etc) Tablet supports.
+        - Line_segments -- A list of geometric lines each with start and end coordinates.
+        - Rectangles -- A list of rectangles each with a lower left corner, height and width
+        - Text -- A list of text lines (new lines are not supported)
+        - Output_file -- A filename or output stream object to be output as a drawing
+        - PDF_sheet -- For now we only support PDF output as defined in Cairo.  So this is a Cairo surface
+        - Context -- A Cairo context object for drawing on the PDF sheet
     """
 
-    def __init__(self, size, output_file, drawing_type, presentation):
+    def __init__(self, size: Rect_Size, output_file, drawing_type: str, presentation: str):
         """
         Constructs a new singleton Tablet instance
         :param size: Vertical and horizontal span of the entire draw surface in points

@@ -5,7 +5,6 @@ grid.py
 import flatland_exceptions
 from linear_geometry import expand_boundaries, span, step_edge_distance
 from geometry_types import Position
-from draw_types import Line, Stroke, StrokeStyle, StrokeWidth, Color
 from layout_specification import default_cell_alignment, default_cell_padding, default_rut_positions
 from layout_specification import default_new_path_col_width, default_new_path_row_height
 # from spanning_node import SpanningNode
@@ -16,7 +15,6 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from diagram import Diagram
-
 
 show_grid = True
 
@@ -42,18 +40,23 @@ class Grid:
     placement coordinate. The Grid then extends by the necessary (if any) Rows and Columns to create a place
     to position the Node.
 
-    Attributes
-    ---
-    Cells : 2D array of Nodes, initially empty
-    Nodes : All the nodes on the grid in placement order
-    Row_boundaries : Floor y of each row ascending upward
-    Col_boundaries : Left side x of each column, ascending rightward
-    Cell_padding : Distances from cell to drawn node boundaries
-    Cell_alignment : Default alignment for any placed node (can be overidden locally by node)
-    Diagram : The Diagram that this Grid organizes content of
+        Attributes
+
+        - Cells -- 2D array of Nodes, initially empty
+        - Nodes -- All the nodes on the grid in placement order
+        - Row_boundaries -- Floor y of each row ascending upward
+        - Col_boundaries -- Left side x of each column, ascending rightward
+        - Cell_padding -- Distances from cell to drawn node boundaries
+        - Cell_alignment -- Default alignment for any placed node (can be overidden locally by node)
+        - Diagram -- The Diagram that this Grid organizes content of
     """
 
     def __init__(self, diagram: 'Diagram'):
+        """
+        Constructor
+
+        :param diagram:  Reference to the Diagram
+        """
         self.Cells = []  # No rows or columns in grid yet
         self.Nodes = []  # No nodes in the grid yet
         self.Connectors = []
@@ -67,7 +70,7 @@ class Grid:
         return f'Cells: {self.Cells}, Row boundaries: {self.Row_boundaries}, Col boundaries: {self.Col_boundaries}' \
                f'Cell padding: {self.Cell_padding}, Cell alignment: {self.Cell_alignment}'
 
-    def get_rut(self, lane: int, rut: int, orientation: Orientation):
+    def get_rut(self, lane: int, rut: int, orientation: Orientation) -> int:
         """
         Compute a y coordinate above row boundary if lane_orientation is row
         or an x coordinate right of column boundary if lane_orientation is column
@@ -89,7 +92,9 @@ class Grid:
             num_of_steps=default_rut_positions, extent=lane_width, step=rut)
 
     def render(self):
-        """Draw self on tablet for diagnostic purposes"""
+        """
+        Draw Grid on Tablet for diagnostic purposes
+        """
 
         tablet = self.Diagram.Canvas.Tablet
 
@@ -99,23 +104,19 @@ class Grid:
             left_extent = self.Diagram.Origin.x
             right_extent = self.Diagram.Origin.x + self.Diagram.Size.width
             for h in self.Row_boundaries:
-                tablet.Line_segments.append(Line(
-                    line_style=Stroke(width=StrokeWidth.THIN, color=Color.GRID_BLUE, pattern=StrokeStyle.SOLID),
-                    from_here=Position(left_extent, h + self.Diagram.Origin.y),
-                    to_there=Position(right_extent, h + self.Diagram.Origin.y)
-                )
-                )
+                tablet.add_line_segment(asset='grid',
+                                        from_here=Position(left_extent, h + self.Diagram.Origin.y),
+                                        to_there=Position(right_extent, h + self.Diagram.Origin.y)
+                                        )
 
             # Draw columns
             bottom_extent = self.Diagram.Origin.y
             top_extent = bottom_extent + self.Diagram.Size.height
             for w in self.Col_boundaries:
-                tablet.Line_segments.append(Line(
-                    line_style=Stroke(width=StrokeWidth.THIN, color=Color.GRID_BLUE, pattern=StrokeStyle.SOLID),
-                    from_here=Position(w + self.Diagram.Origin.x, bottom_extent),
-                    to_there=Position(w + self.Diagram.Origin.x, top_extent)
-                )
-                )
+                tablet.add_line_segment(asset='grid',
+                                        from_here=Position(w + self.Diagram.Origin.x, bottom_extent),
+                                        to_there=Position(w + self.Diagram.Origin.x, top_extent)
+                                        )
 
         # Draw nodes
         [n.render() for n in self.Nodes]

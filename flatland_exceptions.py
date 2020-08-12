@@ -11,8 +11,20 @@ class FlatlandDBException(FlatlandException):
     pass
 
 
+class FlatlandUserInputException(FlatlandException):
+    pass
+
+
 class UnknownSheetGroup(FlatlandDBException):
     pass
+
+
+class InvalidOrientation(FlatlandUserInputException):
+    def __init__(self, orientation):
+        self.orientation = orientation
+
+    def __str__(self):
+        return f'Orientation must be portrait or landscape, got: [{self.orientation}]'
 
 
 class BadRowNumber(FlatlandException):
