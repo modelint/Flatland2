@@ -6,6 +6,7 @@ from sqlalchemy import select, and_
 from geometry_types import Position
 from rendered_symbol import RenderedSymbol
 from connection_types import NodeFace
+from flatlanddb import FlatlandDB as fdb
 
 from typing import TYPE_CHECKING
 
@@ -50,18 +51,16 @@ class Stem:
         using the connector line style and the default node face offset value
         """
         # Create a Rendered Symbol for each Stem End Decoration
-        db = self.Connector.Diagram.Canvas.Database
-        stem_end_decs = db.MetaData.tables['Stem End Decoration']
-        q = select([stem_end_decs.c.Symbol, stem_end_decs.c.End], stem_end_decs.c.Growth).where(and_(
+        stem_end_decs = fdb.MetaData.tables['Stem End Decoration']
+        q = select([stem_end_decs.c.Symbol, stem_end_decs.c.End]).where(and_(
             stem_end_decs.c['Stem type'] == self.Stem_type,
             stem_end_decs.c['Semantic'] == self.Semantic,
             stem_end_decs.c['Diagram type'] == self.Connector.Diagram.Diagram_type,
             stem_end_decs.c['Notation'] == self.Connector.Diagram.Notation
         )
         )
-        found = db.Connection.execute(q)
+        found = fdb.Connection.execute(q)
         for i in found:
-            RenderedSymbol(stem=self, end=i['End'], symbol=i['Symbol'], growth=i['Growth'] )
+            RenderedSymbol(stem=self, end=i['End'], symbol=i['Symbol'])
         if not found:
             print("No rendered symbols")
-            pass  # Set vine at no_decoration_offset, Draw line from root to vine

@@ -1,7 +1,5 @@
 """ floating_binary_stem.py """
 
-from notation import StemSemantic
-from names import StemTypeName
 from stem import Stem
 from connection_types import NodeFace
 from geometry_types import Position
@@ -21,7 +19,7 @@ class FloatingBinaryStem(Stem):
 
     """
 
-    def __init__(self, connector: 'Connector', stem_type: StemTypeName, semantic: StemSemantic,
+    def __init__(self, connector: 'Connector', stem_type: str, semantic: str,
                  node: 'Node', face: NodeFace, projecting_stem: New_Stem):
         # We will use either the x or y of our opposing Anchored Stem and then set the other coordinate
         # to coincide with the Node face position attached to Floating Stem since this is a Straight Binary

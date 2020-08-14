@@ -1,16 +1,13 @@
 """
 straight_binary_connector.py
 """
-from notation import StemSemantic
 from binary_connector import BinaryConnector
 from anchored_stem import AnchoredStem
 from connection_types import HorizontalFace
 from floating_binary_stem import FloatingBinaryStem
 from tertiary_stem import TertiaryStem
-from draw_types import Line, Stroke, StrokeWidth, StrokeStyle, Color
 from typing import TYPE_CHECKING
 from command_interface import New_Stem
-from names import ConnectorTypeName
 
 if TYPE_CHECKING:
     from diagram import Diagram
@@ -32,14 +29,14 @@ class StraightBinaryConnector(BinaryConnector):
     on the Binary Connector line between the two vine ends of the Binary Stems. Since it must be a straight line,
     the Tertiary Stem may not be attached to a face on any Node attached to the Binary Stems.
 
-    Attributes:
-    ---
-    Projecting_stem – The Binary Stem that is anchored to a user specified position on one Node Face
-    Floating_stem – The opposite Binary Stem that is placed on a direct line opposite the Projecting stem
-    where it touches the opposing face of its attached Node
+        Attributes
+
+        - Projecting_stem -– The Binary Stem that is anchored to a user specified position on one Node Face
+        - Floating_stem -– The opposite Binary Stem that is placed on a direct line opposite the Projecting stem
+        where it touches the opposing face of its attached Node
     """
 
-    def __init__(self, diagram: 'Diagram', connector_type: ConnectorTypeName, projecting_stem: New_Stem,
+    def __init__(self, diagram: 'Diagram', connector_type: str, projecting_stem: New_Stem,
                  floating_stem: New_Stem, tertiary_stem=None):
         BinaryConnector.__init__(self, diagram, connector_type)
 
@@ -89,8 +86,7 @@ class StraightBinaryConnector(BinaryConnector):
         # Create line from vine end of Projecting Binary Stem to vine end of Floating Binary Stem
         tablet = self.Diagram.Canvas.Tablet
         print("Drawing binary connector")
-        tablet.Line_segments.append(Line(
-            line_style=Stroke(color=Color.CONN_PURPLE, width=StrokeWidth.THIN, pattern=StrokeStyle.SOLID),
-            from_here=self.Projecting_stem.Vine_end, to_there=self.Floating_stem.Vine_end))
+        tablet.add_line_segment(
+            asset='binary connector', from_here=self.Projecting_stem.Vine_end, to_there=self.Floating_stem.Vine_end)
         if self.Tertiary_stem:
             self.Tertiary_stem.render()

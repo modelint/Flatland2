@@ -10,15 +10,15 @@ if TYPE_CHECKING:
 
 class RenderedSymbol:
 
-    def __init__(self, stem: 'Stem', end: StemEnd, symbol: str, growth: int):
+    def __init__(self, stem: 'Stem', end: StemEnd, symbol: str):
         self.Stem = stem
         self.End = end
         self.Symbol = symbol
-        self.Growth = growth
+        # self.Growth = growth TODO: compute this
         self.render()
 
     def render(self):
         print(f'Rendering symbol: {self}')
 
     def __repr__(self):
-        return f'Stem: {self.Stem}, End: {self.End}, Symbol: {self.Symbol}, Growth: {self.Growth}'
+        return f'Stem: {self.Stem}, End: {self.End}, Symbol: {self.Symbol}'
