@@ -1,8 +1,6 @@
 """
 t030_straight_binary_tertiary.py
 """
-from collections import namedtuple
-
 from single_cell_node import SingleCellNode
 from straight_binary_connector import StraightBinaryConnector
 from connection_types import NodeFace, AnchorPosition

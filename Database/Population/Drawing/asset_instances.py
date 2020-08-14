@@ -6,6 +6,7 @@ population = [
     # xUML class diagram
     {'Name': 'class compartment', 'Form': 'shape', 'Drawing type': 'xUML class diagram'},
     {'Name': 'binary connector', 'Form': 'shape', 'Drawing type': 'xUML class diagram'},
+    {'Name': 'gen connector', 'Form': 'shape', 'Drawing type': 'xUML class diagram'},
     {'Name': 'label', 'Form': 'text', 'Drawing type': 'xUML class diagram'},
     {'Name': 'rel name', 'Form': 'text', 'Drawing type': 'xUML class diagram'},
     {'Name': 'rel phrase', 'Form': 'text', 'Drawing type': 'xUML class diagram'},
@@ -21,6 +22,7 @@ population = [
     # Shlaer-Mellor class diagram
     {'Name': 'class compartment', 'Form': 'shape', 'Drawing type': 'Shlaer-Mellor class diagram'},
     {'Name': 'binary connector', 'Form': 'shape', 'Drawing type': 'Shlaer-Mellor class diagram'},
+    {'Name': 'gen connector', 'Form': 'shape', 'Drawing type': 'Shlaer-Mellor class diagram'},
     {'Name': 'label', 'Form': 'text', 'Drawing type': 'Shlaer-Mellor class diagram'},
     {'Name': 'rel name', 'Form': 'text', 'Drawing type': 'Shlaer-Mellor class diagram'},
     {'Name': 'rel phrase', 'Form': 'text', 'Drawing type': 'Shlaer-Mellor class diagram'},
@@ -36,6 +38,7 @@ population = [
     # Starr class diagram
     {'Name': 'class compartment', 'Form': 'shape', 'Drawing type': 'Starr class diagram'},
     {'Name': 'binary connector', 'Form': 'shape', 'Drawing type': 'Starr class diagram'},
+    {'Name': 'gen connector', 'Form': 'shape', 'Drawing type': 'Starr class diagram'},
     {'Name': 'label', 'Form': 'text', 'Drawing type': 'Starr class diagram'},
     {'Name': 'rel name', 'Form': 'text', 'Drawing type': 'Starr class diagram'},
     {'Name': 'rel phrase', 'Form': 'text', 'Drawing type': 'Starr class diagram'},

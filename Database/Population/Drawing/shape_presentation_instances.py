@@ -5,6 +5,7 @@ shape_presentation_instances.py
 population = [
     {'Asset': 'class compartment', 'Presentation': 'default', 'Drawing type': 'Starr class diagram', 'Line style': 'normal'},
     {'Asset': 'binary connector', 'Presentation': 'default', 'Drawing type': 'Starr class diagram', 'Line style': 'normal'},
+    {'Asset': 'gen connector', 'Presentation': 'default', 'Drawing type': 'Starr class diagram', 'Line style': 'normal'},
     {'Asset': 'imported class compartment', 'Presentation': 'default', 'Drawing type': 'Starr class diagram', 'Line style': 'dashed'},
     {'Asset': 'assoc stem', 'Presentation': 'default', 'Drawing type': 'Starr class diagram', 'Line style': 'normal'},
     {'Asset': 'grid', 'Presentation': 'default', 'Drawing type': 'Starr class diagram', 'Line style': 'grid'},
@@ -12,6 +13,7 @@ population = [
 
     {'Asset': 'class compartment', 'Presentation': 'default', 'Drawing type': 'xUML class diagram', 'Line style': 'normal'},
     {'Asset': 'binary connector', 'Presentation': 'default', 'Drawing type': 'xUML class diagram', 'Line style': 'normal'},
+    {'Asset': 'gen connector', 'Presentation': 'default', 'Drawing type': 'xUML class diagram', 'Line style': 'normal'},
     {'Asset': 'imported class compartment', 'Presentation': 'default', 'Drawing type': 'xUML class diagram', 'Line style': 'dashed'},
     {'Asset': 'assoc stem', 'Presentation': 'default', 'Drawing type': 'xUML class diagram', 'Line style': 'dashed'},
     {'Asset': 'grid', 'Presentation': 'default', 'Drawing type': 'xUML class diagram', 'Line style': 'grid'},
@@ -19,6 +21,7 @@ population = [
 
     {'Asset': 'class compartment', 'Presentation': 'default', 'Drawing type': 'Shlaer-Mellor class diagram', 'Line style': 'normal'},
     {'Asset': 'binary connector', 'Presentation': 'default', 'Drawing type': 'Shlaer-Mellor class diagram', 'Line style': 'normal'},
+    {'Asset': 'gen connector', 'Presentation': 'default', 'Drawing type': 'Shlaer-Mellor class diagram', 'Line style': 'normal'},
     {'Asset': 'imported class compartment', 'Presentation': 'default', 'Drawing type': 'Shlaer-Mellor class diagram', 'Line style': 'dashed'},
     {'Asset': 'assoc stem', 'Presentation': 'default', 'Drawing type': 'Shlaer-Mellor class diagram', 'Line style': 'normal'},
     {'Asset': 'grid', 'Presentation': 'default', 'Drawing type': 'Shlaer-Mellor class diagram', 'Line style': 'grid'},
@@ -26,6 +29,8 @@ population = [
 
     {'Asset': 'class compartment', 'Presentation': 'diagnostic', 'Drawing type': 'Starr class diagram', 'Line style': 'normal'},
     {'Asset': 'binary connector', 'Presentation': 'diagnostic', 'Drawing type': 'Starr class diagram',
+     'Line style': 'connector highlight'},
+    {'Asset': 'gen connector', 'Presentation': 'diagnostic', 'Drawing type': 'Starr class diagram',
      'Line style': 'connector highlight'},
     {'Asset': 'imported class compartment', 'Presentation': 'diagnostic', 'Drawing type': 'Starr class diagram', 'Line style': 'dashed'},
     {'Asset': 'assoc stem', 'Presentation': 'diagnostic', 'Drawing type': 'Starr class diagram', 'Line style': 'normal'},
@@ -35,6 +40,8 @@ population = [
     {'Asset': 'class compartment', 'Presentation': 'diagnostic', 'Drawing type': 'xUML class diagram', 'Line style': 'normal'},
     {'Asset': 'binary connector', 'Presentation': 'diagnostic', 'Drawing type': 'xUML class diagram',
      'Line style': 'connector highlight'},
+    {'Asset': 'gen connector', 'Presentation': 'diagnostic', 'Drawing type': 'xUML class diagram',
+     'Line style': 'connector highlight'},
     {'Asset': 'imported class compartment', 'Presentation': 'diagnostic', 'Drawing type': 'xUML class diagram', 'Line style': 'dashed'},
     {'Asset': 'assoc stem', 'Presentation': 'diagnostic', 'Drawing type': 'xUML class diagram', 'Line style': 'dashed'},
     {'Asset': 'grid', 'Presentation': 'diagnostic', 'Drawing type': 'xUML class diagram', 'Line style': 'grid'},
@@ -42,6 +49,8 @@ population = [
 
     {'Asset': 'class compartment', 'Presentation': 'diagnostic', 'Drawing type': 'Shlaer-Mellor class diagram', 'Line style': 'normal'},
     {'Asset': 'binary connector', 'Presentation': 'diagnostic', 'Drawing type': 'Shlaer-Mellor class diagram',
+     'Line style': 'connector highlight'},
+    {'Asset': 'gen connector', 'Presentation': 'diagnostic', 'Drawing type': 'Shlaer-Mellor class diagram',
      'Line style': 'connector highlight'},
     {'Asset': 'imported class compartment', 'Presentation': 'diagnostic', 'Drawing type': 'Shlaer-Mellor class diagram', 'Line style': 'dashed'},
     {'Asset': 'assoc stem', 'Presentation': 'diagnostic', 'Drawing type': 'Shlaer-Mellor class diagram', 'Line style': 'normal'},

@@ -4,7 +4,6 @@ branch.py
 from typing import Set, TYPE_CHECKING
 from anchored_tree_stem import AnchoredTreeStem
 from geometry_types import Line_Segment, Position, Coordinate
-from draw_types import Line, Stroke, StrokeWidth, StrokeStyle, Color
 from connection_types import Orientation
 from general_types import Index
 
@@ -32,22 +31,21 @@ class Branch:
             positions = positions.union({s.Vine_end.x for s in self.Hanging_stems})
             x1 = min(positions)
             x2 = max(positions)
-            return Line_Segment(from_position=Position(x=x1, y=y), to_position=Position(x=x2, y=y))
+            return Line_Segment(from_position=Position(x1, y), to_position=Position(x2, y))
         else:
             x = self.Axis
             positions = positions.union({s.Vine_end.y for s in self.Hanging_stems})
             y1 = min(positions)
             y2 = max(positions)
-        return Line_Segment(from_position=Position(x=x, y=y1), to_position=Position(x=x, y=y2))
+        return Line_Segment(from_position=Position(x, y1), to_position=Position(x, y2))
 
     def render(self):
         print("Line segment is:", self.Shoot)
         tablet = self.Connector.Diagram.Canvas.Tablet
         # Draw the axis
         print("Drawing branch axis")
-        tablet.Line_segments.append(Line(
-            line_style=Stroke(width=StrokeWidth.THIN, color=Color.CONN_PURPLE, pattern=StrokeStyle.SOLID),
-            from_here=self.Shoot.from_position, to_there=self.Shoot.to_position)
+        tablet.add_line_segment(
+            asset='gen connector', from_here=self.Shoot.from_position, to_there=self.Shoot.to_position
         )
 
         # Draw the stems
@@ -60,7 +58,7 @@ class Branch:
                 y = s.Vine_end.y
 
             print("Drawing branch stem")
-            tablet.Line_segments.append(Line(
-                line_style=Stroke(width=StrokeWidth.THIN, color=Color.CONN_PURPLE, pattern=StrokeStyle.SOLID),
-                from_here=s.Vine_end, to_there=Position(x, y))
+            tablet.add_line_segment(
+                asset='gen connector', from_here=s.Vine_end, to_there=Position(x, y)
             )
+

@@ -8,7 +8,6 @@ from interpolated_branch import InterpolatedBranch
 from rut_branch import RutBranch
 from command_interface import New_Branch_Set, New_Stem
 from anchored_leaf_stem import AnchoredLeafStem
-from connector_type import ConnectorTypeName
 from diagram import Diagram
 from collections import namedtuple
 from typing import Set
@@ -23,12 +22,20 @@ class TreeConnector(Connector):
     A Tree Connector connects a trunk Node to one or more branch Nodes in a tree structure. It can be used to
     draw a generalization relationship on a class diagram, for example.
 
-    Attributes:
-        Trunk_stem : This Stem attaches the single Node in the trunk position
-        Leaf_stems : The Branch Stems organized as a sequence of sets. Each set connects to the same line segment.
+        Attributes
+
+        - Trunk_stem -- This Stem attaches the single Node in the trunk position
+        - Leaf_stems -- The Branch Stems organized as a sequence of sets. Each set connects to the same line segment.
     """
 
-    def __init__(self, diagram: Diagram, connector_type: ConnectorTypeName, branches: New_Branch_Set):
+    def __init__(self, diagram: Diagram, connector_type: str, branches: New_Branch_Set):
+        """
+        Constructor
+
+        :param diagram: Reference to Diagram
+        :param connector_type: Name of Connector Type
+        :param branches:
+        """
         Connector.__init__(self, diagram, connector_type)
 
         # Unpack new trunk spec and create its Anchored Trunk Stem

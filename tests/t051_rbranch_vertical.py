@@ -1,15 +1,15 @@
 """
 t051_rbranch_vertical.py - Draw a vertical rut branch
 """
-
-from canvas import Canvas
 from single_cell_node import SingleCellNode
-from names import NodeTypeName, StemTypeName, ConnectorTypeName
-from notation import StemSemantic
 from tree_connector import TreeConnector
-from connection_types import NodeFace, Path, AnchorPosition
-
+from connection_types import NodeFace, AnchorPosition, Path
 from command_interface import New_Stem, New_Branch_Set, New_Trunk_Branch
+from canvas import Canvas
+
+from flatlanddb import FlatlandDB
+
+FlatlandDB()
 
 
 # For diagnostics during development
@@ -19,6 +19,7 @@ def create_canvas(args):
     # this file for diagnostic purposes
     flatland_canvas = Canvas(
         diagram_type=args.diagram,
+        presentation=args.presentation,
         notation=args.notation,
         standard_sheet_name=args.sheet,
         orientation=args.orientation,
@@ -53,18 +54,18 @@ def create_canvas(args):
         ]
     ]
 
-    trunk_node = SingleCellNode(node_type_name=NodeTypeName.M_class, content=class_Trunk,
+    trunk_node = SingleCellNode(node_type_name='class', content=class_Trunk,
                                 grid=flatland_canvas.Diagram.Grid, row=2, column=1)
-    l1_node = SingleCellNode(node_type_name=NodeTypeName.M_class, content=class_B1,
+    l1_node = SingleCellNode(node_type_name='class', content=class_B1,
                              grid=flatland_canvas.Diagram.Grid, row=3, column=4)
-    l2_node = SingleCellNode(node_type_name=NodeTypeName.M_class, content=class_B2,
+    l2_node = SingleCellNode(node_type_name='class', content=class_B2,
                              grid=flatland_canvas.Diagram.Grid, row=1, column=4)
 
-    trunk_stem = New_Stem(stem_type=StemTypeName.gen_superclass, semantic=StemSemantic.Super_class, node=trunk_node,
+    trunk_stem = New_Stem(stem_type='superclass', semantic='superclass', node=trunk_node,
                           face=NodeFace.RIGHT, anchor=AnchorPosition(0))
-    leaf1_stem = New_Stem(stem_type=StemTypeName.gen_subclass, semantic=StemSemantic.Sub_class, node=l1_node,
+    leaf1_stem = New_Stem(stem_type='subclass', semantic='subclass', node=l1_node,
                           face=NodeFace.LEFT, anchor=AnchorPosition(0))
-    leaf2_stem = New_Stem(stem_type=StemTypeName.gen_subclass, semantic=StemSemantic.Sub_class, node=l2_node,
+    leaf2_stem = New_Stem(stem_type='subclass', semantic='subclass', node=l2_node,
                           face=NodeFace.LEFT, anchor=AnchorPosition(0))
 
     trunk_branch = New_Trunk_Branch(
@@ -74,7 +75,7 @@ def create_canvas(args):
     )
     branches = New_Branch_Set(trunk_branch=trunk_branch, offshoot_branches=[])
 
-    TreeConnector(diagram=flatland_canvas.Diagram, connector_type=ConnectorTypeName.gen, branches=branches)
+    TreeConnector(diagram=flatland_canvas.Diagram, connector_type='generalization', branches=branches)
 
     flatland_canvas.render()
 
@@ -85,8 +86,10 @@ if __name__ == "__main__":
     # function that is called from the command line
     from collections import namedtuple
 
-    Canvas_Args = namedtuple("Canvas_Args", "diagram notation sheet orientation file")
+    Canvas_Args = namedtuple("Canvas_Args", "diagram notation presentation sheet orientation file")
 
     test_input = Canvas_Args(
-        diagram="class", notation="xUML", sheet="letter", orientation="landscape", file="ftest.pdf")
+        diagram="class", notation="Starr", presentation="default", sheet="letter",
+        orientation="landscape", file="ftest.pdf"
+    )
     create_canvas(args=test_input)
