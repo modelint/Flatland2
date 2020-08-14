@@ -3,31 +3,73 @@ asset_instances.py
 """
 
 population = [
-    {'Name': 'class compartment', 'Form': 'shape', 'Drawing type': 'class diagram'},
-    {'Name': 'binary connector', 'Form': 'shape', 'Drawing type': 'class diagram'},
-    {'Name': 'label', 'Form': 'text', 'Drawing type': 'class diagram'},
-    {'Name': 'rel name', 'Form': 'text', 'Drawing type': 'class diagram'},
-    {'Name': 'rel phrase', 'Form': 'text', 'Drawing type': 'class diagram'},
-    {'Name': 'imported class compartment', 'Form': 'shape', 'Drawing type': 'class diagram'},
-    {'Name': 'see also', 'Form': 'text', 'Drawing type': 'class diagram'},
-    {'Name': 'class name', 'Form': 'text', 'Drawing type': 'class diagram'},
-    {'Name': 'attributes', 'Form': 'text', 'Drawing type': 'class diagram'},
-    {'Name': 'methods', 'Form': 'text', 'Drawing type': 'class diagram'},
-    {'Name': 'assoc stem', 'Form': 'shape', 'Drawing type': 'class diagram'},
-    {'Name': 'grid', 'Form': 'shape', 'Drawing type': 'class diagram'},
-    {'Name': 'margin', 'Form': 'shape', 'Drawing type': 'class diagram'},
+    # xUML class diagram
+    {'Name': 'class compartment', 'Form': 'shape', 'Drawing type': 'xUML class diagram'},
+    {'Name': 'binary connector', 'Form': 'shape', 'Drawing type': 'xUML class diagram'},
+    {'Name': 'label', 'Form': 'text', 'Drawing type': 'xUML class diagram'},
+    {'Name': 'rel name', 'Form': 'text', 'Drawing type': 'xUML class diagram'},
+    {'Name': 'rel phrase', 'Form': 'text', 'Drawing type': 'xUML class diagram'},
+    {'Name': 'imported class compartment', 'Form': 'shape', 'Drawing type': 'xUML class diagram'},
+    {'Name': 'see also', 'Form': 'text', 'Drawing type': 'xUML class diagram'},
+    {'Name': 'class name', 'Form': 'text', 'Drawing type': 'xUML class diagram'},
+    {'Name': 'attributes', 'Form': 'text', 'Drawing type': 'xUML class diagram'},
+    {'Name': 'methods', 'Form': 'text', 'Drawing type': 'xUML class diagram'},
+    {'Name': 'assoc stem', 'Form': 'shape', 'Drawing type': 'xUML class diagram'},
+    {'Name': 'grid', 'Form': 'shape', 'Drawing type': 'xUML class diagram'},
+    {'Name': 'margin', 'Form': 'shape', 'Drawing type': 'xUML class diagram'},
 
-    {'Name': 'transition', 'Form': 'shape', 'Drawing type': 'state machine diagram'},
-    {'Name': 'event', 'Form': 'text', 'Drawing type': 'state machine diagram'},
-    {'Name': 'activity', 'Form': 'text', 'Drawing type': 'state machine diagram'},
-    {'Name': 'state name', 'Form': 'text', 'Drawing type': 'state machine diagram'},
-    {'Name': 'state compartment', 'Form': 'shape', 'Drawing type': 'state machine diagram'},
+    # Shlaer-Mellor class diagram
+    {'Name': 'class compartment', 'Form': 'shape', 'Drawing type': 'Shlaer-Mellor class diagram'},
+    {'Name': 'binary connector', 'Form': 'shape', 'Drawing type': 'Shlaer-Mellor class diagram'},
+    {'Name': 'label', 'Form': 'text', 'Drawing type': 'Shlaer-Mellor class diagram'},
+    {'Name': 'rel name', 'Form': 'text', 'Drawing type': 'Shlaer-Mellor class diagram'},
+    {'Name': 'rel phrase', 'Form': 'text', 'Drawing type': 'Shlaer-Mellor class diagram'},
+    {'Name': 'imported class compartment', 'Form': 'shape', 'Drawing type': 'Shlaer-Mellor class diagram'},
+    {'Name': 'see also', 'Form': 'text', 'Drawing type': 'Shlaer-Mellor class diagram'},
+    {'Name': 'class name', 'Form': 'text', 'Drawing type': 'Shlaer-Mellor class diagram'},
+    {'Name': 'attributes', 'Form': 'text', 'Drawing type': 'Shlaer-Mellor class diagram'},
+    {'Name': 'methods', 'Form': 'text', 'Drawing type': 'Shlaer-Mellor class diagram'},
+    {'Name': 'assoc stem', 'Form': 'shape', 'Drawing type': 'Shlaer-Mellor class diagram'},
+    {'Name': 'grid', 'Form': 'shape', 'Drawing type': 'Shlaer-Mellor class diagram'},
+    {'Name': 'margin', 'Form': 'shape', 'Drawing type': 'Shlaer-Mellor class diagram'},
 
-    {'Name': 'domain node', 'Form': 'shape', 'Drawing type': 'domain diagram'},
-    {'Name': 'bridge', 'Form': 'shape', 'Drawing type': 'domain diagram'},
+    # Starr class diagram
+    {'Name': 'class compartment', 'Form': 'shape', 'Drawing type': 'Starr class diagram'},
+    {'Name': 'binary connector', 'Form': 'shape', 'Drawing type': 'Starr class diagram'},
+    {'Name': 'label', 'Form': 'text', 'Drawing type': 'Starr class diagram'},
+    {'Name': 'rel name', 'Form': 'text', 'Drawing type': 'Starr class diagram'},
+    {'Name': 'rel phrase', 'Form': 'text', 'Drawing type': 'Starr class diagram'},
+    {'Name': 'imported class compartment', 'Form': 'shape', 'Drawing type': 'Starr class diagram'},
+    {'Name': 'see also', 'Form': 'text', 'Drawing type': 'Starr class diagram'},
+    {'Name': 'class name', 'Form': 'text', 'Drawing type': 'Starr class diagram'},
+    {'Name': 'attributes', 'Form': 'text', 'Drawing type': 'Starr class diagram'},
+    {'Name': 'methods', 'Form': 'text', 'Drawing type': 'Starr class diagram'},
+    {'Name': 'assoc stem', 'Form': 'shape', 'Drawing type': 'Starr class diagram'},
+    {'Name': 'grid', 'Form': 'shape', 'Drawing type': 'Starr class diagram'},
+    {'Name': 'margin', 'Form': 'shape', 'Drawing type': 'Starr class diagram'},
 
-    {'Name': 'overview class', 'Form': 'shape', 'Drawing type': 'collaboration diagram'},
-    {'Name': 'collaboration', 'Form': 'shape', 'Drawing type': 'collaboration diagram'},
-    {'Name': 'message', 'Form': 'text', 'Drawing type': 'collaboration diagram'},
-    {'Name': 'sync arrow', 'Form': 'shape', 'Drawing type': 'collaboration diagram'}
+    # xUML state machine diagram
+    {'Name': 'transition', 'Form': 'shape', 'Drawing type': 'xUML state machine diagram'},
+    {'Name': 'event', 'Form': 'text', 'Drawing type': 'xUML state machine diagram'},
+    {'Name': 'activity', 'Form': 'text', 'Drawing type': 'xUML state machine diagram'},
+    {'Name': 'state name', 'Form': 'text', 'Drawing type': 'xUML state machine diagram'},
+    {'Name': 'state compartment', 'Form': 'shape', 'Drawing type': 'xUML state machine diagram'},
+
+    # Domain diagram
+    {'Name': 'domain node', 'Form': 'shape', 'Drawing type': 'Starr domain diagram'},
+    {'Name': 'bridge', 'Form': 'shape', 'Drawing type': 'Starr domain diagram'},
+
+    {'Name': 'domain node', 'Form': 'shape', 'Drawing type': 'xUML domain diagram'},
+    {'Name': 'bridge', 'Form': 'shape', 'Drawing type': 'xUML domain diagram'},
+
+    # Collaboration diagram
+    {'Name': 'overview class', 'Form': 'shape', 'Drawing type': 'Starr collaboration diagram'},
+    {'Name': 'collaboration', 'Form': 'shape', 'Drawing type': 'Starr collaboration diagram'},
+    {'Name': 'message', 'Form': 'text', 'Drawing type': 'Starr collaboration diagram'},
+    {'Name': 'sync arrow', 'Form': 'shape', 'Drawing type': 'Starr collaboration diagram'},
+
+    {'Name': 'overview class', 'Form': 'shape', 'Drawing type': 'xUML collaboration diagram'},
+    {'Name': 'collaboration', 'Form': 'shape', 'Drawing type': 'xUML collaboration diagram'},
+    {'Name': 'message', 'Form': 'text', 'Drawing type': 'xUML collaboration diagram'},
+    {'Name': 'sync arrow', 'Form': 'shape', 'Drawing type': 'xUML collaboration diagram'}
 ]

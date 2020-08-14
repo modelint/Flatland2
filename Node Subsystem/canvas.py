@@ -57,6 +57,7 @@ class Canvas:
         if orientation not in ('portrait', 'landscape'):
             raise InvalidOrientation(orientation)
         self.Orientation = orientation
+        # We want to convert all units, inch, mm, etc to points since that's all we use from here on
         factor = points_in_inch if self.Sheet.Group == Group.US else points_in_cm
 
         # Set point size height and width based on portrait vs. landscape orientation
@@ -69,7 +70,10 @@ class Canvas:
         self.Margin = diagram_layout.Default_margin
         self.Diagram = Diagram(self, diagram_type, presentation, notation)
         self.Tablet = Tablet(
-            size=self.Size, output_file=drawoutput, drawing_type=diagram_type+' diagram', presentation='default'
+            size=self.Size, output_file=drawoutput,
+            # Drawing types include notation such as 'xUML class diagram' since notation affects the choice
+            # of shape and text styles.  An xUML class diagram association class stem is dashed, for example.
+            drawing_type=' '.join([self.Diagram.Notation, diagram_type, 'diagram']), presentation='default'
         )
         self.Show_margin = show_margin
 

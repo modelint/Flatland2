@@ -20,16 +20,15 @@ class Diagram:
     the extent and location of the diagram.  An origin and rectangle size will be derived from that
     for internal usage.
 
-    Attributes
-    ---
+        Attributes
 
-    Canvas : Drawn on this Canvas
-    Diagram_type : Type of model diagram to be drawn, class, for example
-    Notation: The supported notation used on this diagram
-    Grid : All content in the diagram is organized within the cells of this Grid
-    Padding : Space between Canvas margin and Diagram on all sides (useful for specification)
-    Origin : Lower left corner of Diagram in Canvas coordinates
-    Size : Size of the Diagram rectangle within the Canvas
+        - Canvas (obj) -- Drawn on this Canvas
+        - Diagram_type (str) -- Type of model diagram to be drawn, class, for example
+        - Notation (str) -- The supported notation used on this diagram
+        - Grid (obj) -- All content in the diagram is organized within the cells of this Grid
+        - Padding (Padding) -- Space between Canvas margin and Diagram on all sides (useful for specification)
+        - Origin (Position) -- Lower left corner of Diagram in Canvas coordinates
+        - Size (Rect_Size) -- Size of the Diagram rectangle within the Canvas
 
     """
 
