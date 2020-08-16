@@ -24,5 +24,5 @@ population = [
     {'Position': 1, 'Compound symbol': 'circled dot', 'Simple symbol': 'open large circle',
      'Arrange': 'layer', 'Offset': 0},
     {'Position': 2, 'Compound symbol': 'cirled dot', 'Simple symbol': 'solid small dot',
-     'Arrange': 'last', 'Offset': 0}
+     'Arrange': 'top', 'Offset': 0}
 ]

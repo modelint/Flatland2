@@ -1,11 +1,5 @@
 """
-connector.py
-
-Covers the Connector class in the Flatland3 Connector Subsystem Class Diagram
-
-Attributes
----
-
+connector.py - Covers the Connector class in the Flatland3 Connector Subsystem Class Diagram
 """
 from flatland_exceptions import UnknownConnectorType, IncompatibleConnectorType
 from collections import namedtuple
@@ -26,13 +20,19 @@ class Connector:
 
     The Connector Type and its Stem Types determine how the Connector should be drawn.
 
-    Attributes
-    ---
-    Diagram : Connector is drawn on this diagram
-    Connector_type : Specifies characteristics of this Connector
+        Attributes
+
+        - Diagram -- Connector is drawn on this diagram
+        - Connector_type -- Specifies characteristics of this Connector
     """
 
     def __init__(self, diagram: 'Diagram', connector_type: str):
+        """
+        Constructor
+
+        :param diagram: Reference to the Diagram
+        :param connector_type: Name of this Connector Type
+        """
         self.Diagram = diagram
 
         # Validate connector type
@@ -41,8 +41,6 @@ class Connector:
         i = fdb.Connection.execute(q).fetchone()
         if not i:
             raise UnknownConnectorType
-        # if i['Diagram type'] != self.Diagram.Diagram_type:
-        #     raise IncompatibleConnectorType
 
         self.Connector_type = ConnectorType(Name=i['Name'], About=i['About'], Geometry=i['Geometry'])
         self.Diagram.Grid.Connectors.append(self)

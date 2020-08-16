@@ -13,6 +13,7 @@
       <sourceFolder url="file://$MODULE_DIR$/Database/Population/Decorator" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Database/Population/Drawing" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Database/Population/Node" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Decoration Subsystem" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

@@ -54,7 +54,7 @@ class AnchoredStem(Stem):
 
         Attributes
 
-        - Anchor position - – The user specified relative postion on the Node Face
+        - Anchor position -– The user specified relative postion on the Node Face
     """
 
     def __init__(self, connector: 'Connector', stem_type: str, semantic: str,
@@ -62,12 +62,12 @@ class AnchoredStem(Stem):
         """
         Constructor
 
-        :param connector:
-        :param stem_type:
-        :param semantic:
-        :param node:
-        :param face:
-        :param anchor_position:
+        :param connector: Reference to the Stem's Connector
+        :param stem_type: Name of the Stem Type
+        :param semantic: Name of the Stem's Semantic
+        :param node: Reference to the Node where the Stem's root is attached
+        :param face: Attached to this face of the Node
+        :param anchor_position: The user specified point on the Node face where the Stem is attached
         """
 
         vine = anchor = anchor_to_position(node, face, anchor_position)

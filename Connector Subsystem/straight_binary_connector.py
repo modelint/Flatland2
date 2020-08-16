@@ -33,11 +33,22 @@ class StraightBinaryConnector(BinaryConnector):
 
         - Projecting_stem -– The Binary Stem that is anchored to a user specified position on one Node Face
         - Floating_stem -– The opposite Binary Stem that is placed on a direct line opposite the Projecting stem
-        where it touches the opposing face of its attached Node
+          where it touches the opposing face of its attached Node
+        - Tertiary_stem -- A Stem that connects from a separate a Node (other than the one attached to the Projecting
+          or Floating Stems) and extending until its Vine end attaches to the Binary Connector line
     """
 
     def __init__(self, diagram: 'Diagram', connector_type: str, projecting_stem: New_Stem,
                  floating_stem: New_Stem, tertiary_stem=None):
+        """
+        Constructor – see class description for meaning of the attributes
+
+        :param diagram: Reference to the Diagram
+        :param connector_type: Name of connector type
+        :param projecting_stem: A user supplied form requesting a projecting stem
+        :param floating_stem: A user supplied form requesting a floating stem
+        :param tertiary_stem: An optional user supplied form requesting a tertiary stem
+        """
         BinaryConnector.__init__(self, diagram, connector_type)
 
         self.Projecting_stem = AnchoredStem(
@@ -75,6 +86,7 @@ class StraightBinaryConnector(BinaryConnector):
         """
         Determines the x or y axis of the straight connector line where the Tertiary Stem attaches.
         The Tertiary Stem will know whether or not the returned value is x or y based on its own orientation.
+
         :return: x_or_y_axis
         """
         if self.Projecting_stem.Node_face in HorizontalFace:
@@ -87,6 +99,7 @@ class StraightBinaryConnector(BinaryConnector):
         tablet = self.Diagram.Canvas.Tablet
         print("Drawing binary connector")
         tablet.add_line_segment(
-            asset='binary connector', from_here=self.Projecting_stem.Vine_end, to_there=self.Floating_stem.Vine_end)
+            asset='binary connector', from_here=self.Projecting_stem.Vine_end, to_there=self.Floating_stem.Vine_end
+        )
         if self.Tertiary_stem:
             self.Tertiary_stem.render()

@@ -195,6 +195,7 @@ def define(db):
                         Column('Name', String, ForeignKey('Decoration.Name', name='R104'), nullable=False),
                         Column('Shape', Enum('circle', 'arrow', 'cross', 'compound', name='enum_Shape'),
                                nullable=False),
+                        Column('Length', Integer),
                         PrimaryKeyConstraint('Name', name='I1')
                         ),
         'simple_symbol': Table('Simple Symbol', db.MetaData,
@@ -219,6 +220,8 @@ def define(db):
         'cross_symbol': Table('Cross Symbol', db.MetaData,
                               Column('Name', String, ForeignKey('Simple Symbol.Name', name='R100'), primary_key=True,
                                      nullable=False),
+                              Column('Root offset', Integer, nullable=False),
+                              Column('Vine offset', Integer, nullable=False),
                               Column('Width', Integer, nullable=False),
                               Column('Angle', Integer, nullable=False),
                               ),
@@ -237,7 +240,7 @@ def define(db):
                                                nullable=False),
                                         Column('Simple symbol', String,
                                                ForeignKey('Simple Symbol.Name', name='R101_simple'), nullable=False),
-                                        Column('Arrange', Enum('adjacent', 'layer', 'last', name='enum_Arrange'),
+                                        Column('Arrange', Enum('adjacent', 'layer', 'last', 'top', name='enum_Arrange'),
                                                nullable=False),
                                         Column('Offset', Integer, nullable=False),
                                         PrimaryKeyConstraint('Position', 'Compound symbol', name='I1')

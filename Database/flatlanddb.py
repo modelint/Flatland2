@@ -3,6 +3,7 @@ flatlanddb.py - Loads the existing flatland database
 """
 import os
 from sqlalchemy import create_engine, MetaData
+from symbol import Symbol
 
 
 def Create_relvars():
@@ -15,6 +16,7 @@ def Populate():
     for instances, relvar in FlatlandDB.Relvars.items():
         i = __import__(instances + '_instances')
         FlatlandDB.Connection.execute(relvar.insert(), i.population)
+    Symbol.update_symbol_lengths(FlatlandDB)
 
 
 class FlatlandDB:
