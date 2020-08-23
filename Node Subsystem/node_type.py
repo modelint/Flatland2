@@ -2,34 +2,58 @@
 node_type.py
 """
 
-from flatland_exceptions import UnknownNodeType
-from geometry_types import Rect_Size
+from geometry_types import Rect_Size, Padding, Alignment
 from flatlanddb import FlatlandDB as fdb
 from sqlalchemy import select, and_
-from compartment_type import create_compartment_types
+from collections import namedtuple
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from diagram_type import DiagramType
+
+CompartmentType = namedtuple('CompartmentType', 'name alignment padding text_style')
 
 
 class NodeType:
-    def __init__(self, node_type_name, diagram_type_name):
+    def __init__(self, name: str, diagram_type: 'DiagramType', about: str, default_size: Rect_Size,
+                 max_size: Rect_Size):
+        """
+        Constructor
 
-        ntypes = fdb.MetaData.tables['Node Type']
-        q = select([ntypes]).where(
-            and_( ntypes.c.Name == node_type_name, ntypes.c['Diagram type'] == diagram_type_name )
+        :param name:
+        :param diagram_type:
+        :param about:
+        :param default_size:
+        :param max_size:
+        """
+        self.Name = name
+        self.About = about
+        self.Default_size = default_size
+        self.Max_size = max_size
+        self.Diagram_type = diagram_type
+        self.Compartment_types = []
+
+        # Load Compartment types
+        comptype_t = fdb.MetaData.tables['Compartment Type']
+        r_p = [comptype_t.c.Name, comptype_t.c['Stack order'],
+               comptype_t.c['Vertical alignment'], comptype_t.c['Horizontal alignment'],
+               comptype_t.c['Pad top'], comptype_t.c['Pad bottom'],
+               comptype_t.c['Pad right'], comptype_t.c['Pad left'], comptype_t.c['Text style']
+               ]
+        r_q = and_(
+            (comptype_t.c['Node type'] == self.Name),
+            (comptype_t.c['Diagram type'] == self.Diagram_type.Name)
         )
-        i = fdb.Connection.execute(q).fetchone()
-        if not i:
-            raise UnknownNodeType(node_type_name, diagram_type_name)
-
-        self.Name = i.Name
-        self.About = i.About
-        self.Corner_rounding = i['Corner rounding']
-        self.Border = i.Border
-        self.Default_size = Rect_Size(height=i['Default height'], width=i['Default width'])
-        self.Max_size = Rect_Size(height=i['Max height'], width=i['Max width'])
-        self.Diagram_type = diagram_type_name
-
-        self.Compartment_types = create_compartment_types(self)
+        q = select(r_p).where(r_q).order_by('Stack order')
+        rows = fdb.Connection.execute(q).fetchall()
+        for r in rows:
+            self.Compartment_types.append( CompartmentType(
+                name=r.Name,
+                alignment=Alignment(vertical=r['Vertical alignment'], horizontal=r['Horizontal alignment']),
+                padding=Padding(top=r['Pad top'], bottom=r['Pad bottom'], left=r['Pad left'], right=r['Pad right']),
+                text_style=r['Text style'] )
+            )
 
     def __repr__(self):
-        return f'Name: {self.Name}, Corner rounding: {self.Corner_rounding}, Border: {self.Border}, ' \
-               f'Default size: {self.Default_size}, Max size: {self.Max_size}'
+        return f'Name: {self.Name}, Default size: {self.Default_size}, Max size: {self.Max_size}'

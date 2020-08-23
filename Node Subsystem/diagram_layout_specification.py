@@ -14,16 +14,27 @@ valign_map = {"top": VertAlign.TOP, "center": VertAlign.CENTER, "bottom": VertAl
 
 class DiagramLayoutSpecification:
     """
+    Diagram Layout Specification
+
     Defines a set of values that determine how a Diagram and Grid is positioned on a Canvas and
     how Nodes are positioned relative to the Diagram and Grid.
+
+        Attributes
+
+        - Default margin -- The Canvas area surrounding the Diagram, can be zero
+        - Default diagram origin -- The default lower left corner of the Diagram in Canvas coordinates
+        - Default cell padding -- The minimum cell area surrounding a Node, can be zero
+        - Default cell alignment -- Default alignment of Node within its Cell, typically center, center
     """
     Default_margin = None
     Default_diagram_origin = None
     Default_cell_padding = None
     Default_cell_alignment = None
 
-
     def __init__(self):
+        """
+        Constructor - Load values from database
+        """
         spec = fdb.MetaData.tables['Diagram Layout Specification']
         q = select([spec])
         i = fdb.Connection.execute(q).fetchone()

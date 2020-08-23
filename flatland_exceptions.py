@@ -80,13 +80,13 @@ class CellOccupiedFE(FlatlandException):
     pass
 
 
-class UnknownNodeType(FlatlandException):
+class UnsupportedNodeType(FlatlandException):
     def __init__(self, node_type_name, diagram_type_name):
         self.node_type_name = node_type_name
         self.diagram_type_name = diagram_type_name
 
     def __str__(self):
-        return f'Node Type: {self.node_type_name} is undefined for Diagram Type: {self.diagram_type_name}'
+        return f'Node Type: {self.node_type_name} is not defined for Diagram Type: {self.diagram_type_name}'
 
 
 class UnknownSheetSize(FlatlandException):

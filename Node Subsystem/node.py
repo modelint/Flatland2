@@ -1,11 +1,11 @@
 """
 node.py
 """
+from flatland_exceptions import UnsupportedNodeType
 from geometry_types import Rect_Size, Position, Alignment
 from compartment import Compartment
 from connection_types import NodeFace
 from typing import TYPE_CHECKING, List, Optional
-from node_type import NodeType
 from diagram_layout_specification import DiagramLayoutSpecification as diagram_layout
 
 if TYPE_CHECKING:
@@ -37,8 +37,11 @@ class Node:
         :param local_alignment: Overrides default alignment within Cell or Cell range
         """
         self.Grid = grid
-        self.Node_type = NodeType(node_type_name, self.Grid.Diagram.Diagram_type)
-        # Node Type will load all of its Compartment Types from the database
+        try:
+            self.Node_type = self.Grid.Diagram.Diagram_type.NodeTypes[node_type_name]
+        except IndexError:
+            raise UnsupportedNodeType(node_type_name=node_type_name,
+                                      diagram_type_name=self.Grid.Diagram.Diagram_type.Name)
 
         # Create a list of compartments ordered top to bottom based on Node Type's Compartment Types
         self.Compartments = [Compartment(node=self, ctype=t, content=c) for t, c in

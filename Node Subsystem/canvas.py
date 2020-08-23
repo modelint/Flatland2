@@ -11,6 +11,8 @@ from geometry_types import Rect_Size, Position
 from diagram import Diagram
 from tablet import Tablet
 from sheet import Sheet, Group
+from stem_end_decoration import StemEndDecoration
+from symbol import Symbol
 
 # All sheet and canvas related constants are kept together here for easy review and editing
 points_in_cm = 28.3465
@@ -26,13 +28,13 @@ class Canvas:
 
         Attributes
 
-        - Sheet -- A standard name such as letter and tabloid in the US or A2 in Europe to describe sheet size
-        - Orientation -- portrait or landscape
-        - Size -- The size in points as a Rect_Size named tuple
-        - Margin -- The default amount of space surrounding a Node in a Cell
-        - Diagram -- Instance of Diagram drawn on this Canvas
-        - Tablet -- This is a proxy for the underlying graphics drawing context
-        - Show_margin -- Draw the margin? For diagnostic purposes only
+        - Sheet (str) -- A standard name such as letter and tabloid in the US or A2 in Europe to describe sheet size
+        - Orientation (str) -- *portrait* or *landscape*
+        - Size (Rect_Size) -- The size in points as a Rect_Size named tuple
+        - Margin (Padding) -- The default amount of space surrounding a Node in a Cell
+        - Diagram (obj) -- Instance of Diagram drawn on this Canvas
+        - Tablet (obj) -- This is a proxy for the underlying graphics drawing context
+        - Show_margin (boolean) -- Draw the margin? For diagnostic purposes only
 
     """
 
@@ -68,7 +70,12 @@ class Canvas:
             width=int(round(w * factor))
         )
         self.Margin = diagram_layout.Default_margin
-        self.Diagram = Diagram(self, diagram_type, presentation, notation)
+        self.Diagram = Diagram(self, diagram_type_name=diagram_type, presentation=presentation, notation_name=notation)
+        # Load symbol data
+        Symbol(diagram_type=self.Diagram.Diagram_type.Name, notation=self.Diagram.Notation)
+
+        # StemEndDecoration(diagram_type=self.Diagram.Diagram_type, notation=self.Diagram.Notation)
+
         self.Tablet = Tablet(
             size=self.Size, output_file=drawoutput,
             # Drawing types include notation such as 'xUML class diagram' since notation affects the choice

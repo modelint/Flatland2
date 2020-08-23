@@ -2,7 +2,7 @@
 
 from geometry_types import Rect_Size, Position
 from typing import TYPE_CHECKING, List
-from compartment_type import CompartmentType
+from node_type import CompartmentType
 
 if TYPE_CHECKING:
     from node import Node
@@ -39,14 +39,14 @@ class Compartment:
         tablet = self.Node.Grid.Diagram.Canvas.Tablet
         longest_line = max(self.Content, key=len)
         # Have the tablet compute the total ink area given the text style
-        line_ink_area, leading = tablet.text_size(asset=self.Type.Name, text_line=longest_line)
+        line_ink_area, leading = tablet.text_size(asset=self.Type.name, text_line=longest_line)
 
         self.Line_height = line_ink_area.height
         self.Leading = leading
 
-        block_width = line_ink_area.width + self.Type.Padding.left + self.Type.Padding.right
+        block_width = line_ink_area.width + self.Type.padding.left + self.Type.padding.right
         block_height = ((line_ink_area.height + leading) * len(self.Content)
-                        + self.Type.Padding.top + self.Type.Padding.bottom)
+                        + self.Type.padding.top + self.Type.padding.bottom)
         # Now add the padding specified for this compartment type
         return Rect_Size(width=block_width, height=block_height)
 
@@ -64,8 +64,8 @@ class Compartment:
         # Append each line of text into the tablet text list
         # TODO: Add text block capability to the tablet
         assert self.Line_height  # It should have been set by now
-        ypos = lower_left_corner.y + self.Type.Padding.bottom
-        xpos = lower_left_corner.x + self.Type.Padding.left
+        ypos = lower_left_corner.y + self.Type.padding.bottom
+        xpos = lower_left_corner.x + self.Type.padding.left
         for line in self.Content[::-1]:  # Reverse order since we are positioning lines from the bottom up
-            tablet.add_text(asset=self.Type.Name, lower_left=Position(xpos, ypos), text=line)
+            tablet.add_text(asset=self.Type.name, lower_left=Position(xpos, ypos), text=line)
             ypos += self.Leading + self.Line_height

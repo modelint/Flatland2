@@ -1,11 +1,23 @@
 """
-relvars.py – Relation variables (relvars / tables) in the flatland database
+relvars.py -- Flatland DB relational variable definitions
+
+    This file defines all relvars (relational variables) for the Flatland database. In SQL terms,
+    this is the schema definition for the database. These relvars are derived from the Flatland domain
+    models. To understand all of these relvars and their constraints, it is strongly recommended to consult
+    those xUML class model diagrams and text descriptions for both the Flatland Application and Tablet domain models.
+    See comments, first the Flatland application domain relvars are defined and then the Tablet relvars.
 """
 from sqlalchemy import Table, Column, String, Integer, Boolean, Enum
 from sqlalchemy import ForeignKey, UniqueConstraint, PrimaryKeyConstraint, ForeignKeyConstraint, CheckConstraint
 
 
-def define(db):
+def define(db) -> dict:
+    """
+    Define all the relvars in the Flatland Database.
+
+    :param db: A Flatland database class which provides an Sqlalchemy MetaData attribute
+    :return: Dictionary of table name key, table schema value pairs
+    """
     return {
         # Flatland diagram domain
         'sheet': Table('Sheet', db.MetaData,
@@ -121,7 +133,7 @@ def define(db):
                            Column('About', String, nullable=False),
                            Column('Diagram type', String, nullable=False),
                            Column('Connector type', String, nullable=False),
-                           Column('Length', Integer, nullable=False),
+                           Column('Minimum length', Integer, nullable=False),
                            PrimaryKeyConstraint('Name', 'Diagram type', name='I1'),
                            ForeignKeyConstraint(('Connector type', 'Diagram type'),
                                                 ['Connector Type.Name', 'Connector Type.Diagram type'], name='R59')
@@ -242,7 +254,8 @@ def define(db):
                                                ForeignKey('Simple Symbol.Name', name='R101_simple'), nullable=False),
                                         Column('Arrange', Enum('adjacent', 'layer', 'last', 'top', name='enum_Arrange'),
                                                nullable=False),
-                                        Column('Offset', Integer, nullable=False),
+                                        Column('Offset x', Integer, nullable=False),
+                                        Column('Offset y', Integer, nullable=False),
                                         PrimaryKeyConstraint('Position', 'Compound symbol', name='I1')
                                         ),
         # Tablet domain

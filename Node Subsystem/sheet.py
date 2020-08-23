@@ -24,7 +24,7 @@ class Sheet:
         - Group -- Either *us* or *int* to distinguish between measurement units
         - Size --  Sheet dimensions float since us has 8.5 x 11 or int for international mm units
     """
-    def __init__(self, name):
+    def __init__(self, name: str):
         """
         Constructor
 

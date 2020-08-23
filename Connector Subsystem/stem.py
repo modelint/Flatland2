@@ -55,7 +55,7 @@ class Stem:
         q = select([stem_end_decs.c.Symbol, stem_end_decs.c.End]).where(and_(
             stem_end_decs.c['Stem type'] == self.Stem_type,
             stem_end_decs.c['Semantic'] == self.Semantic,
-            stem_end_decs.c['Diagram type'] == self.Connector.Diagram.Diagram_type,
+            stem_end_decs.c['Diagram type'] == self.Connector.Diagram.Diagram_type.Name,
             stem_end_decs.c['Notation'] == self.Connector.Diagram.Notation
         )
         )

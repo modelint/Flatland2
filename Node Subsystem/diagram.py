@@ -1,6 +1,7 @@
 """
 diagram.py
 """
+from diagram_type import DiagramType
 from flatland_exceptions import NotationUnsupportedForDiagramType, UnsupportedDiagramType
 from geometry_types import Position, Padding, Rect_Size
 from grid import Grid
@@ -10,8 +11,6 @@ from sqlalchemy import select, and_
 
 if TYPE_CHECKING:
     from canvas import Canvas
-
-default_diagram_type = 'class'
 
 
 class Diagram:
@@ -44,24 +43,27 @@ class Diagram:
         self.Canvas = canvas
         self.Presentation = presentation
 
+        # Validate notation for this diagram type
+        dnots = fdb.MetaData.tables['Diagram Notation']
+        q = select([dnots]).where(
+            and_(dnots.c['Notation'] == notation_name,
+                 dnots.c['Diagram type'] == diagram_type_name)
+        )
+        i = fdb.Connection.execute(q).fetchone()
+        if not i:
+            raise NotationUnsupportedForDiagramType
+        self.Notation = notation_name
+
         # Validate diagram type name
         dtypes = fdb.MetaData.tables['Diagram Type']
         q = dtypes.select(dtypes.c['Name'] == diagram_type_name)
         i = fdb.Connection.execute(q).fetchone()
         if not i:
             raise UnsupportedDiagramType
-        self.Diagram_type = diagram_type_name
+        # self.Diagram_type = diagram_type_name
+        # Testing this now to replace above line
+        self.Diagram_type = DiagramType(diagram=self, name=diagram_type_name, notation=self.Notation)
 
-        # Validate notation for this diagram type
-        dnots = fdb.MetaData.tables['Diagram Notation']
-        q = select([dnots]).where(
-            and_(dnots.c['Notation'] == notation_name,
-                 dnots.c['Diagram type'] == self.Diagram_type)
-        )
-        i = fdb.Connection.execute(q).fetchone()
-        if not i:
-            raise NotationUnsupportedForDiagramType
-        self.Notation = notation_name
 
         self.Grid = Grid(diagram=self)  # Start with an empty grid
         self.Padding = Padding(top=0, bottom=0, left=0, right=0)
