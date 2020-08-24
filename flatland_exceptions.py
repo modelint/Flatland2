@@ -43,11 +43,7 @@ class BadColNumber(FlatlandException):
         return f'Illegal Col number: [{col_num}]'
 
 
-class UnknownConnectorType(FlatlandException):
-    pass
-
-
-class IncompatibleConnectorType(FlatlandException):
+class UnsupportedConnectorType(FlatlandException):
     def __init__(self, connector_type_name, diagram_type_name):
         self.connector_type_name = connector_type_name
         self.diagram_type_name = diagram_type_name

@@ -3,12 +3,9 @@ symbol.py - Symbols from the Decoration Subsystem, loaded from the database
 """
 from geometry_types import Position
 from sqlalchemy import select, join, func, and_
-from typing import TYPE_CHECKING
 from collections import namedtuple
 from flatlanddb import FlatlandDB as fdb
 
-if TYPE_CHECKING:
-    from diagram_type import DiagramType
 
 # Symbol subclasses in the Decoration Subsystem are implemented as named tuples
 # See Decoration Subsystem class model descriptions for full details on named tuple attributes summarized here

@@ -62,9 +62,7 @@ class Diagram:
             raise UnsupportedDiagramType
         # self.Diagram_type = diagram_type_name
         # Testing this now to replace above line
-        self.Diagram_type = DiagramType(diagram=self, name=diagram_type_name, notation=self.Notation)
-
-
+        self.Diagram_type = DiagramType(name=diagram_type_name, notation=self.Notation)
         self.Grid = Grid(diagram=self)  # Start with an empty grid
         self.Padding = Padding(top=0, bottom=0, left=0, right=0)
         self.Origin = Position(

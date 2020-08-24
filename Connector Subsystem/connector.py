@@ -1,15 +1,11 @@
 """
 connector.py - Covers the Connector class in the Flatland3 Connector Subsystem Class Diagram
 """
-from flatland_exceptions import UnknownConnectorType, IncompatibleConnectorType
-from collections import namedtuple
+from connector_type import ConnectorType
 from typing import TYPE_CHECKING
-from flatlanddb import FlatlandDB as fdb
 
 if TYPE_CHECKING:
     from diagram import Diagram
-
-ConnectorType = namedtuple('ConnectorType', 'Name About Geometry')
 
 
 class Connector:
@@ -26,7 +22,7 @@ class Connector:
         - Connector_type -- Specifies characteristics of this Connector
     """
 
-    def __init__(self, diagram: 'Diagram', connector_type: str):
+    def __init__(self, diagram: 'Diagram', connector_type: ConnectorType):
         """
         Constructor
 
@@ -34,15 +30,8 @@ class Connector:
         :param connector_type: Name of this Connector Type
         """
         self.Diagram = diagram
+        self.Connector_type = connector_type
 
-        # Validate connector type
-        ctypes = fdb.MetaData.tables['Connector Type']
-        q = ctypes.select(ctypes.c['Name'] == connector_type)
-        i = fdb.Connection.execute(q).fetchone()
-        if not i:
-            raise UnknownConnectorType
-
-        self.Connector_type = ConnectorType(Name=i['Name'], About=i['About'], Geometry=i['Geometry'])
         self.Diagram.Grid.Connectors.append(self)
 
     def render(self):

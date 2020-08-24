@@ -7,22 +7,17 @@ from flatlanddb import FlatlandDB as fdb
 from sqlalchemy import select, and_
 from collections import namedtuple
 
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from diagram_type import DiagramType
-
 CompartmentType = namedtuple('CompartmentType', 'name alignment padding text_style')
 
 
 class NodeType:
-    def __init__(self, name: str, diagram_type: 'DiagramType', about: str, default_size: Rect_Size,
+    def __init__(self, name: str, diagram_type_name: str, about: str, default_size: Rect_Size,
                  max_size: Rect_Size):
         """
         Constructor
 
         :param name:
-        :param diagram_type:
+        :param diagram_type_name:
         :param about:
         :param default_size:
         :param max_size:
@@ -31,7 +26,7 @@ class NodeType:
         self.About = about
         self.Default_size = default_size
         self.Max_size = max_size
-        self.Diagram_type = diagram_type
+        self.Diagram_type = diagram_type_name
         self.Compartment_types = []
 
         # Load Compartment types
@@ -43,7 +38,7 @@ class NodeType:
                ]
         r_q = and_(
             (comptype_t.c['Node type'] == self.Name),
-            (comptype_t.c['Diagram type'] == self.Diagram_type.Name)
+            (comptype_t.c['Diagram type'] == self.Diagram_type)
         )
         q = select(r_p).where(r_q).order_by('Stack order')
         rows = fdb.Connection.execute(q).fetchall()

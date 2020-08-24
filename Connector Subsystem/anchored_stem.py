@@ -1,6 +1,7 @@
 """ anchored_stem.py """
 
 from stem import Stem
+from stem_type import StemType
 from connection_types import NodeFace, AnchorPosition
 from layout_specification import default_stem_positions
 from geometry_types import Position
@@ -57,7 +58,7 @@ class AnchoredStem(Stem):
         - Anchor position -– The user specified relative postion on the Node Face
     """
 
-    def __init__(self, connector: 'Connector', stem_type: str, semantic: str,
+    def __init__(self, connector: 'Connector', stem_type: StemType, semantic: str,
                  node: 'Node', face: NodeFace, anchor_position: AnchorPosition):
         """
         Constructor
@@ -69,9 +70,8 @@ class AnchoredStem(Stem):
         :param face: Attached to this face of the Node
         :param anchor_position: The user specified point on the Node face where the Stem is attached
         """
-
-        vine = anchor = anchor_to_position(node, face, anchor_position)
-        # TODO: Vine position should be computed based on decorator, same as anchor for now
+        anchor = anchor_to_position(node, face, anchor_position)
 
         # Anchored position is used to compute the root end position
-        Stem.__init__(self, connector, stem_type, semantic, node, face, anchor, vine)
+        Stem.__init__(self, connector=connector, stem_type=stem_type,
+                      semantic=semantic, node=node, face=face, root_position=anchor)

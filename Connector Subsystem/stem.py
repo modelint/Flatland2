@@ -3,6 +3,8 @@ stem.py
 """
 
 from sqlalchemy import select, and_
+from symbol import Symbol
+from stem_type import StemType
 from geometry_types import Position
 from rendered_symbol import RenderedSymbol
 from connection_types import NodeFace
@@ -34,15 +36,34 @@ class Stem:
     """
 
     def __init__(self,
-                 connector: 'Connector', stem_type: str, semantic: str, node: 'Node',
-                 node_face: NodeFace, root_position: Position, vine_position: Position):
+                 connector: 'Connector', stem_type: StemType, semantic: str, node: 'Node',
+                 face: NodeFace, root_position: Position):
         self.Connector = connector
         self.Stem_type = stem_type
         self.Node = node
-        self.Node_face = node_face
+        self.Node_face = face
         self.Semantic = semantic
         self.Root_end = root_position
-        self.Vine_end = vine_position
+
+        # Check to see if Vine needs to be computed (fixed) geometry
+        if self.Stem_type.Geometry == 'fixed':
+            root_symbol = stem_type.DecoratedStems[semantic].Root_symbol
+            vine_symbol = stem_type.DecoratedStems[semantic].Vine_symbol
+            rlen = 0 if not root_symbol else Symbol.instances[root_symbol].length
+            vlen = 0 if not vine_symbol else Symbol.instances[vine_symbol].length
+            stem_len = rlen + vlen
+
+            x, y = self.Root_end
+            if face == NodeFace.RIGHT:
+                x = x + stem_len
+            elif face == NodeFace.LEFT:
+                x = x - stem_len
+            elif face == NodeFace.TOP:
+                y = y + stem_len
+            elif face == NodeFace.BOTTOM:
+                y = y - stem_len
+            self.Vine_end = Position(x, y)
+        # Otherwise, Vine_end should have been overridden
 
     def render(self):
         """
@@ -53,7 +74,7 @@ class Stem:
         # Create a Rendered Symbol for each Stem End Decoration
         stem_end_decs = fdb.MetaData.tables['Stem End Decoration']
         q = select([stem_end_decs.c.Symbol, stem_end_decs.c.End]).where(and_(
-            stem_end_decs.c['Stem type'] == self.Stem_type,
+            stem_end_decs.c['Stem type'] == self.Stem_type.Name,
             stem_end_decs.c['Semantic'] == self.Semantic,
             stem_end_decs.c['Diagram type'] == self.Connector.Diagram.Diagram_type.Name,
             stem_end_decs.c['Notation'] == self.Connector.Diagram.Notation

@@ -134,6 +134,7 @@ def define(db) -> dict:
                            Column('Diagram type', String, nullable=False),
                            Column('Connector type', String, nullable=False),
                            Column('Minimum length', Integer, nullable=False),
+                           Column('Geometry', Enum('fixed', 'hanging', 'free', name='enum_Geometry'), nullable=False),
                            PrimaryKeyConstraint('Name', 'Diagram type', name='I1'),
                            ForeignKeyConstraint(('Connector type', 'Diagram type'),
                                                 ['Connector Type.Name', 'Connector Type.Diagram type'], name='R59')

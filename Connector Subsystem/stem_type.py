@@ -1,15 +1,9 @@
 """
 stem_type.py - Stem Type
 """
-from annotation import Annotation
-from stem_end_decoration import StemEndDecoration
+from decorated_stem import DecoratedStem
 from flatlanddb import FlatlandDB as fdb
 from sqlalchemy import select, and_
-
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from connector_type import ConnectorType
 
 
 class StemType:
@@ -25,6 +19,7 @@ class StemType:
         Attributes
 
         - Name -- Each Stem Type has a unique name local to its Connector Type
+        - About -- Description of the purpose/usage of this Stem Type
         - Minimum_length -- A Stem of this type can never be shorter than this length. This keeps a bend or the Diagram edge
           from getting too close to the Node face. You wouldn’t want to bend at 90 degrees less than a point away from
           a Node face, for example.
@@ -38,33 +33,41 @@ class StemType:
 
         - Connector type -- back reference via R59
         - Decorated stem -- All Decorated Stem instances via /R62/R55 for Diagram Type and Notation
-        - Root symbol -- /R62/R55/R58/Stem End Decoration.Symbol(End : 'root')
-        - Vine symbol -- /R62/R55/R58/Stem End Decoration.Symbol(End : 'vine')
-
     """
-    def __init__(self, name: str, connector_type: 'ConnectorType', minimum_length: int, notation: str ):
+    def __init__(self, name: str, connector_type_name: str, diagram_type_name: str, about: str,
+                 minimum_length: int, geometry: str, notation: str ):
         """
         Create all Decorated Stems for this Stem Type. See class description comments
         for meanings of the initialzing parameters
+
+        :param name:
+        :param connector_type_name:
+        :param diagram_type_name:
+        :param about:
+        :param minimum_length:
+        :param notation:
         """
 
         self.Name = name
-        self.Connector_type = connector_type
+        self.About = about
+        self.Connector_type = connector_type_name
+        self.Diagram_type = diagram_type_name
         self.Minimum_length = minimum_length
+        self.Geometry = geometry
+        self.DecoratedStems = {}
 
+        # Load only those Decorated Stems for the user selected Diagram Type and Notation
         dec_stem_t = fdb.MetaData.tables['Decorated Stem']
         p = [dec_stem_t.c.Semantic]
         r = and_(
             (dec_stem_t.c['Stem type'] == self.Name),
-            (dec_stem_t.c['Diagram type'] == self.Connector_type.Diagram_type.Name),
+            (dec_stem_t.c['Diagram type'] == self.Diagram_type),
             (dec_stem_t.c['Notation'] == notation)
         )
         q = select(p).where(r)
         rows = fdb.Connection.execute(q).fetchall()
         for r in rows:
-            self.Root_symbol = StemEndDecoration.getSymbol(
-                stem_type=self, end='root', semantic=r.Semantic, notation=notation)
-            self.Vine_symbol = StemEndDecoration.getSymbol(
-                stem_type=self, end='vine', semantic=r.Semantic, notation=notation)
-            self.Label = Annotation.getLabel(stem_type=self, semantic=r.Semantic, notation=notation)
+            self.DecoratedStems[r.Semantic] = DecoratedStem(
+                stem_type=self.Name, semantic=r.Semantic, notation=notation,
+                diagram_type_name=self.Diagram_type)
 

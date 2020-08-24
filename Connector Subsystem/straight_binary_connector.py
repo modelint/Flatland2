@@ -1,6 +1,7 @@
 """
 straight_binary_connector.py
 """
+from flatland_exceptions import UnsupportedConnectorType
 from binary_connector import BinaryConnector
 from anchored_stem import AnchoredStem
 from connection_types import HorizontalFace
@@ -49,11 +50,22 @@ class StraightBinaryConnector(BinaryConnector):
         :param floating_stem: A user supplied form requesting a floating stem
         :param tertiary_stem: An optional user supplied form requesting a tertiary stem
         """
-        BinaryConnector.__init__(self, diagram, connector_type)
+        try:
+            ct = diagram.Diagram_type.ConnectorTypes[connector_type]
+        except IndexError:
+            raise UnsupportedConnectorType(
+                connector_type_name=connector_type, diagram_type_name=diagram.Diagram_type.Name)
+        BinaryConnector.__init__(self, diagram=diagram, connector_type=ct)
+
+        projecting_stem_type = self.Connector_type.Stem_type[projecting_stem.stem_type]
+        floating_stem_type = self.Connector_type.Stem_type[floating_stem.stem_type]
+        tertiary_stem_type = None
+        if tertiary_stem:
+            tertiary_stem_type = self.Connector_type.Stem_type[tertiary_stem.stem_type]
 
         self.Projecting_stem = AnchoredStem(
             connector=self,
-            stem_type=projecting_stem.stem_type,
+            stem_type=projecting_stem_type,
             semantic=projecting_stem.semantic,
             node=projecting_stem.node,
             face=projecting_stem.face,
@@ -61,7 +73,7 @@ class StraightBinaryConnector(BinaryConnector):
         )
         self.Floating_stem = FloatingBinaryStem(
             connector=self,
-            stem_type=floating_stem.stem_type,
+            stem_type=floating_stem_type,
             semantic=floating_stem.semantic,
             node=floating_stem.node,
             face=floating_stem.face,
@@ -71,7 +83,7 @@ class StraightBinaryConnector(BinaryConnector):
         if tertiary_stem:
             self.Tertiary_stem = TertiaryStem(
                 connector=self,
-                stem_type=tertiary_stem.stem_type,
+                stem_type=tertiary_stem_type,
                 semantic=tertiary_stem.semantic,
                 node=tertiary_stem.node,
                 face=tertiary_stem.face,
