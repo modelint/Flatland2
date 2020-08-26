@@ -15,5 +15,5 @@ population = [
     {'Name': 'subclass', 'Diagram type': 'class'},
     {'Name': 'provide', 'Diagram type': 'domain'},
     {'Name': 'require', 'Diagram type': 'domain'},
-    {'Name': 'collaboration', 'Diagram type': 'collaboration'},
+    {'Name': 'collaboration', 'Diagram type': 'class collaboration'},
 ]

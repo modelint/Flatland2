@@ -21,7 +21,7 @@ population = [
      'Arrange': 'last', 'Offset x': 0, 'Offset y': 0},
 
     # Circled dot
-    {'Position': 1, 'Compound symbol': 'circled dot', 'Simple symbol': 'open large circle',
+    {'Position': 1, 'Compound symbol': 'circled dot', 'Simple symbol': 'hollow large circle',
      'Arrange': 'layer', 'Offset x': 0, 'Offset y': 0},
     {'Position': 2, 'Compound symbol': 'circled dot', 'Simple symbol': 'solid small dot',
      'Arrange': 'top', 'Offset x': 0, 'Offset y': 0}

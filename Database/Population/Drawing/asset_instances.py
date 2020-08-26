@@ -50,6 +50,10 @@ population = [
     {'Name': 'assoc stem', 'Form': 'shape', 'Drawing type': 'Starr class diagram'},
     {'Name': 'grid', 'Form': 'shape', 'Drawing type': 'Starr class diagram'},
     {'Name': 'margin', 'Form': 'shape', 'Drawing type': 'Starr class diagram'},
+    # Symbols
+    {'Name': 'solid arrow', 'Form': 'shape', 'Drawing type': 'Starr class diagram'},
+    {'Name': 'hollow arrow', 'Form': 'shape', 'Drawing type': 'Starr class diagram'},
+    {'Name': 'gen arrow', 'Form': 'shape', 'Drawing type': 'Starr class diagram'},
 
     # xUML state machine diagram
     {'Name': 'transition', 'Form': 'shape', 'Drawing type': 'xUML state machine diagram'},
@@ -57,6 +61,9 @@ population = [
     {'Name': 'activity', 'Form': 'text', 'Drawing type': 'xUML state machine diagram'},
     {'Name': 'state name', 'Form': 'text', 'Drawing type': 'xUML state machine diagram'},
     {'Name': 'state compartment', 'Form': 'shape', 'Drawing type': 'xUML state machine diagram'},
+    # Symbols
+    {'Name': 'hollow large circle', 'Form': 'shape', 'Drawing type': 'xUML state machine diagram'},
+    {'Name': 'solid dot', 'Form': 'shape', 'Drawing type': 'xUML state machine diagram'},
 
     # Domain diagram
     {'Name': 'domain node', 'Form': 'shape', 'Drawing type': 'Starr domain diagram'},

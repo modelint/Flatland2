@@ -26,8 +26,10 @@ population = [
     # Domain diagram
     {'Name': 'to service', 'Diagram type': 'domain', 'Connector type': 'bridge', 'Geometry': 'fixed',
      'About': 'Points toward a domain that fullfills the requirements of a client domain', 'Minimum length': 15},
+    {'Name': 'from service', 'Diagram type': 'domain', 'Connector type': 'bridge', 'Geometry': 'fixed',
+     'About': 'Points toward a domain that places requirements on a service domain', 'Minimum length': 15},
 
     # Collaboration diagram
-    {'Name': 'on collaborator', 'Diagram type': 'collaboration', 'Connector type': 'collaboration',
+    {'Name': 'on collaborator', 'Diagram type': 'class collaboration', 'Connector type': 'collaboration',
      'About': 'Attaches to a communicating entity', 'Minimum length': 10, 'Geometry': 'fixed'}
 ]

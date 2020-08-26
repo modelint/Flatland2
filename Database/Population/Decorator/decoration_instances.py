@@ -11,7 +11,7 @@ population = [
     {'Name': 'gen arrow'},
     # Circle Symbols
     {'Name': 'solid small dot'},
-    {'Name': 'open large circle'},
+    {'Name': 'hollow large circle'},
     # Cross Symbols
     {'Name': 'superclass cross'},
     # Compound Symbols
@@ -23,6 +23,7 @@ population = [
     {'Name': '0..1'},
     {'Name': '1'},
     {'Name': '0..*'},
+    {'Name': '1..*'},
     {'Name': 'is a'},
     {'Name': 'c'},
     {'Name': '{M}'},

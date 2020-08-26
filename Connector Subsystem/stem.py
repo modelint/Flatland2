@@ -67,21 +67,10 @@ class Stem:
 
     def render(self):
         """
-        Draw a stem decoration at either, both or neither end
-        If there are no stem decorations to draw, just draw a short line from the root to the vine end
-        using the connector line style and the default node face offset value
+        Draw a symbol at the root, vine, both or neither end of this Stem
         """
-        # Create a Rendered Symbol for each Stem End Decoration
-        stem_end_decs = fdb.MetaData.tables['Stem End Decoration']
-        q = select([stem_end_decs.c.Symbol, stem_end_decs.c.End]).where(and_(
-            stem_end_decs.c['Stem type'] == self.Stem_type.Name,
-            stem_end_decs.c['Semantic'] == self.Semantic,
-            stem_end_decs.c['Diagram type'] == self.Connector.Diagram.Diagram_type.Name,
-            stem_end_decs.c['Notation'] == self.Connector.Diagram.Notation
-        )
-        )
-        found = fdb.Connection.execute(q)
-        for i in found:
-            RenderedSymbol(stem=self, end=i['End'], symbol=i['Symbol'])
-        if not found:
-            print("No rendered symbols")
+        root_symbol_name = self.Stem_type.DecoratedStems[self.Semantic].Root_symbol
+        vine_symbol_name = self.Stem_type.DecoratedStems[self.Semantic].Vine_symbol
+        if root_symbol_name:
+            RenderedSymbol(stem=self, end='root', symbol=Symbol.instances[root_symbol_name])
+

@@ -3,6 +3,7 @@ shape_presentation_instances.py
 """
 
 population = [
+    # Starr class default
     {'Asset': 'class compartment', 'Presentation': 'default', 'Drawing type': 'Starr class diagram', 'Line style': 'normal'},
     {'Asset': 'binary connector', 'Presentation': 'default', 'Drawing type': 'Starr class diagram', 'Line style': 'normal'},
     {'Asset': 'gen connector', 'Presentation': 'default', 'Drawing type': 'Starr class diagram', 'Line style': 'normal'},
@@ -10,7 +11,11 @@ population = [
     {'Asset': 'assoc stem', 'Presentation': 'default', 'Drawing type': 'Starr class diagram', 'Line style': 'normal'},
     {'Asset': 'grid', 'Presentation': 'default', 'Drawing type': 'Starr class diagram', 'Line style': 'grid'},
     {'Asset': 'margin', 'Presentation': 'default', 'Drawing type': 'Starr class diagram', 'Line style': 'margin'},
+    {'Asset': 'solid arrow', 'Presentation': 'default', 'Drawing type': 'Starr class diagram', 'Line style': 'normal'},
+    {'Asset': 'hollow arrow', 'Presentation': 'default', 'Drawing type': 'Starr class diagram', 'Line style': 'normal'},
+    {'Asset': 'gen arrow', 'Presentation': 'default', 'Drawing type': 'Starr class diagram', 'Line style': 'normal'},
 
+    # xUML class default
     {'Asset': 'class compartment', 'Presentation': 'default', 'Drawing type': 'xUML class diagram', 'Line style': 'normal'},
     {'Asset': 'binary connector', 'Presentation': 'default', 'Drawing type': 'xUML class diagram', 'Line style': 'normal'},
     {'Asset': 'gen connector', 'Presentation': 'default', 'Drawing type': 'xUML class diagram', 'Line style': 'normal'},
@@ -19,6 +24,7 @@ population = [
     {'Asset': 'grid', 'Presentation': 'default', 'Drawing type': 'xUML class diagram', 'Line style': 'grid'},
     {'Asset': 'margin', 'Presentation': 'default', 'Drawing type': 'xUML class diagram', 'Line style': 'margin'},
 
+    # Shlaer-Mellor class default
     {'Asset': 'class compartment', 'Presentation': 'default', 'Drawing type': 'Shlaer-Mellor class diagram', 'Line style': 'normal'},
     {'Asset': 'binary connector', 'Presentation': 'default', 'Drawing type': 'Shlaer-Mellor class diagram', 'Line style': 'normal'},
     {'Asset': 'gen connector', 'Presentation': 'default', 'Drawing type': 'Shlaer-Mellor class diagram', 'Line style': 'normal'},
@@ -27,6 +33,7 @@ population = [
     {'Asset': 'grid', 'Presentation': 'default', 'Drawing type': 'Shlaer-Mellor class diagram', 'Line style': 'grid'},
     {'Asset': 'margin', 'Presentation': 'default', 'Drawing type': 'Shlaer-Mellor class diagram', 'Line style': 'margin'},
 
+    # Starr class diagnostic
     {'Asset': 'class compartment', 'Presentation': 'diagnostic', 'Drawing type': 'Starr class diagram', 'Line style': 'normal'},
     {'Asset': 'binary connector', 'Presentation': 'diagnostic', 'Drawing type': 'Starr class diagram',
      'Line style': 'connector highlight'},
@@ -36,7 +43,11 @@ population = [
     {'Asset': 'assoc stem', 'Presentation': 'diagnostic', 'Drawing type': 'Starr class diagram', 'Line style': 'normal'},
     {'Asset': 'grid', 'Presentation': 'diagnostic', 'Drawing type': 'Starr class diagram', 'Line style': 'grid'},
     {'Asset': 'margin', 'Presentation': 'diagnostic', 'Drawing type': 'Starr class diagram', 'Line style': 'margin'},
+    {'Asset': 'solid arrow', 'Presentation': 'diagnostic', 'Drawing type': 'Starr class diagram', 'Line style': 'normal'},
+    {'Asset': 'hollow arrow', 'Presentation': 'diagnostic', 'Drawing type': 'Starr class diagram', 'Line style': 'normal'},
+    {'Asset': 'gen arrow', 'Presentation': 'diagnostic', 'Drawing type': 'Starr class diagram', 'Line style': 'normal'},
 
+    # xUML class diagnostic
     {'Asset': 'class compartment', 'Presentation': 'diagnostic', 'Drawing type': 'xUML class diagram', 'Line style': 'normal'},
     {'Asset': 'binary connector', 'Presentation': 'diagnostic', 'Drawing type': 'xUML class diagram',
      'Line style': 'connector highlight'},
@@ -57,7 +68,12 @@ population = [
     {'Asset': 'grid', 'Presentation': 'diagnostic', 'Drawing type': 'Shlaer-Mellor class diagram', 'Line style': 'grid'},
     {'Asset': 'margin', 'Presentation': 'diagnostic', 'Drawing type': 'Shlaer-Mellor class diagram', 'Line style': 'margin'},
 
+    # xUML state default
     {'Asset': 'transition', 'Presentation': 'default', 'Drawing type': 'xUML state machine diagram', 'Line style': 'normal'},
-    {'Asset': 'state compartment', 'Presentation': 'default', 'Drawing type': 'xUML state machine diagram', 'Line style': 'normal'}
+    {'Asset': 'state compartment', 'Presentation': 'default', 'Drawing type': 'xUML state machine diagram', 'Line style': 'normal'},
+    {'Asset': 'solid dot', 'Presentation': 'default', 'Drawing type': 'xUML state machine diagram',
+     'Line style': 'normal'},
+    {'Asset': 'hollow large circle', 'Presentation': 'default', 'Drawing type': 'xUML state machine diagram',
+     'Line style': 'normal'},
 
 ]

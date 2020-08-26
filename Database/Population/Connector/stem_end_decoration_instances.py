@@ -21,12 +21,12 @@ population = [
      'Semantic': 'M mult', 'Symbol': 'double solid arrow', 'End': 'vine'},
     # Generalization
     {'Stem type': 'superclass', 'Diagram type': 'class', 'Notation': 'Starr',
-     'Semantic': 'generalization', 'Symbol': 'gen arrow', 'End': 'root'},
+     'Semantic': 'superclass', 'Symbol': 'gen arrow', 'End': 'root'},
 
     # xUML notation
     # Generalization
     {'Stem type': 'superclass', 'Diagram type': 'class', 'Notation': 'xUML',
-     'Semantic': 'generalization', 'Symbol': 'gen arrow', 'End': 'root'},
+     'Semantic': 'superclass', 'Symbol': 'gen arrow', 'End': 'root'},
 
     # Shlaer-Mellor notation
     {'Stem type': 'class mult', 'Diagram type': 'class', 'Notation': 'Shlaer-Mellor',
@@ -44,7 +44,7 @@ population = [
      'Semantic': 'M mult', 'Symbol': 'double open arrow', 'End': 'vine'},
     # Generalization
     {'Stem type': 'superclass', 'Diagram type': 'class', 'Notation': 'Shlaer-Mellor',
-     'Semantic': 'generalization', 'Symbol': 'superclass cross', 'End': 'vine'},
+     'Semantic': 'superclass', 'Symbol': 'superclass cross', 'End': 'vine'},
 
     # State machine diagram
     {'Stem type': 'to state', 'Diagram type': 'state machine', 'Notation': 'xUML',
@@ -61,9 +61,9 @@ population = [
 
     # Domain diagram
     # Starr
-    {'Stem type': 'to service', 'Diagram type': 'state machine', 'Notation': 'Starr',
-     'Semantic': 'dependency', 'Symbol': 'solid arrow', 'End': 'root'},
+    {'Stem type': 'to service', 'Diagram type': 'domain', 'Notation': 'Starr',
+     'Semantic': 'require', 'Symbol': 'solid arrow', 'End': 'root'},
     # xUML
-    {'Stem type': 'to service', 'Diagram type': 'state machine', 'Notation': 'xUML',
-     'Semantic': 'dependency', 'Symbol': 'open arrow', 'End': 'root'}
+    {'Stem type': 'to service', 'Diagram type': 'domain', 'Notation': 'xUML',
+     'Semantic': 'require', 'Symbol': 'open arrow', 'End': 'root'}
 ]

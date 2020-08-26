@@ -5,6 +5,7 @@ from geometry_types import Position
 from sqlalchemy import select, join, func, and_
 from collections import namedtuple
 from flatlanddb import FlatlandDB as fdb
+import numpy as np
 
 
 # Symbol subclasses in the Decoration Subsystem are implemented as named tuples
@@ -42,6 +43,17 @@ A sequence of these constitues the spec for a Compound Symbol
 ArrowSymbol = namedtuple('ArrowSymbol', 'base height fill')
 CircleSymbol = namedtuple('CircleSymbol', 'radius solid')
 CrossSymbol = namedtuple('CrossSymbol', 'root_offset vine_offset width angle')
+
+
+# TODO: For each Arrow Symbol we need to compute the points of a polygon facing upward
+# TODO: Then we apply a rotation matrix to get each of the other 90 deg orientations and store
+# TODO: Those indexed by node face
+# TODO: https://www.varsitytutors.com/hotmath/hotmath_help/topics/transformation-of-graphs-using-matrices-rotations
+
+# arrowtop = np.array([ [0, -.5*base], [0, .5*base], [0, height] ])
+r90 = np.array([ [0, -1], [1, 0] ])
+r180 = np.array([ [-1, 0], [0, -1] ])
+r270 = np.array([ [0, 1], [-1, 0] ])
 
 
 class Symbol:

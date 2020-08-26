@@ -15,6 +15,6 @@ population = [
      'About': 'Defines a path from one state to another'},
     {'Name': 'bridge', 'Diagram type': 'domain', 'Geometry': 'binary',
      'About': 'Defines a dependency on requirements from one domain to another'},
-    {'Name': 'collaboration', 'Diagram type': 'collaboration', 'Geometry': 'binary',
+    {'Name': 'collaboration', 'Diagram type': 'class collaboration', 'Geometry': 'binary',
      'About': 'Represents a path of communication between two nodes on a collaboration diagram'}
 ]

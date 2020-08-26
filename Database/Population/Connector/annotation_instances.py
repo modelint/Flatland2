@@ -20,7 +20,7 @@ population = [
      'Default stem side': '+', 'Vertical stem offset': 9, 'Horizontal stem offset': 9},
 
     # Generalization
-    {'Stem type': 'superclass', 'Diagram type': 'class', 'Notation': 'xUML', 'Semantic': 'gen super',
+    {'Stem type': 'superclass', 'Diagram type': 'class', 'Notation': 'xUML', 'Semantic': 'superclass',
      'Label': '{disjoint, complete}', 'Default stem side': '+', 'Vertical stem offset': 15,
      'Horizontal stem offset': 15},
 
@@ -32,6 +32,6 @@ population = [
      'Label': 'c', 'Default stem side': '+', 'Vertical stem offset': 9, 'Horizontal stem offset': 9},
 
     # Generalization
-    {'Stem type': 'superclass', 'Diagram type': 'class', 'Notation': 'Shlaer-Mellor', 'Semantic': 'gen super',
+    {'Stem type': 'superclass', 'Diagram type': 'class', 'Notation': 'Shlaer-Mellor', 'Semantic': 'superclass',
      'Label': 'is a', 'Default stem side': '+', 'Vertical stem offset': 9, 'Horizontal stem offset': 9}
 ]

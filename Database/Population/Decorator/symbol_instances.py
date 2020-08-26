@@ -10,7 +10,7 @@ population = [
     {'Name': 'gen arrow', 'Shape': 'arrow'},
     # Circle Symbols
     {'Name': 'solid small dot', 'Shape': 'circle'},
-    {'Name': 'open large circle', 'Shape': 'circle'},
+    {'Name': 'hollow large circle', 'Shape': 'circle'},
     # Cross Symbols
     {'Name': 'superclass cross', 'Shape': 'cross'},
     # Compound Symbols

@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from tablet import Tablet
 
 
-class OpenPolygon():
+class OpenPolygon:
     """
     A contiguous series of line segments that can draw itself on the Tablet
     """

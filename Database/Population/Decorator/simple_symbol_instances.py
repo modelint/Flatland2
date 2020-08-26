@@ -9,7 +9,7 @@ population = [
     {'Name': 'gen arrow', 'Stroke': 'normal', 'Terminal offset': 3},
     # Circle Symbols
     {'Name': 'solid small dot', 'Stroke': 'normal', 'Terminal offset': 3},
-    {'Name': 'open large circle', 'Stroke': 'normal', 'Terminal offset': 3},
+    {'Name': 'hollow large circle', 'Stroke': 'normal', 'Terminal offset': 3},
     # Cross Symbols
     {'Name': 'superclass cross', 'Stroke': 'normal', 'Terminal offset': 3},
 ]

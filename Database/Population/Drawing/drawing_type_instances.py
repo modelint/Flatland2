@@ -2,8 +2,15 @@
 drawing_type_instances.py
 """
 population = [
-    {'Name': 'class diagram'},
-    {'Name': 'state machine diagram'},
-    {'Name': 'domain diagram'},
-    {'Name': 'collaboration diagram'}
+    {'Name': 'Starr class diagram'},
+    {'Name': 'xUML class diagram'},
+    {'Name': 'Shlaer-Mellor class diagram'},
+
+    {'Name': 'xUML state machine diagram'},
+
+    {'Name': 'Starr class collaboration diagram'},
+    {'Name': 'xUML class collaboration diagram'},
+
+    {'Name': 'Starr domain diagram'},
+    {'Name': 'xUML domain diagram'},
 ]

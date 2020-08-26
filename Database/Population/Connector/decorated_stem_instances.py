@@ -24,7 +24,7 @@ population = [
 
     # Generalization
     {'Stem type': 'superclass', 'Diagram type': 'class', 'Notation': 'Starr',
-     'Semantic': 'gen super', 'Stroke': 'normal'},
+     'Semantic': 'superclass', 'Stroke': 'normal'},
 
     # xUML notation
     # Binary multiplicity
@@ -45,7 +45,7 @@ population = [
 
     # Generalization
     {'Stem type': 'superclass', 'Diagram type': 'class', 'Notation': 'xUML',
-     'Semantic': 'gen super', 'Stroke': 'normal'},
+     'Semantic': 'superclass', 'Stroke': 'normal'},
 
     # Shlaer-Mellor notation
     # Binary multiplicity
@@ -66,7 +66,7 @@ population = [
 
     # Generalization
     {'Stem type': 'superclass', 'Diagram type': 'class', 'Notation': 'Shlaer-Mellor',
-     'Semantic': 'gen super', 'Stroke': 'normal'},
+     'Semantic': 'superclass', 'Stroke': 'normal'},
 
     # State machine diagram
     {'Stem type': 'to state', 'Diagram type': 'state machine', 'Notation': 'xUML',
@@ -80,9 +80,9 @@ population = [
 
     # Domain diagram
     # Starr
-    {'Stem type': 'to service', 'Diagram type': 'state machine', 'Notation': 'Starr',
-     'Semantic': 'dependency', 'Stroke': 'normal'},
+    {'Stem type': 'to service', 'Diagram type': 'domain', 'Notation': 'Starr',
+     'Semantic': 'require', 'Stroke': 'normal'},
     # xUML
-    {'Stem type': 'to service', 'Diagram type': 'state machine', 'Notation': 'xUML',
-     'Semantic': 'dependency', 'Stroke': 'normal'}
+    {'Stem type': 'to service', 'Diagram type': 'domain', 'Notation': 'xUML',
+     'Semantic': 'require', 'Stroke': 'normal'}
 ]
