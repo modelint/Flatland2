@@ -4,10 +4,7 @@ styledb.py
 from flatlanddb import FlatlandDB as fdb
 from sqlalchemy import select, and_
 from collections import namedtuple
-# import Cocoa
 
-# manager = Cocoa.NSFontManager.sharedFontManager()
-# Fonts = set(manager.availableFontFamilies())  # To test if font is locally available
 
 Float_RGB = namedtuple('Float_RGB', 'R G B')
 Line_Style = namedtuple('Line_Style', 'pattern width color')
@@ -20,6 +17,7 @@ class StyleDB:
     dash_pattern = {}
     line_style = {}
     text_style = {}
+    fill_style = {}
     shape_presentation = {} # asset : style (for loaded presentation)
     text_presentation = {}
 
@@ -31,7 +29,7 @@ class StyleDB:
         load_asset_presentations(drawing_type=drawing_type, presentation=presentation)
         print("presentations loaded")
 
-
+# TODO: change to static methods
 def load_colors():
     colors = fdb.MetaData.tables['Color']
     q = select([colors])
@@ -69,17 +67,25 @@ def load_line_styles():
 
 
 def load_asset_presentations(presentation: str, drawing_type: str):
-    shape_pres = fdb.MetaData.tables['Shape Presentation']
-    q = select([shape_pres.c.Asset, shape_pres.c['Line style']]).where( and_(
-        shape_pres.c.Presentation == presentation, shape_pres.c['Drawing type'] == drawing_type
+    shape_pres_t = fdb.MetaData.tables['Shape Presentation']
+    q = select([shape_pres_t.c.Asset, shape_pres_t.c['Line style']]).where( and_(
+        shape_pres_t.c.Presentation == presentation, shape_pres_t.c['Drawing type'] == drawing_type
     ))
     f = fdb.Connection.execute(q).fetchall()
     for i in f:
         StyleDB.shape_presentation[i.Asset] = i['Line style']
 
-    text_pres = fdb.MetaData.tables['Text Presentation']
-    q = select([text_pres.c.Asset, text_pres.c['Text style']]).where( and_(
-        text_pres.c.Presentation == presentation, text_pres.c['Drawing type'] == drawing_type
+    shape_fill_t = fdb.MetaData.tables['Closed Shape Fill']
+    q = select([shape_fill_t.c.Asset, shape_fill_t.c.Fill]).where( and_(
+        shape_fill_t.c.Presentation == presentation, shape_fill_t.c['Drawing type'] == drawing_type
+    ))
+    f = fdb.Connection.execute(q).fetchall()
+    for i in f:
+        StyleDB.fill_style[i.Asset] = i.Fill
+
+    text_pres_t = fdb.MetaData.tables['Text Presentation']
+    q = select([text_pres_t.c.Asset, text_pres_t.c['Text style']]).where( and_(
+        text_pres_t.c.Presentation == presentation, text_pres_t.c['Drawing type'] == drawing_type
     ))
     f = fdb.Connection.execute(q).fetchall()
     for i in f:

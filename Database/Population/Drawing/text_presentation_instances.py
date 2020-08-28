@@ -11,6 +11,14 @@ population = [
     {'Asset': 'attributes', 'Presentation': 'default', 'Drawing type': 'Starr class diagram', 'Text style': 'p9body'},
     {'Asset': 'methods', 'Presentation': 'default', 'Drawing type': 'Starr class diagram', 'Text style': 'p9body'},
 
+    {'Asset': 'label', 'Presentation': 'diagnostic', 'Drawing type': 'Starr class diagram', 'Text style': 'p9body'},
+    {'Asset': 'rel name', 'Presentation': 'diagnostic', 'Drawing type': 'Starr class diagram', 'Text style': 'p9body'},
+    {'Asset': 'rel phrase', 'Presentation': 'diagnostic', 'Drawing type': 'Starr class diagram', 'Text style': 'p9body'},
+    {'Asset': 'see also', 'Presentation': 'diagnostic', 'Drawing type': 'Starr class diagram', 'Text style': 'p9italic'},
+    {'Asset': 'class name', 'Presentation': 'diagnostic', 'Drawing type': 'Starr class diagram', 'Text style': 'p12title'},
+    {'Asset': 'attributes', 'Presentation': 'diagnostic', 'Drawing type': 'Starr class diagram', 'Text style': 'p9body'},
+    {'Asset': 'methods', 'Presentation': 'diagnostic', 'Drawing type': 'Starr class diagram', 'Text style': 'p9body'},
+
     {'Asset': 'label', 'Presentation': 'default', 'Drawing type': 'xUML class diagram', 'Text style': 'p9body'},
     {'Asset': 'rel name', 'Presentation': 'default', 'Drawing type': 'xUML class diagram', 'Text style': 'p9body'},
     {'Asset': 'rel phrase', 'Presentation': 'default', 'Drawing type': 'xUML class diagram', 'Text style': 'p9body'},

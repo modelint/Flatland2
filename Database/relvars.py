@@ -226,7 +226,7 @@ def define(db) -> dict:
         'arrow_symbol': Table('Arrow Symbol', db.MetaData,
                               Column('Name', String, ForeignKey('Simple Symbol.Name', name='R100'), primary_key=True,
                                      nullable=False),
-                              Column('Base', Integer, nullable=False),
+                              Column('Half base', Integer, nullable=False),
                               Column('Height', Integer, nullable=False),
                               Column('Fill', Enum('solid', 'hollow', 'open', name='enum_Fill'), nullable=False)
                               ),

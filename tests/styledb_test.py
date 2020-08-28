@@ -6,5 +6,5 @@ from flatlanddb import FlatlandDB
 from styledb import StyleDB
 
 fdb = FlatlandDB()
-sdb = StyleDB(drawing_type='class diagram', presentation='default')
+sdb = StyleDB(drawing_type='Starr class diagram', presentation='diagnostic')
 print("Finished")

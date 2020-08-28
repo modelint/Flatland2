@@ -2,20 +2,23 @@
 symbol.py - Symbols from the Decoration Subsystem, loaded from the database
 """
 from geometry_types import Position
+from connection_types import NodeFace
 from sqlalchemy import select, join, func, and_
 from collections import namedtuple
 from flatlanddb import FlatlandDB as fdb
+from typing import Dict
 import numpy as np
 
 
 # Symbol subclasses in the Decoration Subsystem are implemented as named tuples
 # See Decoration Subsystem class model descriptions for full details on named tuple attributes summarized here
 
-SymbolSpec = namedtuple('Symbol', 'length spec')
+SymbolSpec = namedtuple('Symbol', 'length type spec')
 """
 Symbol
 
 - length -- extent of the drawn symbol along a connector's axis
+- type -- subclass of simple symbol or compound, e.g. 'arrow, circle, cross, compound'
 - spec -- the shape definition via R103 on the class diagram
 """
 
@@ -40,9 +43,10 @@ A sequence of these constitues the spec for a Compound Symbol
 """
 
 # Simple Symbol shape specific attributes
-ArrowSymbol = namedtuple('ArrowSymbol', 'base height fill')
+ArrowSymbol = namedtuple('ArrowSymbol', 'half_base height fill rotations')
 CircleSymbol = namedtuple('CircleSymbol', 'radius solid')
 CrossSymbol = namedtuple('CrossSymbol', 'root_offset vine_offset width angle')
+# TODO: Add rotations for Cross symbol as well
 
 
 # TODO: For each Arrow Symbol we need to compute the points of a polygon facing upward
@@ -50,7 +54,6 @@ CrossSymbol = namedtuple('CrossSymbol', 'root_offset vine_offset width angle')
 # TODO: Those indexed by node face
 # TODO: https://www.varsitytutors.com/hotmath/hotmath_help/topics/transformation-of-graphs-using-matrices-rotations
 
-# arrowtop = np.array([ [0, -.5*base], [0, .5*base], [0, height] ])
 r90 = np.array([ [0, -1], [1, 0] ])
 r180 = np.array([ [-1, 0], [0, -1] ])
 r270 = np.array([ [0, 1], [-1, 0] ])
@@ -86,17 +89,19 @@ class Symbol:
         )
         # Simple symbols
         # Arrow symbols
-        p = [symbol_t.c.Name, symbol_t.c.Length, s_symbol_t.c['Terminal offset'], arrow_t.c.Base, arrow_t.c.Height,
+        p = [symbol_t.c.Name, symbol_t.c.Length, s_symbol_t.c['Terminal offset'], arrow_t.c['Half base'], arrow_t.c.Height,
              arrow_t.c.Fill]
         j = sdecs_t.join(symbol_t, sdecs_t.c.Symbol == symbol_t.c.Name).join(s_symbol_t).join(arrow_t)
         q = select(p).select_from(j).where(f)
         rows = fdb.Connection.execute(q).fetchall()
         for r in rows:
+            rotations = Symbol.compute_arrow_rotations(r['Half base'], r.Height)
             Symbol.instances[r.Name] = SymbolSpec(
                 length=r.Length,
+                type='arrow',
                 spec=SimpleSymbol(
                     terminal_offset=r['Terminal offset'],
-                    shape=ArrowSymbol(base=r.Base, height=r.Height, fill=r.Fill)
+                    shape=ArrowSymbol(half_base=r['Half base'], height=r.Height, fill=r.Fill, rotations=rotations)
                 ),
             )
         # Circle symbols
@@ -107,6 +112,7 @@ class Symbol:
         for r in rows:
             Symbol.instances[r.Name] = SymbolSpec(
                 length=r.Length,
+                type='circle',
                 spec=SimpleSymbol(
                     terminal_offset=r['Terminal offset'],
                     shape=CircleSymbol(radius=r.Radius, solid=r.Solid)
@@ -121,6 +127,7 @@ class Symbol:
         for r in rows:
             Symbol.instances[r.Name] = SymbolSpec(
                 length=r.Length,
+                type='cross',
                 spec=SimpleSymbol(
                     terminal_offset=r['Terminal offset'],
                     shape=CrossSymbol(
@@ -151,8 +158,27 @@ class Symbol:
                 )
                 if not arrange:
                     # No more simple symbols on this stack, so add the compound symbol to the instance dict
-                    Symbol.instances[r.Name] = SymbolSpec(length=r.Length, spec=stack[:])  # COPY the stack
+                    Symbol.instances[r.Name] = SymbolSpec(length=r.Length, type='compound', spec=stack[:])  # COPY the stack
 
+    @staticmethod
+    def compute_arrow_rotations( half_base: int, height: int ) -> Dict[ NodeFace, np.ndarray ]:
+        """
+        Create a dictionary of arrow polygons each rotated 90 degree rotations and keyed to the appropriate
+        Node Face orientation where the arrow head would attach or point toward the face.
+        system with 0,0 at the arrow head.
+
+        :param half_base:  1/2 the arrow triangle base
+        :param height: height of the arrow triangle
+        :return: dictionary of all four arrow rotations, one per node face
+        """
+        top_arrow = np.array([[0, 0], [-half_base, height], [half_base, height] ])
+        rotations = {
+            NodeFace.TOP: top_arrow,
+            NodeFace.RIGHT: np.dot(r90, top_arrow),
+            NodeFace.BOTTOM: np.dot(r180, top_arrow),
+            NodeFace.LEFT: np.dot(r270, top_arrow)
+        }
+        return rotations
 
     @staticmethod
     def update_symbol_lengths():

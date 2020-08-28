@@ -2,8 +2,9 @@
 rendered_symbol.py
 """
 from open_polygon import OpenPolygon
+from geometry_types import Position
 from connection_types import NodeFace
-from symbol import Symbol
+from symbol import SymbolSpec
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -18,10 +19,16 @@ class RenderedSymbol:
     Draw open polygon and supply to tablet with asset name
     """
 
-    def __init__(self, face: NodeFace, end: str, symbol: Symbol):
-        self.End = end
-        self.Symbol = symbol
-        # self.Growth = growth TODO: compute this
+    def __init__(self, face: NodeFace, location: Position, symbol_spec: SymbolSpec):
+        self.Location = location
+        self.Symbol_spec = symbol_spec
+
+        if symbol_spec.type == 'arrow':
+            # Get the numpy polygon matrix with the rotation pointing toward the Node face
+            rotated_arrow = symbol_spec.spec.shape.rotations[face]
+            # Add the coordinates to our location
+            OpenPolygon()
+
 
 
 
