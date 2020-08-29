@@ -3,10 +3,6 @@ decorated_stem.py - Decorated Stem
 """
 from flatlanddb import FlatlandDB as fdb
 from sqlalchemy import select, and_
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from stem_type import StemType
 
 
 class DecoratedStem:
@@ -34,7 +30,8 @@ class DecoratedStem:
         r = and_(
             (stem_end_dec_t.c['Stem type'] == self.Stem_type),
             (stem_end_dec_t.c['Diagram type'] == diagram_type_name),
-            (stem_end_dec_t.c['Notation'] == notation)
+            (stem_end_dec_t.c.Notation == notation),
+            (stem_end_dec_t.c.Semantic == semantic)
         )
         q = select(p).where(r)
         rows = fdb.Connection.execute(q).fetchall()

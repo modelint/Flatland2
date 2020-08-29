@@ -3,24 +3,25 @@
 from stem import Stem
 from connection_types import NodeFace
 from geometry_types import Position
-from command_interface import New_Stem
+from stem_type import StemType
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from connector import Connector
+    from anchored_stem import AnchoredStem
 
 
 class FloatingBinaryStem(Stem):
     """
-    A Stem on a Straight Binary Connector that it positioned laterally on a Node face
+    A Stem on a Straight Binary Connector that is positioned laterally on a Node face
     so that it lines up with an opposing Anchored Stem. Consequenlty, no anchor position
     is specified, just an x or y location representing where the straight connector line intersects
     the floating stem's attached node face.
 
     """
 
-    def __init__(self, connector: 'Connector', stem_type: str, semantic: str,
-                 node: 'Node', face: NodeFace, projecting_stem: New_Stem):
+    def __init__(self, connector: 'Connector', stem_type: StemType, semantic: str,
+                 node: 'Node', face: NodeFace, projecting_stem: 'AnchoredStem'):
         # We will use either the x or y of our opposing Anchored Stem and then set the other coordinate
         # to coincide with the Node face position attached to Floating Stem since this is a Straight Binary
         # Connector
@@ -40,13 +41,5 @@ class FloatingBinaryStem(Stem):
             y = node.Canvas_position.y
 
         # Stem initialized with our computed root end
-        vine = root = Position(x, y)
-        Stem.__init__(
-            self, connector, stem_type, semantic, node, face, root_position=root)
-        # TODO: For now root and vine are the same. This changes when we begin decorating the Stems
-
-    def render(self):
-        """
-        Draw self
-        """
-        pass
+        root = Position(x, y)
+        Stem.__init__(self, connector, stem_type, semantic, node, face, root_position=root)

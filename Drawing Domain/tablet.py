@@ -144,8 +144,11 @@ class Tablet:
         # Use upper left corner instead
         ul = Position(x=ll_dc.x, y=ll_dc.y - size.height)
 
+        # Check to see if this rectangle is filled
+        fill = StyleDB.fill_style.get(asset, None)
+
         self.Rectangles.append(_Rectangle(
-            upper_left=ul, size=size, border_style=StyleDB.shape_presentation[asset], fill=StyleDB.fill_style[asset]
+            upper_left=ul, size=size, border_style=StyleDB.shape_presentation[asset], fill=fill
         ))
 
     def add_text(self, asset: str, lower_left: Position, text: str):
@@ -160,11 +163,30 @@ class Tablet:
         )
         print('Text added')
 
-    def render(self):
-        """Renders the tablet using Cairo for now"""
+    def render_rects(self):
+        """Draw the rectangle shapes"""
+        for r in self.Rectangles:
+            # Set the dash pattern
+            pname = StyleDB.line_style[r.border_style].pattern  # name of border line style's pattern
+            pvalue = StyleDB.dash_pattern[pname]  # find pattern value in dash pattern dict
+            self.Context.set_dash(pvalue)  # If pvalue is [], line will be solid
+            # Set color and width
+            line_color_name = StyleDB.line_style[r.border_style].color
+            line_rgb_color_value = StyleDB.rgbF[line_color_name]
+            if r.fill:
+                fill_rgb_color_value = StyleDB.rgbF[r.fill]
+            w = StyleDB.line_style[r.border_style].width
+            self.Context.set_line_width(w)
+            # Set rectangle extents and draw
+            self.Context.rectangle(r.upper_left.x, r.upper_left.y, r.size.width, r.size.height)
+            if r.fill:
+                self.Context.set_source_rgb(*fill_rgb_color_value)
+                self.Context.fill_preserve()
+            self.Context.set_source_rgb(*line_rgb_color_value)
+            self.Context.stroke()
 
-        # For now, always assume output to cairo
-        self.Context.set_line_join(cairo.LINE_JOIN_ROUND)
+    def render_line_segments(self):
+        """Draw the line segments"""
         for l in self.Line_segments:
             # Set the dash pattern
             pname = StyleDB.line_style[l.style].pattern  # name of line style's pattern
@@ -180,24 +202,9 @@ class Tablet:
             self.Context.move_to(*l.from_here)
             self.Context.line_to(*l.to_there)
             self.Context.stroke()
-        for r in self.Rectangles:
-            # Set the dash pattern
-            pname = StyleDB.line_style[r.border_style].pattern  # name of border line style's pattern
-            pvalue = StyleDB.dash_pattern[pname]  # find pattern value in dash pattern dict
-            self.Context.set_dash(pvalue)  # If pvalue is [], line will be solid
-            # Set color and width
-            line_color_name = StyleDB.line_style[r.border_style].color
-            line_rgb_color_value = StyleDB.rgbF[line_color_name]
-            fill_rgb_color_value = StyleDB.rgbF[r.fill]
-            w = StyleDB.line_style[r.border_style].width
-            self.Context.set_line_width(w)
-            # Set rectangle extents and draw
-            self.Context.rectangle(r.upper_left.x, r.upper_left.y, r.size.width, r.size.height)
-            self.Context.set_source_rgb(*fill_rgb_color_value)
-            self.Context.fill()
-            self.Context.rectangle(r.upper_left.x, r.upper_left.y, r.size.width, r.size.height)
-            self.Context.set_source_rgb(*line_rgb_color_value)
-            self.Context.stroke()
+
+    def render_polygons(self):
+        """Draw the closed non-rectangular shapes"""
         for p in self.Polygons:
             pattern_name = StyleDB.line_style[p.border_style].pattern  # name of border line style's pattern
             pattern_value = StyleDB.dash_pattern[pattern_name]  # find pattern value in dash pattern dict
@@ -210,18 +217,16 @@ class Tablet:
             self.Context.set_line_width(w)
             # Draw a closed polygon
             self.Context.move_to(*p.vertices[0])  # Start drawing here
-            # Draw the fill first
             for v in p.vertices[1:]:
                 self.Context.line_to(*v)
             self.Context.close_path()
             self.Context.set_source_rgb(*fill_rgb_color_value)
-            self.Context.fill()
-            # Now draw the border
-            self.Context.move_to(*p.vertices[0])  # Start drawing here
-            for v in p.vertices[1:]:
-                self.Context.line_to(*v)
+            self.Context.fill_preserve()
             self.Context.set_source_rgb(*line_rgb_color_value)
             self.Context.stroke()
+
+    def render_text(self):
+        """Draw all text lines"""
         for t in self.Text:
             style = StyleDB.text_style[t.style]
             text_color_name = StyleDB.text_style[t.style].color
@@ -233,6 +238,16 @@ class Tablet:
             self.Context.set_font_size(style.size)
             self.Context.move_to(t.lower_left.x, t.lower_left.y)
             self.Context.show_text(t.text)
+
+    def render(self):
+        """Renders the tablet using Cairo for now"""
+
+        # For now, always assume output to cairo
+        self.Context.set_line_join(cairo.LINE_JOIN_ROUND)
+        self.render_line_segments()
+        self.render_rects()
+        self.render_polygons()
+        self.render_text()
 
     def text_size(self, asset: str, text_line: str) -> (Rect_Size, int):
         """

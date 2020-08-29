@@ -51,7 +51,7 @@ def create_canvas(args):
     p_node = SingleCellNode(node_type_name='class', content=class_Pilot, grid=flatland_canvas.Diagram.Grid,
                             row=1, column=3)
 
-    t_stem = New_Stem(stem_type='class mult', semantic='Mc mult', node=t_node,
+    t_stem = New_Stem(stem_type='class mult', semantic='1 mult', node=t_node,
                       face=NodeFace.RIGHT, anchor=AnchorPosition(0))
     p_stem = New_Stem(stem_type='class mult', semantic='1 mult', node=p_node,
                       face=NodeFace.LEFT, anchor=None)

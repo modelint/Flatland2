@@ -1,14 +1,13 @@
 """
 rendered_symbol.py
 """
-from open_polygon import OpenPolygon
 from geometry_types import Position
 from connection_types import NodeFace
-from symbol import SymbolSpec
+from symbol import Symbol
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from stem import Stem
+    from tablet import Tablet
 
 
 class RenderedSymbol:
@@ -19,31 +18,13 @@ class RenderedSymbol:
     Draw open polygon and supply to tablet with asset name
     """
 
-    def __init__(self, face: NodeFace, location: Position, symbol_spec: SymbolSpec):
+    def __init__(self, tablet: 'Tablet', face: NodeFace, location: Position, symbol_name: str):
         self.Location = location
-        self.Symbol_spec = symbol_spec
+        self.Symbol_spec = Symbol.instances[symbol_name]
 
-        if symbol_spec.type == 'arrow':
+        if self.Symbol_spec.type == 'arrow':
             # Get the numpy polygon matrix with the rotation pointing toward the Node face
-            rotated_arrow = symbol_spec.spec.shape.rotations[face]
+            rotated_arrow = self.Symbol_spec.spec.shape.rotations[face]
             # Add the coordinates to our location
-            OpenPolygon()
-
-
-
-
-
-        self.render()
-
-    def create_points(self, face: NodeFace):
-        """
-
-        """
-        if face == NodeFace.RIGHT:
-            pass
-
-    def render(self):
-        print(f'Rendering symbol: {self}')
-
-    def __repr__(self):
-        return f'Stem: {self.Stem}, End: {self.End}, Symbol: {self.Symbol}'
+            vertices = [Position(location.x+x, location.y+y) for x, y in rotated_arrow]
+            tablet.add_polygon(asset=symbol_name, vertices=vertices)

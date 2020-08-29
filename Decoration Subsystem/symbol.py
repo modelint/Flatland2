@@ -54,9 +54,9 @@ CrossSymbol = namedtuple('CrossSymbol', 'root_offset vine_offset width angle')
 # TODO: Those indexed by node face
 # TODO: https://www.varsitytutors.com/hotmath/hotmath_help/topics/transformation-of-graphs-using-matrices-rotations
 
-r90 = np.array([ [0, -1], [1, 0] ])
+r90 = np.array([ [0, 1], [-1, 0] ])
 r180 = np.array([ [-1, 0], [0, -1] ])
-r270 = np.array([ [0, 1], [-1, 0] ])
+r270 = np.array([ [0, -1], [1, 0] ])
 
 
 class Symbol:
@@ -171,13 +171,18 @@ class Symbol:
         :param height: height of the arrow triangle
         :return: dictionary of all four arrow rotations, one per node face
         """
-        top_arrow = np.array([[0, 0], [-half_base, height], [half_base, height] ])
+        # Prior to rotation each row is a set of coordinates on the same dimension (x or y)
+        bottom_arrow = np.array([[0, half_base, -half_base], [0, -height, -height]])  # x values, y values
         rotations = {
-            NodeFace.TOP: top_arrow,
-            NodeFace.RIGHT: np.dot(r90, top_arrow),
-            NodeFace.BOTTOM: np.dot(r180, top_arrow),
-            NodeFace.LEFT: np.dot(r270, top_arrow)
+            NodeFace.BOTTOM: bottom_arrow,
+            NodeFace.LEFT: np.dot(r90, bottom_arrow),
+            NodeFace.TOP: np.dot(r180, bottom_arrow),
+            NodeFace.RIGHT: np.dot(r270, bottom_arrow)
         }
+        # Now that the rotate operations are complete, return a flipped matrix
+        # so that each row is a coordinate pair using the numpy reshape operation
+        for k,v in rotations.items():
+            rotations[k] = [Position(z[0],z[1]) for z in zip(v[0],v[1])]
         return rotations
 
     @staticmethod
@@ -194,22 +199,22 @@ class Symbol:
 
         query = select([symbol_t]).where(symbol_t.c.Shape != 'compound')
         simple_symbols = fdb.Connection.execute(query).fetchall()
-        for s in simple_symbols:
-            if s.Shape == 'arrow':
-                query = select([arrow_t.c.Height]).where(arrow_t.c.Name == s.Name)
+        for ssym in simple_symbols:
+            if ssym.Shape == 'arrow':
+                query = select([arrow_t.c.Height]).where(arrow_t.c.Name == ssym.Name)
                 v = fdb.Connection.execute(query).scalar()
-                u = symbol_t.update().where(symbol_t.c.Name == s.Name).values(Length=v)
+                u = symbol_t.update().where(symbol_t.c.Name == ssym.Name).values(Length=v)
                 fdb.Connection.execute(u)
-            if s.Shape == 'circle':
-                query = select([circle_t.c.Radius]).where(circle_t.c.Name == s.Name)
+            if ssym.Shape == 'circle':
+                query = select([circle_t.c.Radius]).where(circle_t.c.Name == ssym.Name)
                 v = 2 * fdb.Connection.execute(query).scalar()
-                u = symbol_t.update().where(symbol_t.c.Name == s.Name).values(Length=v)
+                u = symbol_t.update().where(symbol_t.c.Name == ssym.Name).values(Length=v)
                 fdb.Connection.execute(u)
-            if s.Shape == 'cross':
-                query = select([cross_t.c['Root offset'], cross_t.c['Vine offset']]).where(cross_t.c.Name == s.Name)
+            if ssym.Shape == 'cross':
+                query = select([cross_t.c['Root offset'], cross_t.c['Vine offset']]).where(cross_t.c.Name == ssym.Name)
                 result = fdb.Connection.execute(query).fetchone()
                 v = result['Root offset'] + result['Vine offset']
-                u = symbol_t.update().where(symbol_t.c.Name == s.Name).values(Length=v)
+                u = symbol_t.update().where(symbol_t.c.Name == ssym.Name).values(Length=v)
                 fdb.Connection.execute(u)
 
         # Compound symbols
@@ -237,10 +242,11 @@ class Symbol:
 
 if __name__ == "__main__":
     fdb()
-    Symbol.update_symbol_lengths(fdb)
+    Symbol.update_symbol_lengths()
     starr = 'Starr'
     sm = 'Shlaer-Mellor'
     x = 'xUML'
     smd = 'state machine'
     cd = 'class'
     s = Symbol(diagram_type=cd, notation=starr)
+    print("Symbols loaded from main")

@@ -72,5 +72,8 @@ class Stem:
         root_symbol_name = self.Stem_type.DecoratedStems[self.Semantic].Root_symbol
         vine_symbol_name = self.Stem_type.DecoratedStems[self.Semantic].Vine_symbol
         if root_symbol_name:
-            RenderedSymbol(stem=self, end='root', symbol=Symbol.instances[root_symbol_name])
-
+            RenderedSymbol(
+                tablet=self.Connector.Diagram.Canvas.Tablet,
+                face=self.Node_face, location=self.Root_end,
+                symbol_name=root_symbol_name
+            )
