@@ -30,7 +30,7 @@ Simple Symbol
 - shape -- shape specific definition via R100 on the class diagram
 """
 
-StackPlacement = namedtuple('StackPlacement', 'symbol arrange offset')
+StackPlacement = namedtuple('StackPlacement', 'symbol type arrange offset')
 """
 Symbol Stack Placement
 
@@ -38,6 +38,7 @@ The placement of a Simple Symbol within a Compound Symbol
 A sequence of these constitues the spec for a Compound Symbol
 
 - symbol -- Name of a Simple Symbol positioned in the stack
+- type -- Type of the Simple Symbol positioned in the stack
 - arrange -- layered on top or adjacent to the previous Simple Symbol in the stack
 - offset -- positional offset from the center if layered or side if adjacent
 """
@@ -144,17 +145,23 @@ class Symbol:
         q = select(p).select_from(j).distinct().where(f).order_by("Name", "Position")
         rows = fdb.Connection.execute(q).fetchall()
         for r in rows:
+            # Determine the type of the Simple Symbol positioned within the stack
+            # Must be one of the Simple Symbol subclass names and not 'compound' or anything else
+            simple_symbol_type = self.instances[r['Simple symbol']].type
+            assert simple_symbol_type in ('arrow', 'circle', 'cross'), "Bad type for simple symbol in stack"
             if r.Position == 1:  # First item of new stack
                 # Start a new stack of simple symbols
                 stack = [StackPlacement(
-                    symbol=r['Simple symbol'], arrange=r.Arrange, offset=Position(r['Offset x'], r['Offset y'])
+                    symbol=r['Simple symbol'], type=simple_symbol_type,
+                    arrange=r.Arrange, offset=Position(r['Offset x'], r['Offset y'])
                 )]
             else:
                 # We don't neeed the terminating arrange value in a list
                 arrange = r.Arrange if r.Arrange not in ('top', 'last') else None
                 # Put the simple symbol on the stack using this clipped arrange value
                 stack.append( StackPlacement(
-                    symbol=r['Simple symbol'], arrange=arrange,  offset=Position(r['Offset x'], r['Offset y']))
+                    symbol=r['Simple symbol'], type=simple_symbol_type,
+                    arrange=arrange,  offset=Position(r['Offset x'], r['Offset y']))
                 )
                 if not arrange:
                     # No more simple symbols on this stack, so add the compound symbol to the instance dict
