@@ -1,6 +1,7 @@
 """
 tree_connector.py
 """
+from flatland_exceptions import UnsupportedConnectorType
 from connector import Connector
 from trunk_stem import TrunkStem
 from grafted_branch import GraftedBranch
@@ -12,6 +13,7 @@ from diagram import Diagram
 from collections import namedtuple
 from typing import Set
 from general_types import Index
+
 
 StemGroup = namedtuple('StemGroup', 'hanging_stems grafting_stem new_floating_stem, path')
 LeafGroup = namedtuple('LeafGroup', 'hleaves gleaf')
@@ -36,7 +38,14 @@ class TreeConnector(Connector):
         :param connector_type: Name of Connector Type
         :param branches:
         """
-        Connector.__init__(self, diagram, connector_type)
+        # Verify that the specified connector type name corresponds to a supported connector type
+        # found in our database
+        try:
+            ct = diagram.Diagram_type.ConnectorTypes[connector_type]
+        except IndexError:
+            raise UnsupportedConnectorType(
+                connector_type_name=connector_type, diagram_type_name=diagram.Diagram_type.Name)
+        Connector.__init__(self, diagram=diagram, connector_type=ct)
 
         # Unpack new trunk spec and create its Anchored Trunk Stem
         new_tstem = branches.trunk_branch.trunk_stem
@@ -106,9 +115,11 @@ class TreeConnector(Connector):
         hanging_graft_leaf = None
         # Create Leaf Stems
         for leaf_stem in new_leaves:
+            # Lookup the stem type instance
+            leaf_stem_type = self.Connector_type.Stem_type[leaf_stem.stem_type]
             anchored_hanging_leaf = AnchoredLeafStem(
                 connector=self,
-                stem_type=leaf_stem.stem_type,
+                stem_type=leaf_stem_type,
                 semantic=leaf_stem.semantic,
                 node=leaf_stem.node,
                 face=leaf_stem.face,
@@ -129,7 +140,7 @@ class TreeConnector(Connector):
         """
         return TrunkStem(
             connector=self,
-            stem_type=new_trunk.stem_type,
+            stem_type=self.Connector_type.Stem_type[new_trunk.stem_type],
             semantic=new_trunk.semantic,
             node=new_trunk.node,
             face=new_trunk.face,
@@ -142,3 +153,4 @@ class TreeConnector(Connector):
         """
         for b in self.Branches:
             b.render()
+        self.Trunk_stem.render()

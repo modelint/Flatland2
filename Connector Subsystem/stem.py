@@ -33,8 +33,7 @@ class Stem:
     Vine_end : End of Stem away from Node face with clearance for any decoration
     """
 
-    def __init__(self,
-                 connector: 'Connector', stem_type: StemType, semantic: str, node: 'Node',
+    def __init__(self, connector: 'Connector', stem_type: StemType, semantic: str, node: 'Node',
                  face: NodeFace, root_position: Position):
         self.Connector = connector
         self.Stem_type = stem_type
@@ -45,6 +44,10 @@ class Stem:
 
         # Check to see if Vine needs to be computed (fixed) geometry
         if self.Stem_type.Geometry == 'fixed':
+            dec_stem = stem_type.DecoratedStems.get(semantic, None)
+            if not dec_stem:
+                self.Vine_end = self.Root_end
+                return
             root_symbol = stem_type.DecoratedStems[semantic].Root_symbol
             vine_symbol = stem_type.DecoratedStems[semantic].Vine_symbol
             rlen = 0 if not root_symbol else Symbol.instances[root_symbol].length
