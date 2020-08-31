@@ -2,7 +2,7 @@
 rendered_symbol.py
 """
 from geometry_types import Position
-from connection_types import NodeFace
+from connection_types import NodeFace, OppositeFace
 from symbol import Symbol
 from typing import TYPE_CHECKING
 
@@ -48,7 +48,10 @@ class RenderedSymbol:
         """Draw an arrow symbol at the indicated location pointing toward our face"""
         # Get the numpy polygon matrix with the rotation pointing toward the Node face
         orientation = self.Stem.Node_face  # Will not work for a tertiary stem!
-        # TODO: Provide teritary stem case where orientation is based on bend route
+        if self.End == 'vine':
+            # reverse orientation since the vine symbol points away from the node face
+            orientation = OppositeFace[orientation]
+
         rotated_arrow = Symbol.instances[arrow_symbol].spec.shape.rotations[orientation]
         # Add the coordinates to our location
         vertices = [Position(location.x + x, location.y + y) for x, y in rotated_arrow]

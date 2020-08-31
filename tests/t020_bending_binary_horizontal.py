@@ -70,7 +70,7 @@ if __name__ == "__main__":
     Canvas_Args = namedtuple("Canvas_Args", "diagram notation presentation sheet orientation file")
 
     test_input = Canvas_Args(
-        diagram="class", notation="Starr", presentation="default", sheet="letter",
+        diagram="class", notation="Starr", presentation="diagnostic", sheet="letter",
         orientation="landscape", file="ftest.pdf"
     )
     create_canvas(args=test_input)

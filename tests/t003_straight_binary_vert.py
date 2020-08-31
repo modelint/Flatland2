@@ -1,5 +1,5 @@
 """
-t001_straight_binary_horiz.py
+t003_straight_binary_vert.py
 """
 from single_cell_node import SingleCellNode
 from straight_binary_connector import StraightBinaryConnector
@@ -49,12 +49,12 @@ def create_canvas(args):
     t_node = SingleCellNode(node_type_name='class', content=class_Aircraft, grid=flatland_canvas.Diagram.Grid,
                             row=1, column=1)
     p_node = SingleCellNode(node_type_name='class', content=class_Pilot, grid=flatland_canvas.Diagram.Grid,
-                            row=1, column=3)
+                            row=3, column=1)
 
-    t_stem = New_Stem(stem_type='class mult', semantic='1 mult', node=t_node,
-                      face=NodeFace.RIGHT, anchor=AnchorPosition(0))
-    p_stem = New_Stem(stem_type='class mult', semantic='1 mult', node=p_node,
-                      face=NodeFace.LEFT, anchor=None)
+    t_stem = New_Stem(stem_type='class mult', semantic='M mult', node=t_node,
+                      face=NodeFace.TOP, anchor=AnchorPosition(0))
+    p_stem = New_Stem(stem_type='class mult', semantic='Mc mult', node=p_node,
+                      face=NodeFace.BOTTOM, anchor=None)
 
     StraightBinaryConnector(diagram=flatland_canvas.Diagram, connector_type='binary association',
                             projecting_stem=t_stem, floating_stem=p_stem)
@@ -71,7 +71,7 @@ if __name__ == "__main__":
     Canvas_Args = namedtuple("Canvas_Args", "diagram notation presentation sheet orientation file")
 
     test_input = Canvas_Args(
-        diagram="class", notation="Starr", presentation="diagnostic", sheet="letter",
+        diagram="class", notation="Starr", presentation="default", sheet="letter",
         orientation="landscape", file="ftest.pdf"
     )
     create_canvas(args=test_input)

@@ -88,8 +88,8 @@ class Tablet:
         self.Presentation = presentation  # informal, sexy, etc
         self.Size = size
         self.Line_segments: List[_Line_Segment] = []
-        self.Rectangles: List[_Rectangle] = []
         self.Polygons: List[_Polygon] = []
+        self.Rectangles: List[_Rectangle] = []
         self.Text: List[_Text_line] = []
         self.Output_file = output_file
         self.PDF_sheet = cairo.PDFSurface(self.Output_file, self.Size.width, self.Size.height)

@@ -16,9 +16,9 @@ population = [
     {'Asset': 'hollow arrow', 'Presentation': 'diagnostic', 'Drawing type': 'Starr class diagram', 'Fill': 'white'},
     {'Asset': 'gen arrow', 'Presentation': 'diagnostic', 'Drawing type': 'Starr class diagram', 'Fill': 'white'},
     {'Asset': 'class compartment', 'Presentation': 'diagnostic', 'Drawing type': 'Starr class diagram',
-     'Fill': 'purple'},
+     'Fill': 'white'},
     {'Asset': 'imported class compartment', 'Presentation': 'diagnostic', 'Drawing type': 'Starr class diagram',
-     'Fill': 'horrible red'},
+     'Fill': 'white'},
 
     # Shlaer-Mellor/default symbols
     {'Asset': 'class compartment', 'Presentation': 'default', 'Drawing type': 'Shlaer-Mellor class diagram',

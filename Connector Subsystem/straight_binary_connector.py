@@ -50,6 +50,8 @@ class StraightBinaryConnector(BinaryConnector):
         :param floating_stem: A user supplied form requesting a floating stem
         :param tertiary_stem: An optional user supplied form requesting a tertiary stem
         """
+        # Verify that the specified connector type name corresponds to a supported connector type
+        # found in our database
         try:
             ct = diagram.Diagram_type.ConnectorTypes[connector_type]
         except IndexError:
@@ -57,6 +59,7 @@ class StraightBinaryConnector(BinaryConnector):
                 connector_type_name=connector_type, diagram_type_name=diagram.Diagram_type.Name)
         BinaryConnector.__init__(self, diagram=diagram, connector_type=ct)
 
+        # Look up the stem type loaded from our database
         projecting_stem_type = self.Connector_type.Stem_type[projecting_stem.stem_type]
         floating_stem_type = self.Connector_type.Stem_type[floating_stem.stem_type]
         tertiary_stem_type = None
@@ -93,6 +96,7 @@ class StraightBinaryConnector(BinaryConnector):
 
         self.Projecting_stem.render()
         self.Floating_stem.render()
+        self.Tertiary_stem.render()
 
     def compute_axis(self):
         """

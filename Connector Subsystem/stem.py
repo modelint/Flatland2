@@ -2,13 +2,11 @@
 stem.py
 """
 
-from sqlalchemy import select, and_
 from symbol import Symbol
 from stem_type import StemType
 from geometry_types import Position
 from rendered_symbol import RenderedSymbol
 from connection_types import NodeFace
-from flatlanddb import FlatlandDB as fdb
 
 from typing import TYPE_CHECKING
 
@@ -76,4 +74,10 @@ class Stem:
                 stem=self,
                 end='root', location=self.Root_end,
                 symbol_name=root_symbol_name
+            )
+        if vine_symbol_name:
+            RenderedSymbol(
+                stem=self,
+                end='vine', location=self.Vine_end,
+                symbol_name=vine_symbol_name
             )

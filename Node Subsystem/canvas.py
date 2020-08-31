@@ -11,7 +11,6 @@ from geometry_types import Rect_Size, Position
 from diagram import Diagram
 from tablet import Tablet
 from sheet import Sheet, Group
-from stem_end_decoration import StemEndDecoration
 from symbol import Symbol
 
 # All sheet and canvas related constants are kept together here for easy review and editing
@@ -74,13 +73,11 @@ class Canvas:
         # Load symbol data
         Symbol(diagram_type=self.Diagram.Diagram_type.Name, notation=self.Diagram.Notation)
 
-        # StemEndDecoration(diagram_type=self.Diagram.Diagram_type, notation=self.Diagram.Notation)
-
         self.Tablet = Tablet(
             size=self.Size, output_file=drawoutput,
             # Drawing types include notation such as 'xUML class diagram' since notation affects the choice
             # of shape and text styles.  An xUML class diagram association class stem is dashed, for example.
-            drawing_type=' '.join([self.Diagram.Notation, diagram_type, 'diagram']), presentation='default'
+            drawing_type=' '.join([self.Diagram.Notation, diagram_type, 'diagram']), presentation=presentation
         )
         self.Show_margin = show_margin
 
@@ -96,7 +93,7 @@ class Canvas:
             draw_area_height = self.Size.height - self.Margin.top - self.Margin.bottom
             draw_area_width = self.Size.width - self.Margin.left - self.Margin.right
             draw_area_size = Rect_Size(height=draw_area_height, width=draw_area_width)
-            self.Tablet.add_rectangle('margin', lower_left=drawable_origin, size=draw_area_size)
+            self.Tablet.add_rectangle(asset='margin', lower_left=drawable_origin, size=draw_area_size)
 
         # Now add all Diagram content to the Tablet
         self.Diagram.render()
