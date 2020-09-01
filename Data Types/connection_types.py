@@ -11,6 +11,14 @@ from typing import NewType
 AnchorPosition = NewType('AnchorPosition', int)
 
 Path = namedtuple('Path', 'lane rut')
+"""
+A position within a row or column where a Connector line segment is drawn
+
+    Attributes
+    
+    - lane -- A row or column
+    - rut -- A numbered position within the lane
+"""
 DecoratedStemEnd = namedtuple('DecoratedStemEnd', 'stem_type semantic diagram_type notation end')
 
 

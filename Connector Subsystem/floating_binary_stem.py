@@ -22,9 +22,20 @@ class FloatingBinaryStem(Stem):
 
     def __init__(self, connector: 'Connector', stem_type: StemType, semantic: str,
                  node: 'Node', face: NodeFace, projecting_stem: 'AnchoredStem'):
-        # We will use either the x or y of our opposing Anchored Stem and then set the other coordinate
-        # to coincide with the Node face position attached to Floating Stem since this is a Straight Binary
-        # Connector
+        """
+        Constructor
+
+        We will use either the x or y of our opposing Anchored Stem and then set the other coordinate
+        to coincide with the Node face position attached to Floating Stem since this is a Straight Binary
+        Connector
+
+        :param connector:
+        :param stem_type:
+        :param semantic:
+        :param node:
+        :param face:
+        :param projecting_stem:
+        """
 
         # Initially set the Floating Stem root end to match the Projecting Stem root end
         x, y = projecting_stem.Root_end
