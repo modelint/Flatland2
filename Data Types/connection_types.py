@@ -10,6 +10,27 @@ from typing import NewType
 
 AnchorPosition = NewType('AnchorPosition', int)
 
+Stem_Name = namedtuple('Stem_Name', 'text axis_offset end_offset')
+"""
+User specification of name text placed near a Stem
+
+    Attributes
+
+    - text -- The text to be written
+    - axis_offset -- A positive or negative non-zero integer specifying axis side and distance from the axis
+    - end_offset -- A positive integer specifying non-default offset distance from the end of the stem
+"""
+Connector_Name = namedtuple('Connector_Name', 'text side bend')
+"""
+User specification of name text placed near the center of a Connector
+
+    Attributes
+
+    - text -- The text to be written
+    - side -- ( 1 | -1 ) Which side of the Connector (top bottom) or (right left)
+    - bend -- The clockwise bend number starting from 1, default is 1, positive non-zero integer
+"""
+
 Path = namedtuple('Path', 'lane rut')
 """
 A position within a row or column where a Connector line segment is drawn

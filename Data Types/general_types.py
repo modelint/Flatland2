@@ -4,6 +4,7 @@ general_types.py - Model level types that are used across multiple domains
 
 from typing import NewType
 
+Text = str
 PosInt = NewType('PosInt', int)
 
 LaneNum = NewType('LaneNum', PosInt)  # Row or column number (a positive integer)

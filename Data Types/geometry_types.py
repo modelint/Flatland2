@@ -9,6 +9,7 @@ from collections import namedtuple
 from enum import Enum
 
 Coordinate = NewType('Coordinate', float )
+Distance = int
 
 
 class VertAlign(Enum):

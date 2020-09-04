@@ -16,6 +16,7 @@ class StyleDB:
     rgbF = {}  # rgb color float representation
     dash_pattern = {}
     line_style = {}
+    typeface = {}
     text_style = {}
     fill_style = {}
     shape_presentation = {} # asset : style (for loaded presentation)
@@ -25,6 +26,7 @@ class StyleDB:
         load_colors()
         load_dash_patterns()
         load_line_styles()
+        load_typefaces()
         load_text_styles()
         load_asset_presentations(drawing_type=drawing_type, presentation=presentation)
         print("presentations loaded")
@@ -48,6 +50,12 @@ def load_dash_patterns():
         else:
             StyleDB.dash_pattern[i.Name] = Dash_Pattern( solid=i.Solid, blank=i.Blank )
 
+def load_typefaces():
+    tface_t = fdb.MetaData.tables['Typeface']
+    q = select([tface_t])
+    rows = fdb.Connection.execute(q).fetchall()
+    for r in rows:
+        StyleDB.typeface[r.Alias] = r.Name
 
 def load_text_styles():
     tstyle = fdb.MetaData.tables['Text Style']
@@ -55,7 +63,7 @@ def load_text_styles():
     f = fdb.Connection.execute(q).fetchall()
     for i in f:
         StyleDB.text_style[i.Name] = Text_Style(
-            typeface=i.Typeface, size=i.Size, slant=i.Slant, weight=i.Weight, color=i.Color, leading=i.Leading)
+            typeface=StyleDB.typeface[i.Typeface], size=i.Size, slant=i.Slant, weight=i.Weight, color=i.Color, leading=i.Leading)
 
 
 def load_line_styles():

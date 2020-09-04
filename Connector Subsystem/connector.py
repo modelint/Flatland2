@@ -2,7 +2,8 @@
 connector.py - Covers the Connector class in the Flatland3 Connector Subsystem Class Diagram
 """
 from connector_type import ConnectorType
-from typing import TYPE_CHECKING
+from connection_types import Connector_Name
+from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
     from diagram import Diagram
@@ -20,9 +21,10 @@ class Connector:
 
         - Diagram -- Connector is drawn on this diagram
         - Connector_type -- Specifies characteristics of this Connector
+        - Name -- Optional name of this Connector
     """
 
-    def __init__(self, diagram: 'Diagram', connector_type: ConnectorType):
+    def __init__(self, diagram: 'Diagram', name: Optional[Connector_Name], connector_type: ConnectorType):
         """
         Constructor
 
@@ -31,6 +33,7 @@ class Connector:
         """
         self.Diagram = diagram
         self.Connector_type = connector_type
+        self.Name = name  # If any
 
         self.Diagram.Grid.Connectors.append(self)
 
@@ -38,4 +41,4 @@ class Connector:
         pass  # overriden
 
     def __repr__(self):
-        return f'ID: {id(self)}, Diagram: {self.Diagram}, Type: {self.Connector_type.Name}'
+        return f'ID: {id(self)}, Diagram: {self.Diagram}, Type: {self.Connector_type.Name}, Name: {self.Name}'
