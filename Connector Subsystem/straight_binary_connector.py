@@ -41,7 +41,8 @@ class StraightBinaryConnector(BinaryConnector):
     """
 
     def __init__(self, diagram: 'Diagram', connector_type: str, projecting_stem: New_Stem,
-                 floating_stem: New_Stem, name: Optional[Connector_Name] = None, tertiary_stem=None):
+                 floating_stem: New_Stem, name: Optional[Connector_Name] = None,
+                 tertiary_stem: Optional[New_Stem] = None):
         """
         Constructor – see class description for meaning of the attributes
 
@@ -49,6 +50,7 @@ class StraightBinaryConnector(BinaryConnector):
         :param connector_type: Name of connector type
         :param projecting_stem: A user supplied form requesting a projecting stem
         :param floating_stem: A user supplied form requesting a floating stem
+        :param name: User supplied name of the Connector
         :param tertiary_stem: An optional user supplied form requesting a tertiary stem
         """
         # Verify that the specified connector type name corresponds to a supported connector type
@@ -96,11 +98,6 @@ class StraightBinaryConnector(BinaryConnector):
                 parallel_segs={(self.Projecting_stem.Vine_end, self.Floating_stem.Vine_end)}
             )
 
-        self.Projecting_stem.render()
-        self.Floating_stem.render()
-        if self.Tertiary_stem:
-            self.Tertiary_stem.render()
-
     def compute_axis(self):
         """
         Determines the x or y axis of the straight connector line where the Tertiary Stem attaches.
@@ -119,6 +116,13 @@ class StraightBinaryConnector(BinaryConnector):
         """
         # Create line from vine end of Projecting Binary Stem to vine end of Floating Binary Stem
         tablet = self.Diagram.Canvas.Tablet
+
+        print("Drawing stems")
+        self.Projecting_stem.render()
+        self.Floating_stem.render()
+        if self.Tertiary_stem:
+            self.Tertiary_stem.render()
+
         print("Drawing binary connector")
         tablet.add_line_segment(
             asset='binary connector', from_here=self.Projecting_stem.Vine_end, to_there=self.Floating_stem.Vine_end
@@ -126,32 +130,11 @@ class StraightBinaryConnector(BinaryConnector):
         if self.Tertiary_stem:
             self.Tertiary_stem.render()
 
-        # Get size of bounding box
-        # We assume that the name is a single line of text so we don't consider leading
-        # Since, for now at least, we assume that a Connector name will be short, like 'R314' for example
-        line_ink_area, leading = tablet.text_size(asset=self.Connector_type.Name+' name', text_line=self.Name.text)
-        name_bounding_box = Rect_Size(width=line_ink_area.width, height=line_ink_area.height)
-        name_spec = self.Connector_type.Name_spec
-
-        # We will center the name bounding box with respect to the full length of the Connector
-        # So we measure between root ends (node faces)
-        p_end, f_end = self.Projecting_stem.Root_end, self.Floating_stem.Root_end
-        if p_end.y == f_end.y:
-            # Connector is horizontal
-            center_x = round(abs(p_end.x - f_end.x)/2) + min(p_end.x, f_end.x)  # Distance type is an integer
-            name_x = center_x - round(name_bounding_box.width/2)
-            # If box is below the connector, subtract the height of the box as well to get lower left corner y
-            height_offset = name_bounding_box.height if self.Name.side == -1 else 0
-            name_y = p_end.y + name_spec.axis_buffer.vertical*self.Name.side - height_offset
-        else:
-            # Connector is vertical
-            center_y = round(abs(p_end.y - f_end.y)/2) + min(p_end.y, f_end.y)
-            name_y = center_y - round(name_bounding_box.height/2)
-            # If box is left of the connector, subtract the width of the box as well to get the lower left corner x
-            width_offset = name_bounding_box.width if self.Name.side == -1 else 0
-            name_x = p_end.x + name_spec.axis_buffer.horizontal*self.Name.side - width_offset
-
-        tablet.add_text(asset=self.Connector_type.Name+' name', lower_left=Position(name_x, name_y), text=self.Name.text)
+        print("Drawing connector name")
+        name_position = self.compute_name_position(
+            point_t=self.Projecting_stem.Root_end, point_p=self.Floating_stem.Root_end
+        )
+        tablet.add_text(asset=self.Connector_type.Name+' name', lower_left=name_position, text=self.Name.text)
 
 
 

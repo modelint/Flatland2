@@ -1,14 +1,14 @@
 """
 bending_binary_connector.py
 """
-from flatland_exceptions import UnsupportedConnectorType
+from flatland_exceptions import UnsupportedConnectorType, InvalidBendNumber
 from binary_connector import BinaryConnector
 from tertiary_stem import TertiaryStem
 from anchored_stem import AnchoredStem
-from connection_types import HorizontalFace, Orientation
+from connection_types import HorizontalFace, Orientation, Connector_Name
 from geometry_types import Position
-from command_interface import New_Stem
-from typing import List, TYPE_CHECKING
+from command_interface import New_Stem, New_Path
+from typing import List, TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
     from diagram import Diagram
@@ -24,15 +24,17 @@ class BendingBinaryConnector(BinaryConnector):
     """
 
     def __init__(self, diagram: 'Diagram', connector_type: str, anchored_stem_t: New_Stem,
-                 anchored_stem_p: New_Stem, paths=None, tertiary_stem=None):
+                 anchored_stem_p: New_Stem, paths: Optional[New_Path] = None, name: Optional[Connector_Name] = None,
+                 tertiary_stem: Optional[New_Stem] = None):
         """
         Constructor - see class description for meaning of the attributes
 
-        :param diagram:
-        :param connector_type:
-        :param anchored_stem_t:
-        :param anchored_stem_p:
+        :param diagram: Reference to the Diagram
+        :param connector_type: Name of connector type
+        :param anchored_stem_t: A user supplied specification of a stem with an anchored face placement
+        :param anchored_stem_p: A user supplied specification of the opposing stem with an anchored face placement
         :param paths:
+        :param name: User supplied name of the Connector
         :param tertiary_stem:
         """
         # Verify that the specified connector type name corresponds to a supported connector type
@@ -42,7 +44,7 @@ class BendingBinaryConnector(BinaryConnector):
         except IndexError:
             raise UnsupportedConnectorType(
                 connector_type_name=connector_type, diagram_type_name=diagram.Diagram_type.Name)
-        BinaryConnector.__init__(self, diagram=diagram, connector_type=ct)
+        BinaryConnector.__init__(self, diagram=diagram, name=name, connector_type=ct)
 
         # Paths are only necessary if the connector bends more than once
         self.Paths = paths if not None else []
@@ -141,10 +143,28 @@ class BendingBinaryConnector(BinaryConnector):
         """
         # Create line from vine end of T_stem to vine end of P_stem, bending along the way
         print("Drawing bending binary connector")
-        self.Diagram.Canvas.Tablet.add_open_polygon(asset='binary connector',
-                                                    vertices=[self.T_stem.Vine_end] + self.Corners + [
-                                                        self.P_stem.Vine_end])
+        tablet = self.Diagram.Canvas.Tablet
+        tablet.add_open_polygon(
+            asset='binary connector',
+            vertices=[self.T_stem.Vine_end] + self.Corners + [self.P_stem.Vine_end]
+        )
+        # Draw the stems and their decorations
         self.T_stem.render()
         self.P_stem.render()
         if self.Tertiary_stem:
             self.Tertiary_stem.render()
+
+        # Draw the connector name if any
+        bend = self.Name.bend  # Name will be centered relative to this user requested bend
+        max_bend = len(self.Corners)+1
+        if not 1 <= bend <= max_bend:
+            raise InvalidBendNumber(bend, max_bend)
+        # Bends are numbered starting at 1 from the user designated T node
+        # Point T (closest to the T Node) is T stem's root end if the first bend is requested, otherwise a corner
+        point_t = self.T_stem.Root_end if bend == 1 else self.Corners[bend-2]  # Bend 2 gets the first corner at index 0
+        # Point P (closest to the P Node) is P stem's root end if the bend is one more than the number of Corners
+        # If there is only a single corner and bend is 2, use the P stem root end
+        # If there are two corners and the bend is 2, use the Corner at index 1 (2nd corner)
+        point_p = self.P_stem.Root_end if bend == len(self.Corners)+1 else self.Corners[bend-1]
+        name_position = self.compute_name_position(point_t, point_p)
+        tablet.add_text(asset=self.Connector_type.Name+' name', lower_left=name_position, text=self.Name.text)

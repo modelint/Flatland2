@@ -19,6 +19,23 @@ class UnknownSheetGroup(FlatlandDBException):
     pass
 
 
+class InvalidNameSide(FlatlandUserInputException):
+    def __init__(self, side):
+        self.side = side
+
+    def __str__(self):
+        return f'Invalid side: {self.side} should be either 1 or -1'
+
+
+class InvalidBendNumber(FlatlandUserInputException):
+    def __init__(self, bend, max_bend):
+        self.bend = bend
+        self.max_bend = max_bend
+
+    def __str__(self):
+        return f'Invalid bend: {self.bend} should be in range: 1..{self.max_bend} where max is number of corners + 1'
+
+
 class InvalidOrientation(FlatlandUserInputException):
     def __init__(self, orientation):
         self.orientation = orientation
