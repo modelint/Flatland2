@@ -7,7 +7,6 @@ from anchored_stem import AnchoredStem
 from connection_types import HorizontalFace, Connector_Name
 from floating_binary_stem import FloatingBinaryStem
 from tertiary_stem import TertiaryStem
-from geometry_types import Rect_Size, Position
 from typing import TYPE_CHECKING, Optional
 from command_interface import New_Stem
 
@@ -63,13 +62,14 @@ class StraightBinaryConnector(BinaryConnector):
         # Extract the user supplied connector name if any
         BinaryConnector.__init__(self, diagram=diagram, name=name, connector_type=ct)
 
-        # Look up the stem type loaded from our database
+        # Unpack the user specification by loooking up the requested Stem Types loaded from our database
         projecting_stem_type = self.Connector_type.Stem_type[projecting_stem.stem_type]
         floating_stem_type = self.Connector_type.Stem_type[floating_stem.stem_type]
         tertiary_stem_type = None
         if tertiary_stem:
             tertiary_stem_type = self.Connector_type.Stem_type[tertiary_stem.stem_type]
 
+        # Create the two opposing Stems, one Anchored and one Floating (lined up with Anchor)
         self.Projecting_stem = AnchoredStem(
             connector=self,
             stem_type=projecting_stem_type,
@@ -86,6 +86,8 @@ class StraightBinaryConnector(BinaryConnector):
             face=floating_stem.face,
             projecting_stem=self.Projecting_stem
         )
+        # If one was specified, create the Tertiary Stem whose vine end will terminate on the Connector line segment
+        # between the two opposing Stems
         self.Tertiary_stem = None
         if tertiary_stem:
             self.Tertiary_stem = TertiaryStem(
@@ -98,12 +100,12 @@ class StraightBinaryConnector(BinaryConnector):
                 parallel_segs={(self.Projecting_stem.Vine_end, self.Floating_stem.Vine_end)}
             )
 
-    def compute_axis(self):
+    def compute_axis(self) -> int:
         """
         Determines the x or y axis of the straight connector line where the Tertiary Stem attaches.
         The Tertiary Stem will know whether or not the returned value is x or y based on its own orientation.
 
-        :return: x_or_y_axis
+        :return: x_or_y_axis value
         """
         if self.Projecting_stem.Node_face in HorizontalFace:
             return self.Projecting_stem.Root_end.x
@@ -112,21 +114,24 @@ class StraightBinaryConnector(BinaryConnector):
 
     def render(self):
         """
-
+        Draw the binary connector on the tablet
         """
-        # Create line from vine end of Projecting Binary Stem to vine end of Floating Binary Stem
         tablet = self.Diagram.Canvas.Tablet
+        # Note that the draw order is not established here, but in the Tablet
+        # The Tablet doesn't begin drawing until all render elements are added
+        # But we still put them in a desired draw order to help visualize the
+        # desired layering
 
-        print("Drawing stems")
+        # Add line segment between the node faces
+        tablet.add_line_segment(
+            asset=self.Connector_type.Name+' connector',
+            from_here=self.Projecting_stem.Root_end,
+            to_there=self.Floating_stem.Root_end
+        )  # Symbols will be drawn on top of this line
+
+        # Add stem decorations, if any
         self.Projecting_stem.render()
         self.Floating_stem.render()
-        if self.Tertiary_stem:
-            self.Tertiary_stem.render()
-
-        print("Drawing binary connector")
-        tablet.add_line_segment(
-            asset='binary connector', from_here=self.Projecting_stem.Vine_end, to_there=self.Floating_stem.Vine_end
-        )
         if self.Tertiary_stem:
             self.Tertiary_stem.render()
 
@@ -136,8 +141,3 @@ class StraightBinaryConnector(BinaryConnector):
         )
         tablet.add_text(asset=self.Connector_type.Name+' name', lower_left=name_position, text=self.Name.text)
 
-
-
-
-
-        # TODO: Draw the connector name, if any

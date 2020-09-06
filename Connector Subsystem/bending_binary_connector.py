@@ -56,6 +56,7 @@ class BendingBinaryConnector(BinaryConnector):
         if tertiary_stem:
             tertiary_stem_type = self.Connector_type.Stem_type[tertiary_stem.stem_type]
 
+        # Create the two opposing Anchored Stems
         self.T_stem = AnchoredStem(
             connector=self,
             stem_type=anchored_stem_t_type,
@@ -141,12 +142,12 @@ class BendingBinaryConnector(BinaryConnector):
         """
         Draw a line from the vine end of the T node stem to the vine end of the P node stem
         """
-        # Create line from vine end of T_stem to vine end of P_stem, bending along the way
+        # Create line from root end of T_stem to root end of P_stem, bending along the way
         print("Drawing bending binary connector")
         tablet = self.Diagram.Canvas.Tablet
         tablet.add_open_polygon(
-            asset='binary connector',
-            vertices=[self.T_stem.Vine_end] + self.Corners + [self.P_stem.Vine_end]
+            asset=self.Connector_type.Name+' connector',
+            vertices=[self.T_stem.Root_end] + self.Corners + [self.P_stem.Root_end]
         )
         # Draw the stems and their decorations
         self.T_stem.render()

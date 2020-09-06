@@ -9,7 +9,7 @@ population = [
      'About': 'How many association class instances per pair of associated instances', 'Minimum length': 24,
      'Geometry': 'hanging'},
     {'Name': 'superclass', 'Diagram type': 'class', 'Connector type': 'generalization',
-     'About': 'The superset of all subclass instances', 'Minimum length': 24, 'Geometry': 'fixed'},
+     'About': 'The superset of all subclass instances', 'Minimum length': 18, 'Geometry': 'fixed'},
     {'Name': 'subclass', 'Diagram type': 'class', 'Connector type': 'generalization',
      'About': 'A disjoint subset of the superclass set of instances', 'Minimum length': 10, 'Geometry': 'fixed'},
 

@@ -3,7 +3,7 @@ t056_p3_single_branch_graft_float.py
 """
 from single_cell_node import SingleCellNode
 from tree_connector import TreeConnector
-from connection_types import NodeFace, AnchorPosition
+from connection_types import NodeFace, AnchorPosition, Connector_Name
 from command_interface import New_Stem, New_Branch_Set, New_Trunk_Branch
 from canvas import Canvas
 
@@ -76,17 +76,17 @@ def create_canvas(args):
                              grid=flatland_canvas.Diagram.Grid, row=3, column=4)
 
     trunk_stem = New_Stem(stem_type='superclass', semantic='superclass', node=trunk_node,
-                          face=NodeFace.BOTTOM, anchor=AnchorPosition(0))
+                          face=NodeFace.BOTTOM, anchor=AnchorPosition(0), stem_name=None)
     leaf1_stem = New_Stem(stem_type='subclass', semantic='subclass', node=l1_node,
-                          face=NodeFace.RIGHT, anchor=AnchorPosition(0))
+                          face=NodeFace.RIGHT, anchor=AnchorPosition(0), stem_name=None)
     leaf2_stem = New_Stem(stem_type='subclass', semantic='subclass', node=l2_node,
-                          face=NodeFace.TOP, anchor=AnchorPosition(0))
+                          face=NodeFace.TOP, anchor=AnchorPosition(0), stem_name=None)
     leaf3_stem = New_Stem(stem_type='subclass', semantic='subclass', node=l3_node,
-                          face=NodeFace.TOP, anchor=AnchorPosition(0))
+                          face=NodeFace.TOP, anchor=AnchorPosition(0), stem_name=None)
     leaf4_stem = New_Stem(stem_type='subclass', semantic='subclass', node=l4_node,
-                          face=NodeFace.BOTTOM, anchor=AnchorPosition(1))
+                          face=NodeFace.BOTTOM, anchor=AnchorPosition(1), stem_name=None)
     leaf5_stem = New_Stem(stem_type='subclass', semantic='subclass', node=l5_node,
-                          face=NodeFace.LEFT, anchor=None)
+                          face=NodeFace.LEFT, anchor=None, stem_name=None)
 
     br1 = New_Trunk_Branch(
         trunk_stem=trunk_stem,
@@ -96,7 +96,8 @@ def create_canvas(args):
 
     branches = New_Branch_Set(trunk_branch=br1, offshoot_branches=[])
 
-    TreeConnector(diagram=flatland_canvas.Diagram, connector_type='generalization', branches=branches)
+    rnum = Connector_Name(text='R1', side=-1, bend=None)
+    TreeConnector(diagram=flatland_canvas.Diagram, connector_type='generalization', branches=branches, name=rnum)
 
     flatland_canvas.render()
 

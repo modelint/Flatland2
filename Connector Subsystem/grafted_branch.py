@@ -103,6 +103,6 @@ class GraftedBranch(Branch):
         :return: The line segment to draw
         """
         if self.Floating_stem:
-            return Line_Segment(from_position=self.Grafting_stem.Vine_end, to_position=self.Floating_stem.Vine_end)
+            return Line_Segment(from_position=self.Grafting_stem.Root_end, to_position=self.Floating_stem.Root_end)
         else:
             return super().Shoot

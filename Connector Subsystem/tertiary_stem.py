@@ -2,7 +2,6 @@
 tertiary_stem.py
 """
 
-from symbol import Symbol
 from anchored_stem import AnchoredStem
 from stem_type import StemType
 from connection_types import HorizontalFace, NodeFace, AnchorPosition
@@ -16,7 +15,8 @@ if TYPE_CHECKING:
 
 class TertiaryStem(AnchoredStem):
     """
-    An Anchored Stem that reaches from a Node face at its root end and attaches its vine end to a Binary Connector.
+    An Anchored Stem that reaches from a Node face at its root end and attaches its vine end to the
+    line segment drawn for a Binary Connector.
     """
 
     def __init__(self, connector: 'BinaryConnector', stem_type: StemType, semantic: str,
@@ -24,48 +24,38 @@ class TertiaryStem(AnchoredStem):
         """
         Constructor
 
-        :param connector:
-        :param stem_type:
-        :param semantic:
-        :param node:
-        :param face:
-        :param anchor_position:
-        :param parallel_segs:
+        :param connector:  Part of this Binary Connector
+        :param stem_type: Specifies universal characteristics of this Stem
+        :param semantic: Meaning of this Stem
+        :param node: Is rooted on this Node
+        :param face: Is rooted from this Node face
+        :param anchor_position: Position of the Root as specified by the user
+        :param parallel_segs: All binary connector line segments parallel to the rooted Node face
         """
-        AnchoredStem.__init__(
-            self, connector, stem_type, semantic, node, face, anchor_position)
+        AnchoredStem.__init__(self, connector, stem_type, semantic, node, face, anchor_position)
 
-        # Get length of root and vine symbols
-        # If no symbol, the stem will be zero length at the corrsponding root/vine end
-        root_symbol = stem_type.DecoratedStems[semantic].Root_symbol
-        vine_symbol = stem_type.DecoratedStems[semantic].Vine_symbol
-        rlen = 0 if not root_symbol else Symbol.instances[root_symbol].length
-        vlen = 0 if not vine_symbol else Symbol.instances[vine_symbol].length
-        # TODO: implement root start also (even though there is no root symbol on tertiary yet)
         self.Root_start = None
         self.Vine_start = None
 
+        # Compute the vine end so that it touches the closest Binary Connector bend line segment
+        # away from the root node face
         if face in HorizontalFace:
             if face == NodeFace.TOP:
+                # Find all parallel line segments above node face
                 isegs = {s for s in parallel_segs if s[0].y > self.Root_end.y}
+                # Get y value of line segment closest to the node face
                 yval = min({s[0].y for s in isegs})
-                scale = -1  # back of symbol is toward top face
             elif face == NodeFace.BOTTOM:
                 isegs = {s for s in parallel_segs if s[0].y < self.Root_end.y}
                 yval = max({s[0].y for s in isegs})
-                scale = 1  # back of symbol is way from bottom face
-            self.Vine_start = Position(self.Root_end.x, yval+vlen*scale)
             self.Vine_end = Position(self.Root_end.x, yval)
         else:
             if face == NodeFace.RIGHT:
                 isegs = {s for s in parallel_segs if s[0].x > self.Root_end.x}
                 xval = min({s[0].x for s in isegs})
-                scale = -1  # vine is to the left of the right face
             elif face == NodeFace.LEFT:
                 isegs = {s for s in parallel_segs if s[0].x < self.Root_end.x}
                 xval = max({s[0].x for s in isegs})
-                scale = 1  # vine is to the right of the left face
-            self.Vine_start = Position(xval+vlen*scale, self.Root_end.y)
             self.Vine_end = Position(xval, self.Root_end.y)
 
     def render(self):
@@ -73,9 +63,5 @@ class TertiaryStem(AnchoredStem):
         Create line from root end to the vine end attached to the Binary Connector line
         """
         tablet = self.Connector.Diagram.Canvas.Tablet
-        print("Drawing tertiary connector")
-        # TODO: from here  should be root end - any root symbol length
-        # TODO: to there should be vine end - any vine symbol length
-        # TODO: - means away along axis from root or vine
-        tablet.add_line_segment(asset='assoc stem', from_here=self.Root_end, to_there=self.Vine_start)
+        tablet.add_line_segment(asset=self.Stem_type.Name+' stem', from_here=self.Root_end, to_there=self.Vine_end)
         super().render()

@@ -3,9 +3,8 @@ t001_straight_binary_horiz.py
 """
 from single_cell_node import SingleCellNode
 from straight_binary_connector import StraightBinaryConnector
-from connection_types import NodeFace, AnchorPosition
+from connection_types import NodeFace, AnchorPosition, Connector_Name, Stem_Name
 from command_interface import New_Stem
-from connection_types import Connector_Name, Stem_Name
 from canvas import Canvas
 
 from flatlanddb import FlatlandDB

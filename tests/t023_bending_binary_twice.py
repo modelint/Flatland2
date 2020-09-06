@@ -3,7 +3,7 @@ t023_bending_binary_twice.py
 """
 from single_cell_node import SingleCellNode
 from bending_binary_connector import BendingBinaryConnector
-from connection_types import NodeFace, AnchorPosition
+from connection_types import NodeFace, AnchorPosition, Connector_Name, Stem_Name
 from command_interface import New_Stem, New_Path
 from canvas import Canvas
 from flatlanddb import FlatlandDB
@@ -50,15 +50,18 @@ def create_canvas(args):
     p_node = SingleCellNode(node_type_name='class', content=class_Pilot, grid=flatland_canvas.Diagram.Grid,
                             row=2, column=4)
 
+    t_phrase = Stem_Name(text='is flying', axis_offset=None, end_offset=None)
     t_stem = New_Stem(stem_type='class mult', semantic='Mc mult', node=t_node,
-                      face=NodeFace.TOP, anchor=AnchorPosition(0))
+                      face=NodeFace.TOP, anchor=AnchorPosition(0), stem_name=t_phrase)
+    p_phrase = Stem_Name(text='is flown by', axis_offset=None, end_offset=None)
     p_stem = New_Stem(stem_type='class mult', semantic='1 mult', node=p_node,
-                      face=NodeFace.LEFT, anchor=AnchorPosition(0))
+                      face=NodeFace.LEFT, anchor=AnchorPosition(0), stem_name=p_phrase)
 
     p = [New_Path(lane=3, rut=-1), New_Path(lane=3, rut=1)]
 
+    rnum = Connector_Name(text='R1', side=-1, bend=4)
     BendingBinaryConnector(diagram=flatland_canvas.Diagram, connector_type='binary association',
-                           anchored_stem_p=p_stem, anchored_stem_t=t_stem, paths=p)
+                           anchored_stem_p=p_stem, anchored_stem_t=t_stem, paths=p, name=rnum)
     flatland_canvas.render()
 
 

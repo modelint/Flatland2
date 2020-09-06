@@ -6,7 +6,7 @@ population = [
     {'Connector type': 'binary association', 'Diagram type': 'class', 'Notation': 'Starr',
      'Vertical axis buffer': 6, 'Horizontal axis buffer': 6, 'Default name': 'Rxx', 'Optional': False},
     {'Connector type': 'generalization', 'Diagram type': 'class', 'Notation': 'Starr',
-     'Vertical axis buffer': 11, 'Horizontal axis buffer': 11, 'Default name': 'Rxx', 'Optional': False},
+     'Vertical axis buffer': 13, 'Horizontal axis buffer': 16, 'Default name': 'Rxx', 'Optional': False},
 
     {'Connector type': 'binary association', 'Diagram type': 'class', 'Notation': 'xUML',
      'Vertical axis buffer': 11, 'Horizontal axis buffer': 11, 'Default name': 'Rxx', 'Optional': False},

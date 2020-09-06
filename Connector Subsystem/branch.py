@@ -14,6 +14,15 @@ if TYPE_CHECKING:
 class Branch:
     def __init__(self, order: Index, axis: Coordinate, connector: 'TreeConnector', hanging_stems: Set[AnchoredTreeStem],
                  axis_orientation: Orientation):
+        """
+        Constructor
+
+        :param order:
+        :param axis:
+        :param connector:
+        :param hanging_stems:
+        :param axis_orientation:
+        """
         self.Order = order
         self.Connector = connector
         self.Hanging_stems = hanging_stems
@@ -28,37 +37,36 @@ class Branch:
         positions = {a for a in {prev_axis, next_axis} if a}
         if self.Axis_orientation == Orientation.Horizontal:
             y = self.Axis
-            positions = positions.union({s.Vine_end.x for s in self.Hanging_stems})
+            positions = positions.union({s.Root_end.x for s in self.Hanging_stems})
             x1 = min(positions)
             x2 = max(positions)
             return Line_Segment(from_position=Position(x1, y), to_position=Position(x2, y))
         else:
             x = self.Axis
-            positions = positions.union({s.Vine_end.y for s in self.Hanging_stems})
+            positions = positions.union({s.Root_end.y for s in self.Hanging_stems})
             y1 = min(positions)
             y2 = max(positions)
         return Line_Segment(from_position=Position(x, y1), to_position=Position(x, y2))
 
     def render(self):
-        print("Line segment is:", self.Shoot)
         tablet = self.Connector.Diagram.Canvas.Tablet
+
         # Draw the axis
-        print("Drawing branch axis")
         tablet.add_line_segment(
-            asset='gen connector', from_here=self.Shoot.from_position, to_there=self.Shoot.to_position
+            asset=self.Connector.Connector_type.Name+' connector',
+            from_here=self.Shoot.from_position, to_there=self.Shoot.to_position
         )
 
         # Draw the stems
         for s in self.Hanging_stems:
             if self.Axis_orientation == Orientation.Horizontal:
-                x = s.Vine_end.x
+                x = s.Root_end.x
                 y = self.Axis
             else:
                 x = self.Axis
-                y = s.Vine_end.y
+                y = s.Root_end.y
 
             print("Drawing branch stem")
             tablet.add_line_segment(
-                asset='gen connector', from_here=s.Vine_end, to_there=Position(x, y)
+                asset=self.Connector.Connector_type.Name+' connector', from_here=s.Root_end, to_there=Position(x, y)
             )
-

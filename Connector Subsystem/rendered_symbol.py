@@ -23,6 +23,7 @@ class RenderedSymbol:
         self.Symbol_name = symbol_name
         self.Stem = stem
         self.End = end
+        self.Growth = 0
 
         tablet = self.Stem.Connector.Diagram.Canvas.Tablet
 
@@ -57,6 +58,8 @@ class RenderedSymbol:
         vertices = [Position(location.x + x, location.y + y) for x, y in rotated_arrow]
         tablet.add_polygon(asset=arrow_symbol, vertices=vertices)
         offset = Symbol.instances[arrow_symbol].length
+        # TODO: Growth needs to be updated regardless of symbol type (not just arrow)
+        self.Growth += offset
         if orientation == NodeFace.TOP:
             return Position(location.x, location.y+offset)
         elif orientation == NodeFace.BOTTOM:

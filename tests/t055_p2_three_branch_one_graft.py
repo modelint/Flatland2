@@ -3,7 +3,7 @@ t055_p2_three_branch_one_graft.py
 """
 from single_cell_node import SingleCellNode
 from tree_connector import TreeConnector
-from connection_types import NodeFace, AnchorPosition, Path
+from connection_types import NodeFace, AnchorPosition, Path, Connector_Name
 from command_interface import New_Stem, New_Branch_Set, New_Trunk_Branch, New_Offshoot_Branch
 from canvas import Canvas
 
@@ -63,30 +63,30 @@ def create_canvas(args):
     ]
 
     trunk_node = SingleCellNode(node_type_name='class', content=class_Trunk,
-                                grid=flatland_canvas.Diagram.Grid, row=2, column=2)
+                                grid=flatland_canvas.Diagram.Grid, row=3, column=2)
     l1_node = SingleCellNode(node_type_name='class', content=class_B1,
                              grid=flatland_canvas.Diagram.Grid, row=1, column=1)
     l2_node = SingleCellNode(node_type_name='class', content=class_B2,
-                             grid=flatland_canvas.Diagram.Grid, row=2, column=4)
-    l3_node = SingleCellNode(node_type_name='class', content=class_B3,
                              grid=flatland_canvas.Diagram.Grid, row=3, column=4)
+    l3_node = SingleCellNode(node_type_name='class', content=class_B3,
+                             grid=flatland_canvas.Diagram.Grid, row=4, column=4)
     l4_node = SingleCellNode(node_type_name='class', content=class_B3,
-                             grid=flatland_canvas.Diagram.Grid, row=5, column=2)
+                             grid=flatland_canvas.Diagram.Grid, row=6, column=2)
     l5_node = SingleCellNode(node_type_name='class', content=class_B2,
-                             grid=flatland_canvas.Diagram.Grid, row=4, column=1)
+                             grid=flatland_canvas.Diagram.Grid, row=5, column=1)
 
     trunk_stem = New_Stem(stem_type='superclass', semantic='superclass', node=trunk_node,
-                          face=NodeFace.BOTTOM, anchor=AnchorPosition(0))
+                          face=NodeFace.BOTTOM, anchor=AnchorPosition(0), stem_name=None)
     leaf1_stem = New_Stem(stem_type='subclass', semantic='subclass', node=l1_node,
-                          face=NodeFace.TOP, anchor=AnchorPosition(0))
+                          face=NodeFace.TOP, anchor=AnchorPosition(0), stem_name=None)
     leaf2_stem = New_Stem(stem_type='subclass', semantic='subclass', node=l2_node,
-                          face=NodeFace.LEFT, anchor=AnchorPosition(0))
+                          face=NodeFace.LEFT, anchor=AnchorPosition(0), stem_name=None)
     leaf3_stem = New_Stem(stem_type='subclass', semantic='subclass', node=l3_node,
-                          face=NodeFace.LEFT, anchor=AnchorPosition(0))
+                          face=NodeFace.LEFT, anchor=AnchorPosition(0), stem_name=None)
     leaf4_stem = New_Stem(stem_type='subclass', semantic='subclass', node=l4_node,
-                          face=NodeFace.BOTTOM, anchor=AnchorPosition(0))
+                          face=NodeFace.BOTTOM, anchor=AnchorPosition(0), stem_name=None)
     leaf5_stem = New_Stem(stem_type='subclass', semantic='subclass', node=l5_node,
-                          face=NodeFace.BOTTOM, anchor=AnchorPosition(0))
+                          face=NodeFace.BOTTOM, anchor=AnchorPosition(0), stem_name=None)
 
     br1 = New_Trunk_Branch(
         trunk_stem=trunk_stem,
@@ -104,7 +104,8 @@ def create_canvas(args):
 
     branches = New_Branch_Set(trunk_branch=br1, offshoot_branches=[br2, br3])
 
-    TreeConnector(diagram=flatland_canvas.Diagram, connector_type='generalization', branches=branches)
+    rnum = Connector_Name(text='R1', side=-1, bend=None)
+    TreeConnector(diagram=flatland_canvas.Diagram, connector_type='generalization', branches=branches, name=rnum)
 
     flatland_canvas.render()
 

@@ -2,18 +2,19 @@
 tree_connector.py
 """
 from flatland_exceptions import UnsupportedConnectorType
+from connection_types import Connector_Name
 from connector import Connector
 from trunk_stem import TrunkStem
 from grafted_branch import GraftedBranch
 from interpolated_branch import InterpolatedBranch
 from rut_branch import RutBranch
+from geometry_types import Position
 from command_interface import New_Branch_Set, New_Stem
 from anchored_leaf_stem import AnchoredLeafStem
 from diagram import Diagram
 from collections import namedtuple
 from typing import Set, Optional
 from general_types import Index
-
 
 StemGroup = namedtuple('StemGroup', 'hanging_stems grafting_stem new_floating_stem, path')
 """
@@ -40,13 +41,15 @@ class TreeConnector(Connector):
         - Leaf_stems -- The Branch Stems organized as a sequence of sets. Each set connects to the same line segment.
     """
 
-    def __init__(self, diagram: Diagram, connector_type: str, branches: New_Branch_Set):
+    def __init__(self, diagram: Diagram, connector_type: str, branches: New_Branch_Set,
+                 name: Optional[Connector_Name] = None):
         """
         Constructor
 
         :param diagram: Reference to Diagram
         :param connector_type: Name of Connector Type
         :param branches:
+        :param name: An name (optional depending on the Connector Type) for the Connector
         """
         # Verify that the specified connector type name corresponds to a supported connector type
         # found in our database
@@ -55,7 +58,7 @@ class TreeConnector(Connector):
         except IndexError:
             raise UnsupportedConnectorType(
                 connector_type_name=connector_type, diagram_type_name=diagram.Diagram_type.Name)
-        Connector.__init__(self, diagram=diagram, connector_type=ct)
+        Connector.__init__(self, diagram=diagram, connector_type=ct, name=name)
 
         # Unpack new trunk spec and create its Anchored Trunk Stem
         new_tstem = branches.trunk_branch.trunk_stem  # Get the Trunk New Stem user specification
@@ -165,6 +168,38 @@ class TreeConnector(Connector):
         """
         Draw the Branch line segment for a single-branch Tree Connector
         """
+        tablet = self.Diagram.Canvas.Tablet
         for b in self.Branches:
             b.render()
         self.Trunk_stem.render()
+
+        # Draw the connector name if any
+        name_spec = self.Connector_type.Name_spec
+        vbuffer, hbuffer = name_spec.axis_buffer
+        root_end = self.Trunk_stem.Root_end
+        vine_end = self.Trunk_stem.Vine_end
+        if root_end.x == vine_end.x:
+            # Vertical stem
+            # If the lower left corner of the name is below the vine end (bottom face)
+            # we will need to subtract the height of the bounding box
+            if root_end.y > vine_end.y:
+                name_y = vine_end.y - self.Name_size.height  # Shift name below the node face
+            else:
+                name_y = vine_end.y # Shift name above the node face
+            if self.Name.side == 1:  # User trunk stem side preference
+                name_x = vine_end.x + hbuffer  # Shift name to the right
+            else:
+                name_x = vine_end.x - (hbuffer + self.Name_size.width)  # Shift name to the left
+        else:
+            # Horizontal stem
+            if root_end.x > vine_end.x:
+                name_x = vine_end.x - self.Name_size.width  # Shift name left of the node face
+            else:
+                name_x = vine_end.x  # Shift name right of the node face
+            if self.Name.side == 1:  # User trunk stem side preference
+                name_y = vine_end.y + vbuffer  # Shift name above the stem
+            else:
+                name_y = vine_end.y - (vbuffer + self.Name_size.height)  # Shift name below the stem
+
+        name_position = Position(name_x, name_y)
+        tablet.add_text(asset=self.Connector_type.Name + ' name', lower_left=name_position, text=self.Name.text)

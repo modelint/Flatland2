@@ -5,8 +5,8 @@ asset_instances.py
 population = [
     # xUML class diagram
     {'Name': 'class compartment', 'Form': 'shape', 'Drawing type': 'xUML class diagram'},
-    {'Name': 'binary connector', 'Form': 'shape', 'Drawing type': 'xUML class diagram'},
-    {'Name': 'gen connector', 'Form': 'shape', 'Drawing type': 'xUML class diagram'},
+    {'Name': 'binary association connector', 'Form': 'shape', 'Drawing type': 'xUML class diagram'},
+    {'Name': 'generalization connector', 'Form': 'shape', 'Drawing type': 'xUML class diagram'},
     {'Name': 'label', 'Form': 'text', 'Drawing type': 'xUML class diagram'},
     {'Name': 'binary association name', 'Form': 'text', 'Drawing type': 'xUML class diagram'},
     {'Name': 'generalization name', 'Form': 'text', 'Drawing type': 'xUML class diagram'},
@@ -16,14 +16,14 @@ population = [
     {'Name': 'class name', 'Form': 'text', 'Drawing type': 'xUML class diagram'},
     {'Name': 'attributes', 'Form': 'text', 'Drawing type': 'xUML class diagram'},
     {'Name': 'methods', 'Form': 'text', 'Drawing type': 'xUML class diagram'},
-    {'Name': 'assoc stem', 'Form': 'shape', 'Drawing type': 'xUML class diagram'},
+    {'Name': 'associative mult stem', 'Form': 'shape', 'Drawing type': 'xUML class diagram'},
     {'Name': 'grid', 'Form': 'shape', 'Drawing type': 'xUML class diagram'},
     {'Name': 'margin', 'Form': 'shape', 'Drawing type': 'xUML class diagram'},
 
     # Shlaer-Mellor class diagram
     {'Name': 'class compartment', 'Form': 'shape', 'Drawing type': 'Shlaer-Mellor class diagram'},
-    {'Name': 'binary connector', 'Form': 'shape', 'Drawing type': 'Shlaer-Mellor class diagram'},
-    {'Name': 'gen connector', 'Form': 'shape', 'Drawing type': 'Shlaer-Mellor class diagram'},
+    {'Name': 'binary association connector', 'Form': 'shape', 'Drawing type': 'Shlaer-Mellor class diagram'},
+    {'Name': 'generalization connector', 'Form': 'shape', 'Drawing type': 'Shlaer-Mellor class diagram'},
     {'Name': 'label', 'Form': 'text', 'Drawing type': 'Shlaer-Mellor class diagram'},
     {'Name': 'binary association name', 'Form': 'text', 'Drawing type': 'Shlaer-Mellor class diagram'},
     {'Name': 'generalization name', 'Form': 'text', 'Drawing type': 'Shlaer-Mellor class diagram'},
@@ -33,14 +33,14 @@ population = [
     {'Name': 'class name', 'Form': 'text', 'Drawing type': 'Shlaer-Mellor class diagram'},
     {'Name': 'attributes', 'Form': 'text', 'Drawing type': 'Shlaer-Mellor class diagram'},
     {'Name': 'methods', 'Form': 'text', 'Drawing type': 'Shlaer-Mellor class diagram'},
-    {'Name': 'assoc stem', 'Form': 'shape', 'Drawing type': 'Shlaer-Mellor class diagram'},
+    {'Name': 'associative mult stem', 'Form': 'shape', 'Drawing type': 'Shlaer-Mellor class diagram'},
     {'Name': 'grid', 'Form': 'shape', 'Drawing type': 'Shlaer-Mellor class diagram'},
     {'Name': 'margin', 'Form': 'shape', 'Drawing type': 'Shlaer-Mellor class diagram'},
 
     # Starr class diagram
     {'Name': 'class compartment', 'Form': 'shape', 'Drawing type': 'Starr class diagram'},
-    {'Name': 'binary connector', 'Form': 'shape', 'Drawing type': 'Starr class diagram'},
-    {'Name': 'gen connector', 'Form': 'shape', 'Drawing type': 'Starr class diagram'},
+    {'Name': 'binary association connector', 'Form': 'shape', 'Drawing type': 'Starr class diagram'},
+    {'Name': 'generalization connector', 'Form': 'shape', 'Drawing type': 'Starr class diagram'},
     {'Name': 'label', 'Form': 'text', 'Drawing type': 'Starr class diagram'},
     {'Name': 'binary association name', 'Form': 'text', 'Drawing type': 'Starr class diagram'},
     {'Name': 'generalization name', 'Form': 'text', 'Drawing type': 'Starr class diagram'},
@@ -50,9 +50,11 @@ population = [
     {'Name': 'class name', 'Form': 'text', 'Drawing type': 'Starr class diagram'},
     {'Name': 'attributes', 'Form': 'text', 'Drawing type': 'Starr class diagram'},
     {'Name': 'methods', 'Form': 'text', 'Drawing type': 'Starr class diagram'},
-    {'Name': 'assoc stem', 'Form': 'shape', 'Drawing type': 'Starr class diagram'},
+    {'Name': 'associative mult stem', 'Form': 'shape', 'Drawing type': 'Starr class diagram'},
     {'Name': 'grid', 'Form': 'shape', 'Drawing type': 'Starr class diagram'},
     {'Name': 'margin', 'Form': 'shape', 'Drawing type': 'Starr class diagram'},
+    # For diagnostics only
+    {'Name': 'shoot', 'Form': 'shape', 'Drawing type': 'Starr class diagram'},
 
     # Symbols
     {'Name': 'solid arrow', 'Form': 'shape', 'Drawing type': 'Starr class diagram'},

@@ -3,8 +3,8 @@ t060_straight_binary_horiz_names.py
 """
 from single_cell_node import SingleCellNode
 from straight_binary_connector import StraightBinaryConnector
-from connection_types import NodeFace, AnchorPosition
-from command_interface import New_Stem, Stem_Name, Connector_Name
+from connection_types import NodeFace, AnchorPosition, Stem_Name, Connector_Name
+from command_interface import New_Stem
 from canvas import Canvas
 
 from flatlanddb import FlatlandDB
@@ -51,18 +51,17 @@ def create_canvas(args):
     p_node = SingleCellNode(node_type_name='class', content=class_Pilot, grid=flatland_canvas.Diagram.Grid,
                             row=1, column=3)
 
-    rel_name = Connector_Name(text="R1", bend_number=1, offset=1)
-
-    t_stem_name = Stem_Name(text="is flying", axis_offset=1, end_offset=0)
+    t_phrase = Stem_Name(text='is flying', axis_offset=None, end_offset=None)
     t_stem = New_Stem(stem_type='class mult', semantic='1 mult', node=t_node,
-                      face=NodeFace.RIGHT, anchor=AnchorPosition(0), name=t_stem_name)
+                      face=NodeFace.RIGHT, anchor=AnchorPosition(0), stem_name=t_phrase)
 
-    p_stem_name = Stem_Name(text="is flown by", axis_offset=1, end_offset=0)
+    p_phrase = Stem_Name(text='is flown by', axis_offset=None, end_offset=None)
     p_stem = New_Stem(stem_type='class mult', semantic='1 mult', node=p_node,
-                      face=NodeFace.LEFT, anchor=None, name=p_stem_name)
+                      face=NodeFace.LEFT, anchor=None, stem_name=p_phrase)
 
+    rnum = Connector_Name(text='R1', side=1, bend=1)
     StraightBinaryConnector(diagram=flatland_canvas.Diagram, connector_type='binary association',
-                            projecting_stem=t_stem, floating_stem=p_stem, name=rel_name)
+                            projecting_stem=t_stem, floating_stem=p_stem, name=rnum)
 
     flatland_canvas.render()
 

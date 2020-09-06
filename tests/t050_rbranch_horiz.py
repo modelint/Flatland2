@@ -3,7 +3,7 @@ t050_rbranch_horiz.py - Draw a horizontal rut branch
 """
 from single_cell_node import SingleCellNode
 from tree_connector import TreeConnector
-from connection_types import NodeFace, AnchorPosition, Path
+from connection_types import NodeFace, AnchorPosition, Path, Connector_Name
 from command_interface import New_Stem, New_Branch_Set, New_Trunk_Branch
 from canvas import Canvas
 
@@ -62,11 +62,11 @@ def create_canvas(args):
                              grid=flatland_canvas.Diagram.Grid, row=1, column=3)
 
     trunk_stem = New_Stem(stem_type='superclass', semantic='superclass', node=trunk_node,
-                          face=NodeFace.BOTTOM, anchor=AnchorPosition(0))
+                          face=NodeFace.BOTTOM, anchor=AnchorPosition(0), stem_name=None)
     leaf1_stem = New_Stem(stem_type='subclass', semantic='subclass', node=l1_node,
-                          face=NodeFace.TOP, anchor=AnchorPosition(0))
+                          face=NodeFace.TOP, anchor=AnchorPosition(0), stem_name=None)
     leaf2_stem = New_Stem(stem_type='subclass', semantic='subclass', node=l2_node,
-                          face=NodeFace.TOP, anchor=AnchorPosition(0))
+                          face=NodeFace.TOP, anchor=AnchorPosition(0), stem_name=None)
 
     trunk_branch = New_Trunk_Branch(
         trunk_stem=trunk_stem,
@@ -75,7 +75,8 @@ def create_canvas(args):
     )
     branches = New_Branch_Set(trunk_branch=trunk_branch, offshoot_branches=[])
 
-    TreeConnector(diagram=flatland_canvas.Diagram, connector_type='generalization', branches=branches)
+    rnum = Connector_Name(text='R1', side=-1, bend=None)
+    TreeConnector(diagram=flatland_canvas.Diagram, connector_type='generalization', branches=branches, name=rnum)
 
     flatland_canvas.render()
 
