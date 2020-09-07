@@ -3,7 +3,7 @@ t055_p2_three_branch_one_graft.py
 """
 from single_cell_node import SingleCellNode
 from tree_connector import TreeConnector
-from connection_types import NodeFace, AnchorPosition, Path, Connector_Name
+from connection_types import NodeFace, AnchorPosition, Path, ConnectorName
 from command_interface import New_Stem, New_Branch_Set, New_Trunk_Branch, New_Offshoot_Branch
 from canvas import Canvas
 
@@ -104,7 +104,7 @@ def create_canvas(args):
 
     branches = New_Branch_Set(trunk_branch=br1, offshoot_branches=[br2, br3])
 
-    rnum = Connector_Name(text='R1', side=-1, bend=None)
+    rnum = ConnectorName(text='R1', side=-1, bend=None)
     TreeConnector(diagram=flatland_canvas.Diagram, connector_type='generalization', branches=branches, name=rnum)
 
     flatland_canvas.render()

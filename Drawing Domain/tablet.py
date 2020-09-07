@@ -151,7 +151,7 @@ class Tablet:
             upper_left=ul, size=size, border_style=StyleDB.shape_presentation[asset], fill=fill
         ))
 
-    def add_text(self, asset: str, lower_left: Position, text: str):
+    def add_text_line(self, asset: str, lower_left: Position, text: str):
         """
         Adds a line of text to the tablet at the specified lower left corner location which will be converted
         to device coordinates
@@ -162,6 +162,22 @@ class Tablet:
             )
         )
         print('Text added')
+
+    def add_text_block(self, asset: str, lower_left: Position, text: List[str]):
+        """
+        Add all lines of text to the tablet text render list each at the correct position
+        on the tablet
+
+        :param asset:  To get the text style
+        :param lower_left: Lower left corner of the text block on the Tablet
+        :param text: One or more lines of text
+        """
+        # Get height of one line (any will do since they all use the same text style)
+        line_ink_area, leading = self.text_line_size(asset=asset, text_line=text[0])
+        xpos, ypos = lower_left  # Initialize at lower left corner
+        for line in text[::-1]:  # Reverse order since we are positioning lines from the bottom up
+            self.add_text_line(asset=asset, lower_left=Position(xpos, ypos), text=line)
+            ypos += leading + line_ink_area.height # Cursor moves upward to next line position
 
     def render_rects(self):
         """Draw the rectangle shapes"""
@@ -249,7 +265,24 @@ class Tablet:
         self.render_polygons()
         self.render_text()
 
-    def text_size(self, asset: str, text_line: str) -> (Rect_Size, int):
+    def text_block_size(self, asset: str, text_block: List[str]) -> Rect_Size:
+        """
+
+        :param asset:
+        :param text_block:
+        :return:
+        """
+        num_lines = len(text_block)
+        assert num_lines > 0, "Text block size requested for empty text block"
+        longest_line = max(text_block, key=len)
+        line_ink_area, leading = self.text_line_size(asset=asset, text_line=longest_line)
+
+        block_width = line_ink_area.width
+        line_height = line_ink_area.height
+        block_height = line_height*num_lines + (num_lines-1)*leading
+        return Rect_Size(width=block_width, height=block_height)
+
+    def text_line_size(self, asset: str, text_line: str) -> (Rect_Size, int):
         """
         Returns the size of a line of text when rendered with the asset's text style
         :param asset: Application entity to determine text style

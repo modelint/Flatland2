@@ -3,7 +3,7 @@ connector.py - Covers the Connector class in the Flatland3 Connector Subsystem C
 """
 from flatland_exceptions import InvalidNameSide
 from connector_type import ConnectorType
-from connection_types import Connector_Name
+from connection_types import ConnectorName
 from geometry_types import Rect_Size, Position
 from typing import TYPE_CHECKING, Optional
 
@@ -26,7 +26,7 @@ class Connector:
         - Name -- Optional name of this Connector
     """
 
-    def __init__(self, diagram: 'Diagram', name: Optional[Connector_Name], connector_type: ConnectorType):
+    def __init__(self, diagram: 'Diagram', name: Optional[ConnectorName], connector_type: ConnectorType):
         """
         Constructor
 
@@ -44,7 +44,7 @@ class Connector:
             # Get size of bounding box
             # We assume that the name is a single line of text so we don't consider leading
             # Since, for now at least, we assume that a Connector name will be short, like 'R314' for example
-            line_ink_area, leading = tablet.text_size(asset=self.Connector_type.Name+' name', text_line=self.Name.text)
+            line_ink_area, leading = tablet.text_line_size(asset=self.Connector_type.Name + ' name', text_line=self.Name.text)
             self.Name_size = Rect_Size(width=line_ink_area.width, height=line_ink_area.height)
 
         self.Diagram.Grid.Connectors.append(self)
@@ -65,6 +65,7 @@ class Connector:
             # If box is below the connector, subtract the height of the box as well to get lower left corner y
             height_offset = self.Name_size.height if self.Name.side == -1 else 0
             name_y = point_t.y + name_spec.axis_buffer.vertical * self.Name.side - height_offset
+            #  TODO: Above line doesn't look right, also adapt to use end buffer
         else:
             # Connector is vertical
             center_y = round(abs(point_t.y - point_p.y) / 2) + min(point_t.y, point_p.y)

@@ -34,24 +34,18 @@ class Compartment:
         self.Leading = None  # Unknown until Text block size computed
 
     @property
-    def Text_block_size(self):
+    def Text_block_size(self) -> Rect_Size:
         """Compute the size of the text block with required internal compartment padding"""
         tablet = self.Node.Grid.Diagram.Canvas.Tablet
-        longest_line = max(self.Content, key=len)
-        # Have the tablet compute the total ink area given the text style
-        line_ink_area, leading = tablet.text_size(asset=self.Type.name, text_line=longest_line)
+        unpadded_text_size = tablet.text_block_size(asset=self.Type.name, text_block=self.Content)
 
-        self.Line_height = line_ink_area.height
-        self.Leading = leading
-
-        block_width = line_ink_area.width + self.Type.padding.left + self.Type.padding.right
-        block_height = ((line_ink_area.height + leading) * len(self.Content)
-                        + self.Type.padding.top + self.Type.padding.bottom)
+        padded_text_width = unpadded_text_size.width + self.Type.padding.left + self.Type.padding.right
+        padded_text_height = unpadded_text_size.height + self.Type.padding.top + self.Type.padding.bottom
         # Now add the padding specified for this compartment type
-        return Rect_Size(width=block_width, height=block_height)
+        return Rect_Size(width=padded_text_width, height=padded_text_height)
 
     @property
-    def Size(self):
+    def Size(self) -> Rect_Size:
         """Compute the size of the visible border"""
         # Width matches the node width and the height is the full text block size
         return Rect_Size(width=self.Node.Size.width, height=self.Text_block_size.height)
@@ -60,12 +54,6 @@ class Compartment:
         """Create rectangle on the tablet and add each line of text"""
         tablet = self.Node.Grid.Diagram.Canvas.Tablet
         tablet.add_rectangle(asset=self.Node.Node_type.Name+' compartment', lower_left=lower_left_corner, size=self.Size)
-
-        # Append each line of text into the tablet text list
-        # TODO: Add text block capability to the tablet
-        assert self.Line_height  # It should have been set by now
-        ypos = lower_left_corner.y + self.Type.padding.bottom
-        xpos = lower_left_corner.x + self.Type.padding.left
-        for line in self.Content[::-1]:  # Reverse order since we are positioning lines from the bottom up
-            tablet.add_text(asset=self.Type.name, lower_left=Position(xpos, ypos), text=line)
-            ypos += self.Leading + self.Line_height
+        text_position = Position(lower_left_corner.x + self.Type.padding.left,
+                                 lower_left_corner.y + self.Type.padding.bottom)
+        tablet.add_text_block(asset=self.Type.name, lower_left=text_position, text=self.Content)

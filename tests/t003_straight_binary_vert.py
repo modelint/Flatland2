@@ -3,7 +3,7 @@ t003_straight_binary_vert.py
 """
 from single_cell_node import SingleCellNode
 from straight_binary_connector import StraightBinaryConnector
-from connection_types import NodeFace, AnchorPosition, Connector_Name, Stem_Name
+from connection_types import NodeFace, AnchorPosition, ConnectorName, StemName
 from command_interface import New_Stem
 from canvas import Canvas
 
@@ -51,14 +51,14 @@ def create_canvas(args):
     p_node = SingleCellNode(node_type_name='class', content=class_Pilot, grid=flatland_canvas.Diagram.Grid,
                             row=3, column=1)
 
-    t_phrase = Stem_Name(text='is flying', axis_offset=None, end_offset=None)
+    t_phrase = StemName(text=['is flying'], side=1, axis_offset=None, end_offset=None)
     t_stem = New_Stem(stem_type='class mult', semantic='M mult', node=t_node,
                       face=NodeFace.TOP, anchor=AnchorPosition(0), stem_name=t_phrase)
-    p_phrase = Stem_Name(text='is flown by', axis_offset=None, end_offset=None)
+    p_phrase = StemName(text=['is flown by'], side=1, axis_offset=None, end_offset=None)
     p_stem = New_Stem(stem_type='class mult', semantic='Mc mult', node=p_node,
                       face=NodeFace.BOTTOM, anchor=None, stem_name=p_phrase)
 
-    rnum = Connector_Name(text='R1', side=-1, bend=1)
+    rnum = ConnectorName(text='R1', side=-1, bend=1)
     StraightBinaryConnector(diagram=flatland_canvas.Diagram, connector_type='binary association',
                             projecting_stem=t_stem, floating_stem=p_stem, name=rnum)
 

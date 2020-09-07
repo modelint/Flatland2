@@ -3,7 +3,7 @@ t032_1bend_tertiary_left.py
 """
 from single_cell_node import SingleCellNode
 from bending_binary_connector import BendingBinaryConnector
-from connection_types import NodeFace, AnchorPosition, Connector_Name, Stem_Name
+from connection_types import NodeFace, AnchorPosition, ConnectorName, StemName
 from command_interface import New_Stem
 from canvas import Canvas
 
@@ -61,16 +61,16 @@ def create_canvas(args):
     a_node = SingleCellNode(node_type_name='class', content=class_Flight, grid=flatland_canvas.Diagram.Grid,
                             row=3, column=4)
 
-    t_phrase = Stem_Name(text='is flying', axis_offset=None, end_offset=None)
+    t_phrase = StemName(text='is flying', axis_offset=None, end_offset=None)
     t_stem = New_Stem(stem_type='class mult', semantic='Mc mult', node=t_node,
                       face=NodeFace.RIGHT, anchor=AnchorPosition(0), stem_name=t_phrase)
-    p_phrase = Stem_Name(text='is flown by', axis_offset=None, end_offset=None)
+    p_phrase = StemName(text='is flown by', axis_offset=None, end_offset=None)
     p_stem = New_Stem(stem_type='class mult', semantic='1 mult', node=p_node,
                       face=NodeFace.BOTTOM, anchor=AnchorPosition(0), stem_name=p_phrase)
     a_stem = New_Stem(stem_type='associative mult', semantic='1 mult', node=a_node,
                       face=NodeFace.LEFT, anchor=AnchorPosition(0), stem_name=None)
 
-    rnum = Connector_Name(text='R108', side=-1, bend=2)
+    rnum = ConnectorName(text='R108', side=-1, bend=2)
     BendingBinaryConnector(diagram=flatland_canvas.Diagram, connector_type='binary association',
                            anchored_stem_p=p_stem, anchored_stem_t=t_stem, tertiary_stem=a_stem, name=rnum)
 

@@ -2,11 +2,11 @@
 
 from stem import Stem
 from stem_type import StemType
-from connection_types import NodeFace, AnchorPosition
-from layout_specification import default_stem_positions
+from connection_types import NodeFace, AnchorPosition, StemName
+from Deprecated.layout_specification import default_stem_positions
 from geometry_types import Position
 from linear_geometry import step_edge_distance
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
     from node import Node
@@ -59,7 +59,7 @@ class AnchoredStem(Stem):
     """
 
     def __init__(self, connector: 'Connector', stem_type: StemType, semantic: str,
-                 node: 'Node', face: NodeFace, anchor_position: AnchorPosition):
+                 node: 'Node', face: NodeFace, anchor_position: AnchorPosition, name: Optional[StemName]):
         """
         Constructor
 
@@ -69,9 +69,10 @@ class AnchoredStem(Stem):
         :param node: Reference to the Node where the Stem's root is attached
         :param face: Attached to this face of the Node
         :param anchor_position: The user specified point on the Node face where the Stem is attached
+        :param name: Optional name to be placed next to vine end of stem
         """
         anchor = anchor_to_position(node, face, anchor_position)
 
         # Anchored position is used to compute the root end position
         Stem.__init__(self, connector=connector, stem_type=stem_type,
-                      semantic=semantic, node=node, face=face, root_position=anchor)
+                      semantic=semantic, node=node, face=face, root_position=anchor, name=name)

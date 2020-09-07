@@ -1,10 +1,10 @@
 """ floating_binary_stem.py """
 
 from stem import Stem
-from connection_types import NodeFace
+from connection_types import NodeFace, StemName
 from geometry_types import Position
 from stem_type import StemType
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
     from connector import Connector
@@ -21,7 +21,7 @@ class FloatingBinaryStem(Stem):
     """
 
     def __init__(self, connector: 'Connector', stem_type: StemType, semantic: str,
-                 node: 'Node', face: NodeFace, projecting_stem: 'AnchoredStem'):
+                 node: 'Node', face: NodeFace, projecting_stem: 'AnchoredStem', name: Optional[StemName]):
         """
         Constructor
 
@@ -53,4 +53,4 @@ class FloatingBinaryStem(Stem):
 
         # Stem initialized with our computed root end
         root = Position(x, y)
-        Stem.__init__(self, connector, stem_type, semantic, node, face, root_position=root)
+        Stem.__init__(self, connector, stem_type, semantic, node, face, root_position=root, name=name)

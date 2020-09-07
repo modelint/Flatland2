@@ -3,10 +3,10 @@ grid.py
 """
 
 import flatland_exceptions
+from connector_layout_specification import ConnectorLayoutSpecification as connector_layout
+from diagram_layout_specification import DiagramLayoutSpecification as diagram_layout
 from linear_geometry import expand_boundaries, span, step_edge_distance
 from geometry_types import Position
-from layout_specification import default_cell_alignment, default_cell_padding, default_rut_positions
-from layout_specification import default_new_path_col_width, default_new_path_row_height
 # from spanning_node import SpanningNode
 from single_cell_node import SingleCellNode
 from connection_types import Orientation
@@ -62,8 +62,8 @@ class Grid:
         self.Connectors = []
         self.Row_boundaries = [0]
         self.Col_boundaries = [0]
-        self.Cell_padding = default_cell_padding
-        self.Cell_alignment = default_cell_alignment
+        self.Cell_padding = diagram_layout.Default_cell_padding
+        self.Cell_alignment = diagram_layout.Default_cell_alignment
         self.Diagram = diagram
 
     def __repr__(self):
@@ -89,7 +89,7 @@ class Grid:
             lane_width = self.Col_boundaries[lane] - low_boundary
 
         return margin_offset + low_boundary + step_edge_distance(
-            num_of_steps=default_rut_positions, extent=lane_width, step=rut)
+            num_of_steps=connector_layout.Default_rut_positions, extent=lane_width, step=rut)
 
     def render(self):
         """
@@ -230,11 +230,11 @@ class Grid:
         if orientation == Orientation.Horizontal:
             rows_to_add = max(0, lane - len(self.Row_boundaries[1:]))
             for r in range(rows_to_add):
-                self.add_row(default_new_path_row_height)
+                self.add_row(connector_layout.Default_new_path_row_height)
         else:
             columns_to_add = max(0, lane - len(self.Col_boundaries[1:]))
             for c in range(columns_to_add):
-                self.add_column(default_new_path_col_width)
+                self.add_column(connector_layout.Default_new_path_col_width)
 
     def place_single_cell_node(self, node: SingleCellNode):
         """Places the node adding any required rows or columns"""

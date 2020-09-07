@@ -4,7 +4,7 @@ stem_type_instances.py
 population = [
     # Class diagram
     {'Name': 'class mult', 'Diagram type': 'class', 'Connector type': 'binary association',
-     'About': 'How many instances may be associated', 'Minimum length': 24, 'Geometry': 'fixed'},
+     'About': 'How many instances may be associated', 'Minimum length': 20, 'Geometry': 'fixed'},
     {'Name': 'associative mult', 'Diagram type': 'class', 'Connector type': 'binary association',
      'About': 'How many association class instances per pair of associated instances', 'Minimum length': 24,
      'Geometry': 'hanging'},

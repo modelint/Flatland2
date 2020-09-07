@@ -31,7 +31,7 @@ default_stem_positions = 5
 # These work like stem/anchor positions on a Lane as opposed to a Node face
 # For a value of 3 we get positions -1, 0 and +1 with 0 representing the Lane Center
 # and +1 high/right and -1 low/left
-default_rut_positions = 3
+default_rut_positions = 5
 
 # For a Stem that has no graphic decoration, such as an xUML class binary association connection or a xUML subclass
 # connection, this is the minimum distance from the node face to either a bend or the opposing Stem end. It prevents

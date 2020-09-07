@@ -5,7 +5,7 @@ from flatland_exceptions import UnsupportedConnectorType, InvalidBendNumber
 from binary_connector import BinaryConnector
 from tertiary_stem import TertiaryStem
 from anchored_stem import AnchoredStem
-from connection_types import HorizontalFace, Orientation, Connector_Name
+from connection_types import HorizontalFace, Orientation, ConnectorName
 from geometry_types import Position
 from command_interface import New_Stem, New_Path
 from typing import List, TYPE_CHECKING, Optional
@@ -24,7 +24,7 @@ class BendingBinaryConnector(BinaryConnector):
     """
 
     def __init__(self, diagram: 'Diagram', connector_type: str, anchored_stem_t: New_Stem,
-                 anchored_stem_p: New_Stem, paths: Optional[New_Path] = None, name: Optional[Connector_Name] = None,
+                 anchored_stem_p: New_Stem, paths: Optional[New_Path] = None, name: Optional[ConnectorName] = None,
                  tertiary_stem: Optional[New_Stem] = None):
         """
         Constructor - see class description for meaning of the attributes
@@ -63,7 +63,8 @@ class BendingBinaryConnector(BinaryConnector):
             semantic=anchored_stem_t.semantic,
             node=anchored_stem_t.node,
             face=anchored_stem_t.face,
-            anchor_position=anchored_stem_t.anchor
+            anchor_position=anchored_stem_t.anchor,
+            name=anchored_stem_t.stem_name,
         )
         self.P_stem = AnchoredStem(
             connector=self,
@@ -71,7 +72,8 @@ class BendingBinaryConnector(BinaryConnector):
             semantic=anchored_stem_p.semantic,
             node=anchored_stem_p.node,
             face=anchored_stem_p.face,
-            anchor_position=anchored_stem_p.anchor
+            anchor_position=anchored_stem_p.anchor,
+            name=anchored_stem_p.stem_name,
         )
         self.Corners = self.compute_corners()
 
@@ -90,6 +92,7 @@ class BendingBinaryConnector(BinaryConnector):
                 node=tertiary_stem.node,
                 face=tertiary_stem.face,
                 anchor_position=tertiary_stem.anchor,
+                name=tertiary_stem.stem_name,
                 parallel_segs=parallel_segs
             )
 
@@ -168,4 +171,4 @@ class BendingBinaryConnector(BinaryConnector):
         # If there are two corners and the bend is 2, use the Corner at index 1 (2nd corner)
         point_p = self.P_stem.Root_end if bend == len(self.Corners)+1 else self.Corners[bend-1]
         name_position = self.compute_name_position(point_t, point_p)
-        tablet.add_text(asset=self.Connector_type.Name+' name', lower_left=name_position, text=self.Name.text)
+        tablet.add_text_line(asset=self.Connector_type.Name + ' name', lower_left=name_position, text=self.Name.text)

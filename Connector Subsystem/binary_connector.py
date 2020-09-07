@@ -3,8 +3,7 @@ binary_connector.py
 """
 from connector import Connector
 from connector_type import ConnectorType
-from connection_types import Connector_Name
-from geometry_types import Position
+from connection_types import ConnectorName
 from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
@@ -22,7 +21,7 @@ class BinaryConnector(Connector):
     """
     # TODO: Promote tertiary stem
 
-    def __init__(self, diagram: 'Diagram', name: Optional[Connector_Name], connector_type: ConnectorType):
+    def __init__(self, diagram: 'Diagram', name: Optional[ConnectorName], connector_type: ConnectorType):
         """
         Constructor
 

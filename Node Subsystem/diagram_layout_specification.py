@@ -23,7 +23,8 @@ class DiagramLayoutSpecification:
 
         - Default margin -- The Canvas area surrounding the Diagram, can be zero
         - Default diagram origin -- The default lower left corner of the Diagram in Canvas coordinates
-        - Default cell padding -- The minimum cell area surrounding a Node, can be zero
+        - Default cell padding -- The minimum cell area surrounding a Node, can be zero, but shouldn't be since it
+          prevents nodes in adjacent cells from touching
         - Default cell alignment -- Default alignment of Node within its Cell, typically center, center
     """
     Default_margin = None
@@ -45,7 +46,9 @@ class DiagramLayoutSpecification:
             left=i['Default margin left'], right=i['Default margin right']
         )
 
-        DiagramLayoutSpecification.Default_diagram_origin = Position(x=i['Default diagram origin x'], y=i['Default diagram origin y'])
+        DiagramLayoutSpecification.Default_diagram_origin = Position(
+            x=i['Default diagram origin x'], y=i['Default diagram origin y']
+        )
 
         DiagramLayoutSpecification.Default_cell_padding = Padding(
             top=i['Default cell padding top'], bottom=i['Default cell padding bottom'],

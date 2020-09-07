@@ -2,7 +2,7 @@
 tree_connector.py
 """
 from flatland_exceptions import UnsupportedConnectorType
-from connection_types import Connector_Name
+from connection_types import ConnectorName
 from connector import Connector
 from trunk_stem import TrunkStem
 from grafted_branch import GraftedBranch
@@ -42,7 +42,7 @@ class TreeConnector(Connector):
     """
 
     def __init__(self, diagram: Diagram, connector_type: str, branches: New_Branch_Set,
-                 name: Optional[Connector_Name] = None):
+                 name: Optional[ConnectorName] = None):
         """
         Constructor
 
@@ -202,4 +202,4 @@ class TreeConnector(Connector):
                 name_y = vine_end.y - (vbuffer + self.Name_size.height)  # Shift name below the stem
 
         name_position = Position(name_x, name_y)
-        tablet.add_text(asset=self.Connector_type.Name + ' name', lower_left=name_position, text=self.Name.text)
+        tablet.add_text_line(asset=self.Connector_type.Name + ' name', lower_left=name_position, text=self.Name.text)

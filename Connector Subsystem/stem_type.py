@@ -1,6 +1,7 @@
 """
 stem_type.py - Stem Type
 """
+from connection_types import NameSpec, Buffer
 from decorated_stem import DecoratedStem
 from flatlanddb import FlatlandDB as fdb
 from sqlalchemy import select, and_
@@ -34,8 +35,9 @@ class StemType:
         - Connector type -- back reference via R59
         - Decorated stem -- All Decorated Stem instances via /R62/R55 for Diagram Type and Notation
     """
+
     def __init__(self, name: str, connector_type_name: str, diagram_type_name: str, about: str,
-                 minimum_length: int, geometry: str, notation: str ):
+                 minimum_length: int, geometry: str, notation: str):
         """
         Create all Decorated Stems for this Stem Type. See class description comments
         for meanings of the initialzing parameters
@@ -55,6 +57,25 @@ class StemType:
         self.Minimum_length = minimum_length
         self.Geometry = geometry
         self.DecoratedStems = {}
+        self.Name_spec = None
+
+        # Load stem name spec for the root, vine, both or neither stem end
+        name_spec_t = fdb.MetaData.tables['Name Spec']
+        p = [name_spec_t.c['Vertical axis buffer'], name_spec_t.c['Horizontal axis buffer'],
+             name_spec_t.c['Vertical end buffer'], name_spec_t.c['Horizontal end buffer'],
+             name_spec_t.c['Default name'], name_spec_t.c.Optional]
+        r = and_(
+            (name_spec_t.c['Connector location'] == self.Name),
+            (name_spec_t.c['Diagram type'] == diagram_type_name),
+            (name_spec_t.c.Notation == notation)
+        )
+        q = select(p).where(r)
+        r = fdb.Connection.execute(q).fetchone()
+        if r:
+            axis_buffer = Buffer(vertical=r['Vertical axis buffer'], horizontal=r['Horizontal axis buffer'])
+            end_buffer = Buffer(vertical=r['Vertical end buffer'], horizontal=r['Horizontal end buffer'])
+            self.Name_spec = NameSpec(end_buffer=end_buffer, axis_buffer=axis_buffer,
+                                      default_name=r['Default name'], optional=r.Optional)
 
         # Load only those Decorated Stems for the user selected Diagram Type and Notation
         dec_stem_t = fdb.MetaData.tables['Decorated Stem']
@@ -70,4 +91,3 @@ class StemType:
             self.DecoratedStems[r.Semantic] = DecoratedStem(
                 stem_type=self.Name, semantic=r.Semantic, notation=notation,
                 diagram_type_name=self.Diagram_type)
-

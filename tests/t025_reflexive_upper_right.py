@@ -28,37 +28,27 @@ def create_canvas(args):
 
     # Until markup parsing is supported, we will provide test data by hand crafting
     # the parsed output
-    class_Aircraft = [
-        ['Aircraft'], [
-            'Altitude',
-            'Tail number: ACAO {I}',
-            'Airspeed : Knots',
-            'Heading'
-        ]
-    ]
-    class_Pilot = [
-        ['Pilot'], [
-            'ID : Pilot ID {I}',
-            'Name : Call Sign',
-            'Experience : Hours',
-            'Aircraft {R13}'
+    class_Waypoint = [
+        ['Waypoint'], [
+            'ID: Nominal {I, OR1}',
+            'Latitude: Lat',
+            'Longitude: Long',
+            'Action {R27}'
         ]
     ]
 
-    t_node = SingleCellNode(node_type_name='class', content=class_Aircraft, grid=flatland_canvas.Diagram.Grid,
+    r_node = SingleCellNode(node_type_name='class', content=class_Waypoint, grid=flatland_canvas.Diagram.Grid,
                             row=1, column=1)
-    p_node = SingleCellNode(node_type_name='class', content=class_Pilot, grid=flatland_canvas.Diagram.Grid,
-                            row=1, column=3)
 
-    t_phrase = StemName(text=['is flying'], side=-1, axis_offset=None, end_offset=None)
-    t_stem = New_Stem(stem_type='class mult', semantic='Mc mult', node=t_node,
-                      face=NodeFace.TOP, anchor=AnchorPosition(0), stem_name=t_phrase)
-    p_phrase = StemName(text=['is flown by'], side=1, axis_offset=None, end_offset=None)
-    p_stem = New_Stem(stem_type='class mult', semantic='1 mult', node=p_node,
-                      face=NodeFace.TOP, anchor=AnchorPosition(0), stem_name=p_phrase)
-    p = [New_Path(lane=2, rut=0)]
+    t_phrase = StemName(text=['is visited after'], side=-1, axis_offset=None, end_offset=None)
+    t_stem = New_Stem(stem_type='class mult', semantic='1c mult', node=r_node,
+                      face=NodeFace.TOP, anchor=AnchorPosition(2), stem_name=t_phrase)
+    p_phrase = StemName(text=['is visited before'], side=-1, axis_offset=None, end_offset=None)
+    p_stem = New_Stem(stem_type='class mult', semantic='1 mult', node=r_node,
+                      face=NodeFace.RIGHT, anchor=AnchorPosition(2), stem_name=p_phrase)
+    p = [New_Path(lane=2, rut=-2), New_Path(lane=2, rut=-2)]
 
-    rnum = ConnectorName(text='R1', side=1, bend=2)
+    rnum = ConnectorName(text='OR1', side=1, bend=3)
     BendingBinaryConnector(diagram=flatland_canvas.Diagram, connector_type='binary association',
                            anchored_stem_p=p_stem, anchored_stem_t=t_stem, paths=p, name=rnum)
     flatland_canvas.render()

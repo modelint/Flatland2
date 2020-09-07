@@ -2,12 +2,13 @@
 stem.py
 """
 
+from flatland_exceptions import InvalidNameSide, OutofDiagramBounds
 from stem_type import StemType
-from geometry_types import Position
+from geometry_types import Position, Rect_Size
 from rendered_symbol import RenderedSymbol
-from connection_types import NodeFace
+from connection_types import NodeFace, StemName
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
     from connector import Connector
@@ -35,16 +36,35 @@ class Stem:
 
         - Root_rendered_symbol -- R61/Rendered Symbol
         - Vine_rendered_symbol -- R61/Rendered Symbol
+        - Stem_name -- R73/Stem Name
     """
 
     def __init__(self, connector: 'Connector', stem_type: StemType, semantic: str, node: 'Node',
-                 face: NodeFace, root_position: Position):
+                 face: NodeFace, root_position: Position, name: Optional[StemName]):
         self.Connector = connector
         self.Stem_type = stem_type
         self.Node = node
         self.Node_face = face
         self.Semantic = semantic
         self.Root_end = root_position
+        self.Name = name
+        self.Name_size = None  # Computed below if name was specified
+        self.Leading = None  # TODO: This and next attr needs to go into an add text block function in tablet
+        self.Line_height = None
+        if self.Name:
+            if self.Name.side not in {1, -1}:
+                raise InvalidNameSide(self.Name.side)
+            tablet = self.Connector.Diagram.Canvas.Tablet
+            # Get size of name bounding box
+            # A stem name might be long and split on multiple lines by the user for readability and fit
+            longest_line = max(self.Name.text, key=len)
+            line_ink_area, leading = tablet.text_line_size(asset=self.Stem_type.Name + ' name', text_line=longest_line)
+            self.Line_height = line_ink_area.height
+            self.Leading = leading
+            name_height = line_ink_area.height * len(self.Name.text) + leading * (len(self.Name.text) - 1)
+            # Vertical space for each line and leading for space in-between lines, so 1 less than the qty of lines
+            self.Name_size = Rect_Size(width=line_ink_area.width, height=name_height)
+
         # There are at most two rendered symbols (one on each end) of a Stem and usually none or one
         self.Root_rendered_symbol = None  # Default assumption until lookup a bit later
         self.Vine_rendered_symbol = None
@@ -70,6 +90,39 @@ class Stem:
         """
         Draw a symbol at the root, vine, both or neither end of this Stem
         """
+        tablet = self.Connector.Diagram.Canvas.Tablet
+
+        if self.Name:
+            name_spec = self.Stem_type.Name_spec
+            if self.Vine_end.y == self.Root_end.y:
+                # Horizontal stem
+                if self.Node_face == NodeFace.LEFT:
+                    width_offset = -(self.Name_size.width + name_spec.end_buffer.horizontal)
+                else:
+                    width_offset = name_spec.end_buffer.horizontal
+                name_x = self.Root_end.x + width_offset
+                height_offset = self.Name_size.height if self.Name.side == -1 else 0
+                name_y = self.Root_end.y + (name_spec.axis_buffer.vertical + height_offset) * self.Name.side
+            else:
+                # Vertical stem
+                if self.Node_face == NodeFace.BOTTOM:
+                    height_offset = -(self.Name_size.height + name_spec.end_buffer.vertical)
+                else:
+                    height_offset = name_spec.end_buffer.vertical
+                name_y = self.Root_end.y + height_offset
+                width_offset = self.Name_size.width if self.Name.side == -1 else 0
+                name_x = self.Root_end.x + (name_spec.axis_buffer.horizontal + width_offset) * self.Name.side
+
+            diagram = self.Connector.Diagram
+            if name_x < diagram.Origin.x or \
+                    name_x > diagram.Canvas.Size.width - diagram.Padding.right or \
+                    name_y < diagram.Origin.y or \
+                    name_y > diagram.Canvas.Size.height - diagram.Padding.top:
+                raise OutofDiagramBounds(object_type='text block', x_value=name_x, y_value=name_y)
+
+            tablet.add_text_block(asset=self.Stem_type.Name + ' name', lower_left=Position(name_x, name_y),
+                                  text=self.Name.text)
+
         root_symbol_name = self.Stem_type.DecoratedStems[self.Semantic].Root_symbol
         vine_symbol_name = self.Stem_type.DecoratedStems[self.Semantic].Vine_symbol
 

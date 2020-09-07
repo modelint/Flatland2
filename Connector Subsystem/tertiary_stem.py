@@ -4,9 +4,9 @@ tertiary_stem.py
 
 from anchored_stem import AnchoredStem
 from stem_type import StemType
-from connection_types import HorizontalFace, NodeFace, AnchorPosition
+from connection_types import HorizontalFace, NodeFace, AnchorPosition, StemName
 from geometry_types import Position
-from typing import TYPE_CHECKING, Set
+from typing import TYPE_CHECKING, Set, Optional
 
 if TYPE_CHECKING:
     from node import Node
@@ -20,7 +20,8 @@ class TertiaryStem(AnchoredStem):
     """
 
     def __init__(self, connector: 'BinaryConnector', stem_type: StemType, semantic: str,
-                 node: 'Node', face: NodeFace, anchor_position: AnchorPosition, parallel_segs: Set[tuple]):
+                 node: 'Node', face: NodeFace, anchor_position: AnchorPosition, parallel_segs: Set[tuple],
+                 name: Optional[StemName] = None):
         """
         Constructor
 
@@ -31,8 +32,9 @@ class TertiaryStem(AnchoredStem):
         :param face: Is rooted from this Node face
         :param anchor_position: Position of the Root as specified by the user
         :param parallel_segs: All binary connector line segments parallel to the rooted Node face
+        :param name: Optional name to be drawn next to stem vine end
         """
-        AnchoredStem.__init__(self, connector, stem_type, semantic, node, face, anchor_position)
+        AnchoredStem.__init__(self, connector, stem_type, semantic, node, face, anchor_position, name)
 
         self.Root_start = None
         self.Vine_start = None

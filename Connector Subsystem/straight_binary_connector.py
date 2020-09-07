@@ -4,7 +4,7 @@ straight_binary_connector.py
 from flatland_exceptions import UnsupportedConnectorType
 from binary_connector import BinaryConnector
 from anchored_stem import AnchoredStem
-from connection_types import HorizontalFace, Connector_Name
+from connection_types import HorizontalFace, ConnectorName
 from floating_binary_stem import FloatingBinaryStem
 from tertiary_stem import TertiaryStem
 from typing import TYPE_CHECKING, Optional
@@ -40,7 +40,7 @@ class StraightBinaryConnector(BinaryConnector):
     """
 
     def __init__(self, diagram: 'Diagram', connector_type: str, projecting_stem: New_Stem,
-                 floating_stem: New_Stem, name: Optional[Connector_Name] = None,
+                 floating_stem: New_Stem, name: Optional[ConnectorName] = None,
                  tertiary_stem: Optional[New_Stem] = None):
         """
         Constructor – see class description for meaning of the attributes
@@ -76,7 +76,8 @@ class StraightBinaryConnector(BinaryConnector):
             semantic=projecting_stem.semantic,
             node=projecting_stem.node,
             face=projecting_stem.face,
-            anchor_position=projecting_stem.anchor
+            anchor_position=projecting_stem.anchor,
+            name=projecting_stem.stem_name
         )
         self.Floating_stem = FloatingBinaryStem(
             connector=self,
@@ -84,7 +85,8 @@ class StraightBinaryConnector(BinaryConnector):
             semantic=floating_stem.semantic,
             node=floating_stem.node,
             face=floating_stem.face,
-            projecting_stem=self.Projecting_stem
+            projecting_stem=self.Projecting_stem,
+            name=floating_stem.stem_name
         )
         # If one was specified, create the Tertiary Stem whose vine end will terminate on the Connector line segment
         # between the two opposing Stems
@@ -97,6 +99,7 @@ class StraightBinaryConnector(BinaryConnector):
                 node=tertiary_stem.node,
                 face=tertiary_stem.face,
                 anchor_position=tertiary_stem.anchor,
+                name=tertiary_stem.stem_name,
                 parallel_segs={(self.Projecting_stem.Vine_end, self.Floating_stem.Vine_end)}
             )
 
@@ -139,5 +142,5 @@ class StraightBinaryConnector(BinaryConnector):
         name_position = self.compute_name_position(
             point_t=self.Projecting_stem.Root_end, point_p=self.Floating_stem.Root_end
         )
-        tablet.add_text(asset=self.Connector_type.Name+' name', lower_left=name_position, text=self.Name.text)
+        tablet.add_text_line(asset=self.Connector_type.Name + ' name', lower_left=name_position, text=self.Name.text)
 

@@ -10,17 +10,39 @@ from typing import NewType
 
 AnchorPosition = NewType('AnchorPosition', int)
 
-Stem_Name = namedtuple('Stem_Name', 'text axis_offset end_offset')
+NameSpec = namedtuple('NameSpec', 'axis_buffer end_buffer default_name optional')
+"""
+Specifies how a connector or stem name is to be placed and filled
+
+    Attributes
+
+    - axis_buffer -- (Buffer) Space between connector line and name bounding box
+    - end_buffer -- (Buffer) Space between connector line and name bounding box
+    - default_name -- (Text) This name is filled in if the user does not supply a name and the name is not optional
+    - optional -- (Boolean) No name is rendered if the user does not provide one
+"""
+
+Buffer = namedtuple('Buffer', 'vertical horizontal')
+"""
+A white space buffer between a graphical element and some other graphical element
+
+    Attributes
+
+    - horizontal -- (Distance) space above or below an element
+    - vertical -- (Distance) space right or left of an element
+"""
+StemName = namedtuple('StemName', 'text side axis_offset end_offset')
 """
 User specification of name text placed near a Stem
 
     Attributes
 
     - text -- The text to be written
+    - side -- ( 1 | -1 ) Which side of the Stem (top bottom) or (right left)
     - axis_offset -- A positive or negative non-zero integer specifying axis side and distance from the axis
     - end_offset -- A positive integer specifying non-default offset distance from the end of the stem
 """
-Connector_Name = namedtuple('Connector_Name', 'text side bend')
+ConnectorName = namedtuple('ConnectorName', 'text side bend')
 """
 User specification of name text placed near the center of a Connector
 
