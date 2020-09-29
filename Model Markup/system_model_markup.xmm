@@ -1,0 +1,775 @@
+/// Elevator 3 Management Domain model
+
+/// xUML file format syntax notes:
+/// [] = optional, ... = zero or more, || = or/alternative, <> grouped
+/// First instance of each expression type should be followed by a syntax comment
+/// Each keyword is defined as either a header or inline as demonstrated
+/// Comments are lines that begin with /// (may be preceded by whitespace)
+/// (triple slashes avoid confusion with // comments in action langauge)
+
+/// Order of specification in this file must proceed by scope
+/// system-spec :: system, domain-spec, ...
+/// domain-spec :: types, operations, ee-spec, class-spec, rel-spec
+/// ee-spec :: ee, op-spec, ...
+/// op-spec :: [ sync | async ], ...
+/// class-spec :: <class, attributes, methods, [state-spec]>
+/// state-spec :: [<state, [signature], [actions], [transitions]>
+/// rel-spec :: <relationship [state-spec]>, ...
+
+/// To minimize clutter, actions for operations and methods are kept in separate
+/// files loaded afterward. Only state actions are included as they are awkward
+/// to manage as separate files.
+
+system Elevator 3 Case Study
+/// Name
+
+domain Elevator, ELEV
+/// Name, Alias
+
+types
+/// Name : <basetype> constraint,... units
+/// for now, only the name is parsed, the remaining text is just stored
+    Name : <String>[140], pattern: [A-Z]+
+    Level Name : <String>[15], pattern: [A-Za-z0-9]+
+    Duration : <Rational>, range: >= 0, units: seconds
+    Distance : <Rational>, range: >= 0, units: meters
+    Speed : <Rational>, range: >= 0, units: meters/sec
+    Nominal : <Integer>, range: > 0
+    Boolean : <Boolean>
+    Count : <Integer>, range: >= 0
+    Direction : <Enum>[ up, down ] operators { toggle }
+--
+/// A set of commands, or a multiline command is terminated by -- on a line by itself
+
+operations
+/// Name( <paramName : type>, ... ) [: return type]
+    Stop request( shaft : Nominal, floor : Level Name )
+    Floor request( bank : Name, floor: Level Name, dir: Direction ) : Boolean
+    Cabin arrived( shaft : Nominal )
+    Hold door open( shaft : Nominal ) : Boolean
+    Release door( shaft : Nominal )
+    Door opened( shaft : Nominal )
+    Door closed( shaft : Nominal )
+    Door blocked( shaft : Nominal )
+    Update location( shaft : Nominal, floor : Level Name )
+--
+
+ee User Interface, UI
+/// Name, Alias
+    sync
+        /// Name( paramName : type, ... ) [: return type]
+        Set destination( shaft : Nominal, floor: Level Name )
+        Cabin arrived( shaft : Nominal, direction: Direction )
+        Clear stop request( floor : Level Name, shaft: Nominal )
+        Clear floor request( bank: Name, floor: Level Name, dir: Direction )
+        Door opening( shaft : Nominal)
+        Door opened( shaft : Nominal)
+        Door closing( shaft : Nominal)
+        Door closed( shaft : Nominal)
+        Update cabin position( shaft: Nominal, height: Distance )
+        New location( shaft: Nominal, floor: Level Name )
+    --
+        
+ee Transport, TRANS
+    sync
+        Goto floor( dest floor: Level Name, shaft: Nominal ) : Boolean
+    --
+
+ee Signal IO, SIO
+    async
+        /// Name( <paramName : type>, ...)
+        Open door( shaft: Nominal )
+        Close door( shaft: Nominal )
+    --
+            
+class Accessible Shaft Level, ASLEV
+/// Name[, Alias]
+    attributes
+        /// Name [ : Type || > ClassName.AttrName:Rnum[{constriant}], ...] [ | I[<, In>, ...] ]
+        Floor > Shaft Level.Floor:R3, Bank Level.Floor:R3 | I
+        Shaft > Shaft Level.Shaft:R3 | I
+        Bank > Bank Level.Name:R3{/Shaft Level/R28/Shaft.Bank}
+        Stop requested : Boolean
+    --
+    events
+        Stop request
+        Floor calling( dir : Direction )
+        Stop serviced
+        Serviced floor request( dir : Direction )
+        Stop registered
+        Floor request registered
+        Wait for service
+        All requests cleared
+        Opposite floor call pending
+        Check stop request
+    --
+    state NOT REQUESTED, initial
+    /// Name[, initial][, final]
+    transitions
+        Stop request >  Registering stop
+        /// Event name [> Next state]
+        Floor calling > Registering floor call
+        /// Missing events are Can't happen
+        /// Missing target state is an ignore
+    --
+    state REQUESTED
+    transitions
+        Stop request >  Registering stop
+        Floor calling > Registering floor call
+        Stop serviced > Clear stop request
+        Serviced floor request > Clear floor request
+    --
+    state Registering stop
+    actions
+        /// Actions are loaded, but not parsed yet
+        Stop requested.set
+        Stop registered -> me
+    --
+    transitions
+        Stop registered > Requesting service
+    --
+    state Registering floor call
+    /// <paramName : Type>, ...
+    /// If a state has input parameters a signature is specified
+    actions
+        Bank Level( Bank, Floor ) &R49 Accessible Shaft Level( Shaft, Floor ) & \
+            Floor Service( Direction: in.dir )
+        Floor call registered -> me
+    --
+    transitions
+        Floor request registered > Requesting service
+    --
+    state Requesting service
+    actions
+        Service requested -> R53( Shaft )
+        Wait for service -> me
+    --
+    transitions
+        Wait for service > REQUESTED
+    --
+    state Clear floor request
+    actions
+        Clear floor request( in.dir ) -> /R49/Bank Level
+        !* /R49/Floor Service( Direction: in.dir )
+        Check stop request -> me
+    --
+    transitions
+        Check stop request > Clear stop request
+    --
+    state Clear stop request
+    actions
+        // Clear the stop request if registered
+
+        if (Stop requested) {
+            UI.Clear stop request( Floor, Shaft )
+            Stop requested.unset
+        }
+
+        if /R49/Floor Service
+            Opposite floor call pending -> me
+        else
+            All requests cleared -> me
+
+        Requests cleared -> /R53/Transfer
+    --
+    transitions
+        All requests cleared > NOT REQUESTED
+        Opposite floor call pending > REQUESTED
+    --
+
+class Bank
+    attributes
+        Name: Name | I
+        Passenger load time: Duration
+        Block clear time: Duration
+        Max close attempts: Count
+        Average cabin speed: Speed
+        Average stop duration: Duration
+    --
+
+class Bank Level, BLEV
+    attributes
+        Bank > Bank.Name:R29 | I
+        Floor > Floor.Name:R29 | I
+    --
+    methods
+        Choose shaft( dir : Direction ) : Shaft
+        Call cabin( dir : Direction )
+        Floor request( dir : Direction )
+        Clear call( dir : Direction )
+    --
+
+class Bottom Bank Level, BOT_BLEV
+    attributes
+        Bank > Bank Level.Bank:R38, Bank.Name:R6 | I
+        Floor > Bank Level.Floor:R38 | I
+        Calling up : Boolean
+    --
+
+class Building
+    attributes
+        Name : Name | I
+        Average floor gap : Distance
+    --
+
+class Cabin
+    attributes
+        Shaft > Shaft.ID:R2, Shaft Level.Shaft:R43 | I
+        Travel direction : Direction
+        Current floor > Shaft Level.Floor:R43
+    --
+    methods
+        Estimate delay( calling floor : Level Name, service dir : Direction ) : Duration
+        Count stops oneway( aslevs: Accessible Shaft Level, search dir: Direction ) : Count
+        Count stops roundtrip( aslevs: Accessible Shaft Level ) : Count
+        Ping( dir : Direction ) : Accessible Shaft Level
+        Ping both ways () : Accessible Shaft Level
+        Update location ( floor : Level Name )
+    --
+    events
+        Try redirect( new dest : Leven Name )
+        Arrived at floor
+        New transfer
+        Doors secure
+        Transport in progress
+        Transport unavailable
+        Already there
+        Prepare to move
+        Change requested
+    --
+    state MOVING
+    transitions
+        Try redirect > Changing destination
+        Arrived at floor > PICKUP DROPOFF
+    --
+    state PICKUP DROPOFF, initial
+    actions
+        Cabin at destination -> /R53/Transfer
+        Unlock -> /R4/Door
+        if (not /R2/Shaft.In service )
+            Take out of service -> me
+    --
+    transitions
+        Try redirect
+        New transfer > Are we already there?
+    --
+    state SECURING DOORS
+    actions
+        /R4/Door.Lock requested.set
+        Lock -> /R4/Door
+    --
+    transitions
+        Go > READY TO GO
+    --
+    state READY TO GO
+    actions
+        Ready to go -> /R53/Transfer
+    --
+    transitions
+        Go > Requesting transport
+    --
+    state OUT OF SERVICE
+    actions
+        /R4/Door.Emergency hold.set
+        Passenger open -> /R4/Door
+    --
+    state Requesting transport
+    actions
+        if (TRAN.Goto floor( Dest floor: /R53/Transfer.Destination floor, Shaft ) )
+            Transport in progress -> me
+        else
+            Transport unavailable -> me
+    --
+    transitions
+        Transport in progress > MOVING
+        Transport unavailable > OUT OF SERVICE
+    --
+    state Changing destination
+    actions
+        if ( TRAN.Go to floor( Dest floor: in.new dest, Shaft ) )
+            Cabin redirected( Updated dest: in.new dest ) -> /R53/Transfer
+
+        Change requested -> me
+    --
+    transitions
+        Change requested -> MOVING
+    --
+    state Are we already there?
+    actions
+        if ( /R53/Transfer.Destination floor == /R43/is at/Shaft Level/Floor )
+            Already there -> me
+        else
+            Prepare to move -> me
+    --
+    transitions
+        Already there > PICKUP DROPOFF
+        Prepare to move > SECURING DOORS
+    --
+
+class Door
+    attributes
+        Shaft > Cabin.Shaft:R4 | I
+        Close attempts : Count
+        Lock requested : Boolean
+        Held : Boolean
+        Blocked : Boolean
+        Emergency hold : Boolean
+    --
+    events
+        Door opeend
+        Door closed
+        Door blocked
+        Passenger open
+        Passenger close
+        Lock
+        Unlock
+        Time to close
+        Open delay canceled
+        Hold released
+        Can't close door
+        Keep trying
+    --
+    state OPENING
+    actions
+        Open door( Shaft ) => SIO
+        UI.Door opening( Shaft ) 
+        --
+    transitions
+        Door opened > OPEN
+        Passenger open
+        Passenger close > CLOSING
+        Lock
+        Can't close door > CAN'T CLOSE
+        Keep trying > CAN'T CLOSE
+    --
+    state OPEN
+    actions
+        UI.Door opened( Shaft )
+        my Bank .= /R4/R2/Bank
+        Time to close -> me after Blocked ? \
+            my Bank.Block clear time : my Bank.Passenger load time
+        --
+    transitions
+        Passenger open
+        Passenger close > Cancel open delay
+        Lock
+        Time to close > HOLDING OPEN
+    --
+    state HOLDING OPEN
+    actions
+        [!Held] Hold released -> me
+    --
+    transitions
+        Passenger open
+        Passenger close
+        Lock
+        Hold released > CLOSING
+    --
+    state CLOSING
+    actions
+        [!Emergency hold] {
+            Close door( Shaft ) => SIO
+            UI.Door closing( Shaft )
+        }
+        [Emergency hold] Emergency hold -> me
+    --
+    transitions
+        Door closed > CLOSED
+        Door blocked > OPENING
+        Passenger open > OPENING
+        Passenger close
+        Lock
+    --
+    state CLOSED, initial
+    actions
+        UI.Door closed( Shaft )
+        Close attempts.reset
+        Blocked.unset
+        [Lock requested] Lock -> me
+        Door closed -> /R4/R53/Transfer // May be none
+    --
+    transitions
+        Passenger open > OPENING
+        Passenger close
+        Lock > LOCKED
+    --
+    state LOCKED
+    actions
+        // Tell the cabin that we’re ready to go
+        Lock requested.unset
+        Doors secure -> /R4/Cabin
+    --
+    transitions
+        Passenger open
+        Passenger close
+        Unlock > OPENING
+    --
+    state CAN’T CLOSE
+    actions
+        // Take the shaft out of service
+        Take out of service -> /R4/R2/Shaft
+    --
+    state Cancel open delay
+    actions
+        Cancel Time to close -> me
+        Open delay canceled -> me
+    --
+    transitions
+        Open delay canceled > HOLDING OPEN
+    --
+    state Count block
+    actions
+        if (++Close attempts > /R4/R2/Bank.Max close attempts)
+            Can’t close door -> me
+        else {
+            Blocked.set
+            Keep trying -> me
+        }
+    --
+    transitions
+        Can't close door > CAN'T CLOSE
+        Keep trying > OPENING
+    --
+
+class Floor
+    attributes
+        Name : Level Name | I
+        Height : Distance | I2
+    --
+
+class Floor Service
+    attributes
+        Bank > Bank Level.Bank:R49 | I
+        Floor > Bank Level.Bank:R49 | I
+        Shaft > Accessible Shaft Level.Shaft:R49 | I
+        Direction : Direction
+    --
+    events
+        Cabin arrived
+        Cancel
+        Middle floor
+        Top or bottom floor
+    --
+    state WAITING FOR CABIN, initial
+    transitions
+        Cabin arrived > Check bank level type
+    --
+    state HOLDING SERVICE DIRECTION
+    transitions
+        Cancel > COMPLETED
+    __
+    state COMPLETED
+    actions
+        Serviced floor request( dir: Direction ) -> /R49/Accessible Shaft Level
+    --
+    state Check bank level type
+    actions
+        if (/R49/R38/Middle Bank Level)
+            Middle floor -> me
+        else
+            Top or bottom floor -> me
+    --
+    transitions
+        Middle floor > HOLDING SERVICE DIRECTION
+        Top or bottom floor > COMPLETED
+    --
+    state EMERGENCY HOLD
+
+class Middle Bank Level, MID_BLEV
+    attributes
+        Bank > Bank Level.Bank:R38 | I
+        Floor > Bank Level.Floor:R38 | I
+        Calling up : Boolean
+        Calling down : Boolean
+    --
+
+class Shaft
+    attributes
+        ID : Nominal | I
+        Bank > Bank.Name:R1
+        In service : Boolean
+    --
+    methods
+        Next stop( dir : Direction ) : Shaft Level
+    --
+
+class Shaft Level
+    attributes
+        Floor > Floor.Name:R28 | I
+        Shaft > Shaft.ID:R28 | I
+    --
+
+class Top Bank Level
+    attributes
+        Bank > Bank Level.Bank:R38, Bank.Name:R5 | I
+        Floor > Bank Level.Floor:R38 | I
+        Calling down : Boolean
+    --
+
+class Transfer
+    attributes
+        Destination floor > Accessible Shaft Level.Floor:R53 | I
+        Shaft > Accessible Shaft Level.Shaft:R53 | I2
+    --
+    events
+        Execute
+        Destination change request( new dest : Level Name )
+        Cabin redirected( updated dest : Level Name )
+        Ready to move
+        Cabin at destination
+        Door closed
+        Requests cleared
+        Wait for cabin
+        Stationary update
+        Cabin dispatched
+        Redirect requested
+        Update in motion
+        Call in progress
+        Wait to clear
+        Reversal checked
+    --
+    state CREATED, initial
+    actions
+    --
+    transitions
+        Execute > Creating or updating transfer
+        Door closed
+    --
+    state WAITING FOR CABIN
+    actions
+    --
+    transitions
+        Destination change request > Changing destination before cabin moves
+        Ready to move > Dispatching cabin
+        Door closed
+    --
+    state CABIN IN MOTION
+    transitions
+        Destination change request > Request redirect    
+        Cabin redirected > Match new destination of cabin
+        Cabin at destination > Check for cabin reversal
+    --
+    state CALL IN PROGRESS
+    transitions
+        Destination change request
+        Door closed > Canceling floor service
+    --
+    state WAITING FOR REQUESTS TO CLEAR
+    transitions
+        Destination change request
+        Door closed
+        Requests cleared > Delete
+    --
+    state Creating or updating transfer
+    actions
+        UI.Set destination( Shaft, floor: Destination floor )
+        New transfer -> /R53/Cabin
+        Wait for cabin -> me
+    --
+    transitions
+        Wait for cabin > WAITING FOR CABIN
+    --
+    state Changing destination before cabin moves
+    actions
+        // The cabin isn’t moving, so we can safely
+        // relink to the new destination
+        Destination floor = in.updated dest
+        Stationary update -> me
+    --
+    transitions
+        Stationary update > WAITING FOR CABIN
+    --
+    state Dispatching cabin
+    actions
+        Go -> /R53/Cabin
+        Cabin dispatched -> me
+    --
+    transitions
+        Cabin dispatched > CABIN IN MOTION
+    --
+    state Request redirect
+    actions
+        Try redirect( in.new dest ) -> /R53/Cabin
+        Redirect requested -> mens
+    --
+    transitions
+        Redirect requested > CABIN IN MOTION
+    --
+    state Match new destination of cabin
+    actions
+        Destination floor = in.updated dest
+        Update in motion -> me
+    --
+    transitions
+        Update in motion > CABIN IN MOTION
+    --
+    state Check for active floor service
+    actions
+        UI.Cabin arrived( Shaft, direction: /R53/Cabin.Travel direction )
+        pending floor service .= /R53/R49/Floor Service( Direction: /R53/Cabin.Travel direction )
+        if (pending floor service) {
+            Call in progress -> me
+            Cabin arrived -> pending floor service
+        } else {
+            Serviced stop -> /R53/Accessible Shaft Level
+            Wait to clear -> me
+        }
+    --
+    transitions
+        Call in progress > CALL IN PROGRESS
+    --
+    state Check for cabin reversal
+    actions
+        // If the Cabin arrives and there is a floor request in the opposite direction
+        // and no stop request or call in the Cabin’s current travel direction,
+        // we must reverse the cabin’s travel direction
+
+        freqs ..= /R53/R49/Floor Service
+        if ( freqs( Direction: /R53/Cabin.Travel direction.opposite ) and
+            not freqs( Direction: /R53/Cabin.Travel direction ) and
+            not /R53/Accessible Shaft Level.Stop requested
+        )
+            /R53/Cabin.Travel direction.toggle
+
+        Reversal checked -> me
+    --
+    transitions
+        Reversal checked > Check for active floor service
+    --
+    state Canceling floor service
+    actions
+        Cancel -> /R53/R49/Floor Service( Direction: /R53/Cabin.Travel direction )
+        Wait to clear -> me
+    --
+    transitions
+        Wait to clear > WAITING FOR REQUESTS TO CLEAR
+    --
+    state Delete, final
+    actions
+        Transfer completed -> R53( Shaft )
+    --
+
+relationships
+    R1
+        defines service features of, M Shaft
+        has service feautures defiend by, 1 Bank
+    --
+    /// this is first of two possible two multi-line command rel formats consisting of:
+    /// Rn [: partitioningClass] (if rel has a state model and its instance set is partitioned)
+    /// phrase, multiplicity[c] className
+    /// phrase, multiplicity[c] className
+    /// [assocClassName, multiplicity]
+    R2
+        travels through, 1 Shaft
+        is conduit for, 1 Cabin
+    --
+    R3
+        enables access to, M Shaft Level
+        is accessible in, 1c Bank Level
+        1 Accessible Shaft Level
+    --
+    R4
+        passengers enter via, 1 Door
+        is passenger entry, 1 Cabin
+    --
+    R5
+        provides service up to, 1 Top Bank Level
+        is the highest floor serviceable by, 1 Bank
+    --
+    R6
+        provides service down to, 1 Bottom Bank Level
+        is the lowest floor serviceable by, 1 Bank
+    --
+    R28
+        intersects and opens onto, M Floor
+        is intersected and accessed by, M Shaft
+        1 Shaft Level
+    --
+    R29
+        services, M Floor
+        is serviced by, Mc Bank
+        1 Bank Level
+    --
+    R38
+        Bank Level +
+            Top Bank Level
+            Middle Bank Level
+            Bottom Bank Level
+    --
+    /// This is the other possible rel format:
+    /// Rn
+    /// superClassName +
+    /// subClassName1
+    /// subClassName2
+    /// subClassNameN ... (as many lines as necessary)
+    R43
+        is at, 1 Shaft Level
+        is location of, 1c Cabin
+    --
+    R49
+        will service call from, Mc Bank Level
+        call has chosen for service, Mc Accessible Shaft Level
+    --
+    R53 : Shaft
+    /// This rel has a state model instantiated per Shaft instance
+        is going to, 1c Accessible Shaft Level
+        is current destination of, 1c Cabin
+        1 Transfer
+    --
+    events
+        Transfer completed
+		Service requested
+		No destination
+		Transfer created
+		Dest change evaluated
+    --
+    state NO TRANSFER, initial
+    transitions
+        Service requested > Searching for new destination
+    --
+    state TRANSFER IN PROGRESS
+    transitions
+        Transfer completed > Searching for new destination
+        Service requested > Searching for alternate destination
+    --
+    state Searching for new destination
+    transitions
+        No destination > NO TRANSFER
+        Transfer created > TRANSFER IN PROGRESS
+    --
+    actions
+        // My Cabin is stationary and has no Transfer at the moment
+        destination aslev .= /Shaft/R2/Cabin.Ping both ways()
+        if (destination aslev) {
+            Execute -> /Shaft/Cabin &R53 destination aslev & *Transfer
+            Transfer created -> me
+        } else
+            No destination -> me
+    --
+    state Searching for alternate destination
+    transitions
+        Dest change evaluated > TRANSFER IN PROGRESS
+    --
+    actions
+        my cabin .= /Shaft/R2/Cabin
+        xfer .= my cabin/R53/Transfer
+        call in progress .= xfer/R49/Floor Service( Direction: Travel direction )
+
+        fwd dest .= my cabin.Ping( dir: Travel direction )
+        if (fwd dest)
+            destination aslev .= fwd dest
+        else if (not call in progress) {
+            // Search opposite the travel direction only if not servicing
+            // a floor request in the current direction
+            rev dest .= my cabin.Ping( dir: Travel direction.opposite )
+            if (rev dest)
+                my cabin.Travel direction.toggle
+            destination aslev .= rev dest // may be empty
+        }
+
+        if (destination aslev and destination aslev.Floor != xfer.Destination floor )
+            Dest change request( new dest: destination aslev.floor ) -> xfer
+        Dest change evaluated -> me
+    ==
+    /// a group of multi-line commands must be terminated by ==
+    /// From here, more domains may be specified

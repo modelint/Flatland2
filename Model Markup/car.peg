@@ -1,0 +1,34 @@
+nl = "\n"
+sp = " "
+delim = r'[ _]'
+indent = "    "
+mult = r'[1M]c?'
+rnum = r'R[1-9][0-9]*'
+lword = r'[a-z][a-z]*'
+iword = r'[A-Z][A-Za-z0-9]*'
+phrase = lword (delim lword)*
+block_end = "--" nl
+body_line = indent r'.*' nl
+icaps_name = iword (delim iword)*
+
+method_block = method_header body_line+ block_end
+method_header = "methods" nl
+attr_header = "attributes" nl
+attr_block = attr_header body_line+ block_end
+class_header = "class" sp icaps_name nl
+class_block = class_header attr_block method_block?
+class_set = class_block*
+
+subclass = indent icaps_name nl
+superclass = indent icaps_name sp? "+" nl
+gen_rel = superclass subclass subclass+
+
+rel_side = indent phrase "," sp mult sp+ icaps_name nl
+binary_rel = rel_side rel_side
+rname = indent rnum nl
+rel = rname (binary_rel / gen_rel) block_end
+relationship_header = "relationships" nl
+rel_section = relationship_header rel*
+
+subsystem_header = "subsystem" sp icaps_name nl
+subsystem = subsystem_header class_set rel_section EOF

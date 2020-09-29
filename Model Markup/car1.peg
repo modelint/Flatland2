@@ -1,0 +1,30 @@
+// Model Markup Peg Grammar
+
+nl = "\n"
+sp = " "
+name = r'[a-zA-Z0-9]*'
+rnum = r'R[1-9][0-9]*'
+iword = r'[A-Z][A-Za-z0-9]*'
+class_name = iword sp class_name / iword
+mult = r'[1M]c?'
+
+body_line = r'.*' nl
+method_header = "methods" nl
+attr_header = "attributes" nl
+block_end = "--" nl?
+method_block = method_header body_line+ block_end
+attr_block = attr_header body_line+ block_end
+class_header = "class" sp name nl
+class_block = class_header attr_block method_block?
+class_set = class_block*
+
+subclass = class_name
+superclass = class_name sp? "+" nl
+gen_rel = superclass subclass subclass+
+rel_side = phrase "," sp mult sp+ class_name nl
+binary_rel = rel_side relside
+relationship_block = rnum (binary_rel / gen_rel) block_end
+relationship_header = "relationships" nl
+relationship_set = relationship_header relationship_block*
+
+subsystem = class_set? relationship_set? EOF

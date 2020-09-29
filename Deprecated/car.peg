@@ -1,0 +1,11 @@
+nl = r'\n'
+sp = " "
+indent = "    "
+name = r'[a-zA-Z0-9]*'
+block_end = indent "--" nl*
+attr_line = indent indent r'.*' nl
+attr_header = indent "attributes" nl
+attr_block = attr_header attr_line+ block_end
+class_header = "class" sp name nl
+class_block = class_header attr_block
+class_text = class_block*
