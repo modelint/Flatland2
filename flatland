@@ -2,10 +2,10 @@
 
 import sys
 import command_line
-import flatland
+import flatland_REF
 
 
 if __name__ == "__main__":
     # Parse the command line args
     args = command_line.parse(sys.argv[1:])
-    flatland.create_canvas(args)
+    flatland_REF.create_canvas(args)

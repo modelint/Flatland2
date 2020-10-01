@@ -1,0 +1,36 @@
+// Model Style Sheet Arpeggio Clean Peg Grammar
+
+// We assume that the input file has been pre-processed to remove
+// comments, extraneous end of line space but newlines are left intact
+// with a single newline added at the end to simplify our grammar
+
+nl = "\n" // New line
+space = r'[ \t]+' // Required at least one space, no newlines
+ss = " " // Single space
+lane_number = r'[1-9][0-9]*' // Always a positive integer
+indent = "    "  // For clarity
+wdelim = r'[ _]' // Word delimiter to separate words in a name
+word = r'[A-Za-z][A-Za-z0-9]*' // String of alpahnumeric text with no whitespace starting with alpha char
+name = word (wdelim word)* // Sequence of delimited words forming a name
+
+diagram = "diagram" space name nl // The type of diagram to draw
+notation =  "notation" space name nl // The notation to use in the diagram
+presentation = "presentation" space name nl // The presentation style for drawing
+sheet = "sheet" space name nl // The sheet size name
+orientation = "orientation" space ("portrait" / "landscape") nl // The sheet orientation
+layout_spec = (diagram notation presentation sheet orientation)# // Each of these in any order
+
+nodes_header = "nodes" nl
+node_placement = indent name space lane_number ',' lane_number nl
+node_block = nodes_header node_placement+
+
+connectors_header = "connectors" nl
+face =  "t" / "b" / "l" / "r"
+dir = "+" / "-"
+shift = dir lane_number
+anchor = dir face shift? "|" name
+connector_placement = indent name space ":" space anchor space ":" space anchor nl
+connector_block = connectors_header connector_placement+
+
+// You can draw unconnected nodes, connected nodes or a blank sheet
+diagram_layout = layout_spec ((node_block connector_block) / (node_block))? EOF

@@ -1,29 +1,44 @@
-subsystem Drawing Stuff
-class Big Round Shape
+subsystem Node
+class Canvas
 attributes
-    ID: Nominal | I
-    Tablet > Tablet.ID:R13
-    Line style > Line Style.Name:R14
+    Name : Name {I}
+    Layout {R15}
+    Sheet {R13}
+    Orientation : Portrait Landscape
+    Margin : Padding
 --
-methods
-    dothis()
-    dothat()
---
-class Tablet
+class Sheet
 attributes
-    ID : Nominal | I
-    Presentation > Presentation.Name:R2
-    Drawing type > Presentation.Drawing type:R2
-    Size : Rect_Size
+    Name : Name {I}
+    Size : Sheet Size
+    Units : US Metric
+--
+class Diagram
+attributes
+    ID : Nominal {I}
+    Grid {R10}
+    Type {R11, R30}
+    Notation {R30}
+    Canvas {R14}
+    Size : Rect Size
+    Origin : Position
+    Presentation style {R26}
+--
+class Annotation Layout
+attributes
+    Name : Name {I}
+    Canvas {R16}
 --
 relationships
-    R13
-    is drawn on, 1 Tablet
-    will draw, Mc Shape
+    R14
+    is laid out on, 1 Canvas
+    frames placement of, 1 Diagram
 --
-    R38
-    Bank Level +
-    Top Bank Level
-    Middle Bank Level
-    Bottom Bank Level
+    R16
+    annotation is organized by, 1c Annotation Layout
+    organizes annotation on, 1 Canvas
+--
+    R13
+    defines geometry of, Mc Canvas
+    geometry is defined by, 1 Sheet
 --

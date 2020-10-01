@@ -2,10 +2,17 @@
 flatland_exceptions.py – Flatland specific exceptions
 """
 
+# Every flatland error should have the same format
+# with a standard prefix and postfix defined here
+pre = "\nFlatland: ["
+post = "]"
+
 
 class FlatlandException(Exception):
     pass
 
+class FlatlandIOException(FlatlandException):
+    pass
 
 class FlatlandDBException(FlatlandException):
     pass
@@ -17,6 +24,49 @@ class FlatlandUserInputException(FlatlandException):
 
 class UnknownSheetGroup(FlatlandDBException):
     pass
+
+class ModelInputFileOpen(FlatlandIOException):
+    def __init__(self, path):
+        self.path = path
+
+    def __str__(self):
+        return f'{pre}Parser cannot open this model input file: "{self.path}"{post}'
+
+class ModelInputFileEmpty(FlatlandIOException):
+    def __init__(self, path):
+        self.path = path
+
+    def __str__(self):
+        return f'{pre}For some reason, nothing was read from the model input file: "{self.path}"{post}'
+
+class ModelGrammarFileOpen(FlatlandIOException):
+    def __init__(self, path):
+        self.path = path
+
+    def __str__(self):
+        return f'{pre}Parser cannot open this model grammar file: "{self.path}"{post}'
+
+class LayoutGrammarFileOpen(FlatlandIOException):
+    def __init__(self, path):
+        self.path = path
+
+    def __str__(self):
+        return f'{pre}Parser cannot open this layout grammar file: "{self.path}"{post}'
+
+class LayoutFileEmpty(FlatlandIOException):
+    def __init__(self, path):
+        self.path = path
+
+    def __str__(self):
+        return f'{pre}For some reason, nothing was read from the diagram layout file: "{self.path}"{post}'
+
+class LayoutFileOpen(FlatlandIOException):
+    def __init__(self, path):
+        self.path = path
+
+    def __str__(self):
+        return f'{pre}Parser cannot open this layout grammar file: "{self.path}"{post}'
+
 
 
 class InvalidNameSide(FlatlandUserInputException):

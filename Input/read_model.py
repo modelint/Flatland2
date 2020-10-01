@@ -45,7 +45,7 @@ def canvas_command():
 
 if __name__ == "__main__":
     model_path = "../Model Markup/test1.xmm"
-    style_path = "../Model Markup/test1.mss"
+    style_path = "../Model Markup/test.mss"
     read_files(model_path, style_path)
     print("Done")
 
