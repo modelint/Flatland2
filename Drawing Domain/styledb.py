@@ -8,7 +8,7 @@ from collections import namedtuple
 
 Float_RGB = namedtuple('Float_RGB', 'R G B')
 Line_Style = namedtuple('Line_Style', 'pattern width color')
-Text_Style = namedtuple('Text_Style', 'typeface size slant weight color leading')
+Text_Style = namedtuple('Text_Style', 'typeface size slant weight color spacing')
 Dash_Pattern = namedtuple('Dash_Pattern', 'solid blank')
 
 
@@ -63,7 +63,7 @@ def load_text_styles():
     f = fdb.Connection.execute(q).fetchall()
     for i in f:
         StyleDB.text_style[i.Name] = Text_Style(
-            typeface=StyleDB.typeface[i.Typeface], size=i.Size, slant=i.Slant, weight=i.Weight, color=i.Color, leading=i.Leading)
+            typeface=StyleDB.typeface[i.Typeface], size=i.Size, slant=i.Slant, weight=i.Weight, color=i.Color, spacing=i.Spacing)
 
 
 def load_line_styles():

@@ -4,6 +4,9 @@ from arpeggio import PTNodeVisitor
 
 class SubsystemVisitor(PTNodeVisitor):
 
+    def visit_nl(self, node, children):
+        return None
+
     def visit_sp(self, node, children):
         return None
 

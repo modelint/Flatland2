@@ -6,8 +6,8 @@ sheet tabloid
 nodes
     Sheet 1,1
     Canvas 3,1
-    Diagram 3,2
-    Annotation Layout 2,2
+    Diagram 3,3
+    Annotation Layout 2,3
 connectors
     R14 : +r|Canvas : -l|Diagram
     R13 : -b|Canvas : -t|Sheet

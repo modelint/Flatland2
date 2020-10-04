@@ -10,7 +10,7 @@ class LayoutVisitor(PTNodeVisitor):
         return None
 
     def visit_name(self, node, children):
-        name = ' '.join(children)
+        name = ''.join(children)
         return name
 
     def visit_diagram(self, node, children):
@@ -45,6 +45,9 @@ class LayoutVisitor(PTNodeVisitor):
 
     def visit_connector_block(self, node, children):
         return children
+
+    def visit_layout_spec(self, node, children):
+        return children.results
 
     def visit_diagram_layout(self, node, children):
         return children

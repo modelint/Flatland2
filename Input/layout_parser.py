@@ -7,7 +7,7 @@ from arpeggio.cleanpeg import ParserPEG
 import os
 from collections import namedtuple
 
-DiagramLayout = namedtuple('DiagramLayout', 'result')  # TODO: Break down further
+DiagramLayout = namedtuple('DiagramLayout', 'layout_spec node_placement connector_placement')
 
 
 class LayoutParser:
@@ -59,11 +59,12 @@ class LayoutParser:
         parse_tree = parser.parse(self.layout_text)
         # Transform that into a result that is better organized with grammar artifacts filtered out
         result = visit_parse_tree(parse_tree, LayoutVisitor(debug=self.debug))
-        # TODO:  Make it even nicer using easy to reference named tuples
-        # Transform dot files into pdfs
-        os.system('dot -Tpdf diagram_layout_parse_tree.dot -o layout_tree.pdf')
-        os.system('dot -Tpdf diagram_layout_peg_parser_model.dot -o layout_model.pdf')
-        return DiagramLayout(result=result)
+        if self.debug:
+            # Transform dot files into pdfs
+            os.system('dot -Tpdf diagram_layout_parse_tree.dot -o layout_tree.pdf')
+            os.system('dot -Tpdf diagram_layout_peg_parser_model.dot -o layout_model.pdf')
+
+        return DiagramLayout(layout_spec=result[0], node_placement=result[1], connector_placement=result[2])
 
 
 if __name__ == "__main__":

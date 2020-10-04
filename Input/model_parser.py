@@ -84,9 +84,10 @@ class ModelParser:
                 br = BinaryRelSpec(t_side=tside, p_side=pside)
             rdata = RelData(rnum=rel[0], rspec=br)
             rel_records.append(rdata)
-        # Transform dot files into pdfs
-        os.system('dot -Tpdf subsystem_parse_tree.dot -o subsys_tree.pdf')
-        os.system('dot -Tpdf subsystem_peg_parser_model.dot -o subsys_model.pdf')
+        if self.debug:
+            # Transform dot files into pdfs
+            os.system('dot -Tpdf subsystem_parse_tree.dot -o subsys_tree.pdf')
+            os.system('dot -Tpdf subsystem_peg_parser_model.dot -o subsys_model.pdf')
         # Return the refined model data
         return Subsystem(name=result[0], classes=class_records, rels=rel_records)
 

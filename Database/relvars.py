@@ -7,7 +7,7 @@ relvars.py -- Flatland DB relational variable definitions
     those xUML class model diagrams and text descriptions for both the Flatland Application and Tablet domain models.
     See comments, first the Flatland application domain relvars are defined and then the Tablet relvars.
 """
-from sqlalchemy import Table, Column, String, Integer, Boolean, Enum
+from sqlalchemy import Table, Column, String, Integer, Boolean, Enum, Float
 from sqlalchemy import ForeignKey, UniqueConstraint, PrimaryKeyConstraint, ForeignKeyConstraint, CheckConstraint
 
 
@@ -321,7 +321,7 @@ def define(db) -> dict:
                             Column('Slant', Enum('normal', 'italic', name='enum_Slant'), nullable=False),
                             Column('Weight', Enum('normal', 'bold', name='enum_Weight'), nullable=False),
                             Column('Color', String, ForeignKey('Color.Name', name='R10'), nullable=False),
-                            Column('Leading', Integer, nullable=False)
+                            Column('Spacing', Float, nullable=False)
                             ),
         'dash_pattern': Table('Dash Pattern', db.MetaData,
                               Column('Name', String, primary_key=True),
