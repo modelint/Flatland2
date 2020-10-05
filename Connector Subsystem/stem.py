@@ -56,14 +56,7 @@ class Stem:
                 raise InvalidNameSide(self.Name.side)
             tablet = self.Connector.Diagram.Canvas.Tablet
             # Get size of name bounding box
-            # A stem name might be long and split on multiple lines by the user for readability and fit
-            longest_line = max(self.Name.text, key=len)
-            line_ink_area, leading = tablet.text_line_size(asset=self.Stem_type.Name + ' name', text_line=longest_line)
-            self.Line_height = line_ink_area.height
-            self.Leading = leading
-            name_height = line_ink_area.height * len(self.Name.text) + leading * (len(self.Name.text) - 1)
-            # Vertical space for each line and leading for space in-between lines, so 1 less than the qty of lines
-            self.Name_size = Rect_Size(width=line_ink_area.width, height=name_height)
+            self.Name_size = tablet.text_block_size(asset=self.Stem_type.Name + ' name', text_block=[self.Name.text])
 
         # There are at most two rendered symbols (one on each end) of a Stem and usually none or one
         self.Root_rendered_symbol = None  # Default assumption until lookup a bit later

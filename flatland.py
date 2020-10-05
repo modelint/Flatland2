@@ -1,7 +1,6 @@
 """
 flatland.py – This is the Flatland main module
 """
-import os
 import sys
 from flatland_exceptions import FlatlandIOException
 from collections import namedtuple
@@ -10,6 +9,10 @@ from layout_parser import LayoutParser
 from flatlanddb import FlatlandDB
 from canvas import Canvas
 from single_cell_node import SingleCellNode
+from straight_binary_connector import StraightBinaryConnector
+from bending_binary_connector import BendingBinaryConnector
+from connection_types import ConnectorName, OppositeFace, StemName
+from command_interface import New_Stem
 
 
 def gen_diagram(args):
@@ -32,30 +35,73 @@ def gen_diagram(args):
     FlatlandDB()
 
     # Create a canvas
-    lspec = layout[0]
+    lspec = layout.layout_spec
     flatland_canvas = Canvas(
-        diagram_type=lspec['diagram'][0],
-        presentation=lspec['presentation'][0],
-        notation=lspec['notation'][0],
-        standard_sheet_name=lspec['sheet'][0],
-        orientation=lspec['orientation'][0],
+        diagram_type=lspec.dtype,
+        presentation=lspec.pres,
+        notation=lspec.notation,
+        standard_sheet_name=lspec.sheet,
+        orientation=lspec.orientation,
         drawoutput=args.output_file,
         show_margin=True
     )
 
     # Draw all of the classes using subsys[1]
-    # From layout, create dictionary of >> node_name : (row, col)
-    cell_assignment = {n[0]: (int(n[1]), int(n[2])) for n in layout.node_placement}
     classes = subsys[1]
     nodes = {}
+    np = layout.node_placement
     for c in classes:
         nodes[c.name] = SingleCellNode(
             node_type_name='class',
             content=[ [ c.name ], c.attributes ],
             grid=flatland_canvas.Diagram.Grid,
-            row=cell_assignment[c.name][0], column=cell_assignment[c.name][1]
+            row=np[c.name][0], column=np[c.name][1]
         )
     # TODO:  Include method section in content
+    # TODO:  Add support for axis offset on stem names
+
+    rels = subsys[2]
+    cp = layout.connector_placement
+    for r in rels:
+        # Straight or bent connector?
+        tface=cp[r.rnum].t_data.face
+        pface=cp[r.rnum].p_data.face
+        t_phrase = StemName(
+            text=r.rspec.t_side.phrase, side=cp[r.rnum].t_data.name_side,
+            axis_offset=None, end_offset=None
+        )
+        t_stem = New_Stem(stem_type='class mult', semantic=r.rspec.t_side.mult + ' mult',
+                          node=nodes[r.rspec.t_side.cname], face=tface,
+                          anchor=cp[r.rnum].t_data.shift, stem_name=t_phrase)
+        p_phrase = StemName(
+            text=r.rspec.p_side.phrase, side=cp[r.rnum].p_data.name_side,
+            axis_offset=None, end_offset=None
+        )
+        p_stem = New_Stem(stem_type='class mult', semantic=r.rspec.p_side.mult + ' mult',
+                          node=nodes[r.rspec.p_side.cname], face=pface,
+                          anchor=cp[r.rnum].p_data.shift, stem_name=p_phrase)
+        rnum = ConnectorName(text=r.rnum, side=cp[r.rnum].name_side, bend=1)
+        # TODO: Re-evaluate usage of bend parameter (is it needed?)
+        if OppositeFace[tface] == pface:
+            StraightBinaryConnector(
+                diagram=flatland_canvas.Diagram,
+                connector_type='binary association',
+                projecting_stem=t_stem,
+                floating_stem=p_stem,
+                name=rnum
+            )
+            print("Straight connector")
+        else:
+            BendingBinaryConnector(
+                diagram=flatland_canvas.Diagram,
+                connector_type='binary association',
+                anchored_stem_p=p_stem,
+                anchored_stem_t=t_stem,
+                paths=None,
+                name=rnum)
+            print("Bending connector")
+        print()
+
 
     flatland_canvas.render()
 

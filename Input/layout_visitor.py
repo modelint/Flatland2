@@ -1,5 +1,8 @@
 """ layout_visitor.py """
 from arpeggio import PTNodeVisitor
+from connection_types import NodeFace
+
+face_map = {'r': NodeFace.RIGHT, 'l': NodeFace.LEFT, 't': NodeFace.TOP, 'b': NodeFace.BOTTOM}
 
 class LayoutVisitor(PTNodeVisitor):
 
@@ -8,6 +11,12 @@ class LayoutVisitor(PTNodeVisitor):
 
     def visit_ss(self, node, children):
         return None
+
+    def visit_face(self, node, children):
+        return face_map[node.value]
+
+    def visit_dir(self, node, children):
+        return 1 if node.value == '+' else -1
 
     def visit_name(self, node, children):
         name = ''.join(children)
@@ -29,15 +38,17 @@ class LayoutVisitor(PTNodeVisitor):
         return children[0]
 
     def visit_node_placement(self, node, children):
-        return children
+        return [ children[0], int(children[1]), int(children[2])]
 
     def visit_node_block(self, node, children):
         return children
 
     def visit_shift(self, node, children):
-        return children
+        return children[0] * int(children[1])
 
     def visit_anchor(self, node, children):
+        if len(children) == 4:
+            return [ children[0], children[1], children[3], children[2] ]
         return children
 
     def visit_connector_placement(self, node, children):

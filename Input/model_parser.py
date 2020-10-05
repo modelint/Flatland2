@@ -80,7 +80,7 @@ class ModelParser:
                 br = GenRelSpec(superclass=rel[1][0], subclasses=rel[1][1:])
             else:
                 tside = RelSideSpec(phrase=rel[1][0][0], mult=rel[1][0][1], cname=rel[1][0][2])
-                pside = RelSideSpec(phrase=rel[1][1][0], mult=rel[1][1][0], cname=rel[1][1][2])
+                pside = RelSideSpec(phrase=rel[1][1][0], mult=rel[1][1][1], cname=rel[1][1][2])
                 br = BinaryRelSpec(t_side=tside, p_side=pside)
             rdata = RelData(rnum=rel[0], rspec=br)
             rel_records.append(rdata)

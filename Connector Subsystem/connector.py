@@ -42,10 +42,9 @@ class Connector:
                 raise InvalidNameSide(self.Name.side)
             tablet = self.Diagram.Canvas.Tablet
             # Get size of bounding box
-            # We assume that the name is a single line of text so we don't consider leading
-            # Since, for now at least, we assume that a Connector name will be short, like 'R314' for example
-            line_ink_area, leading = tablet.text_line_size(asset=self.Connector_type.Name + ' name', text_line=self.Name.text)
-            self.Name_size = Rect_Size(width=line_ink_area.width, height=line_ink_area.height)
+            self.Name_size = tablet.text_block_size(
+                asset=self.Connector_type.Name + ' name', text_block=[self.Name.text]
+            )
 
         self.Diagram.Grid.Connectors.append(self)
 

@@ -7,7 +7,7 @@
 nl = "\n" // New line
 space = r'[ \t]+' // Required at least one space, no newlines
 ss = " " // Single space
-lane_number = r'[1-9][0-9]*' // Always a positive integer
+number = r'[1-9][0-9]*' // Always a positive integer
 indent = "    "  // For clarity
 wdelim = r'[ _]' // Word delimiter to separate words in a name
 word = r'[A-Za-z][A-Za-z0-9]*' // String of alpahnumeric text with no whitespace starting with alpha char
@@ -21,15 +21,15 @@ orientation = "orientation" space ("portrait" / "landscape") nl // The sheet ori
 layout_spec = (diagram notation presentation sheet orientation)# // Each of these in any order
 
 nodes_header = "nodes" nl
-node_placement = indent name space lane_number ',' lane_number nl
+node_placement = indent name space number ',' number nl
 node_block = nodes_header node_placement+
 
 connectors_header = "connectors" nl
 face =  "t" / "b" / "l" / "r"
 dir = "+" / "-"
-shift = dir lane_number
-anchor = dir face shift? "|" name
-connector_placement = indent name space ":" space anchor space ":" space anchor nl
+shift = dir number
+anchor = dir number face shift? "|" name
+connector_placement = indent dir name space ":" space anchor space ":" space anchor nl
 connector_block = connectors_header connector_placement+
 
 // You can draw unconnected nodes, connected nodes or a blank sheet
