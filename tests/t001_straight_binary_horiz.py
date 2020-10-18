@@ -6,6 +6,7 @@ from straight_binary_connector import StraightBinaryConnector
 from connection_types import NodeFace, AnchorPosition, ConnectorName, StemName
 from command_interface import New_Stem
 from canvas import Canvas
+from text_block import TextBlock
 
 from flatlanddb import FlatlandDB
 
@@ -51,10 +52,10 @@ def create_canvas(args):
     p_node = SingleCellNode(node_type_name='class', content=class_Pilot, grid=flatland_canvas.Diagram.Grid,
                             row=1, column=3)
 
-    t_phrase = StemName(text=['is flying'], side=1, axis_offset=None, end_offset=None)
+    t_phrase = StemName(text=TextBlock('is flying really well so far', wrap=3), side=1, axis_offset=None, end_offset=None)
     t_stem = New_Stem(stem_type='class mult', semantic='1 mult', node=t_node,
                       face=NodeFace.RIGHT, anchor=AnchorPosition(0), stem_name=t_phrase)
-    p_phrase = StemName(text=['is flown by'], side=-1, axis_offset=None, end_offset=None)
+    p_phrase = StemName(text=TextBlock('is flown by with amazing skill', wrap=3), side=-1, axis_offset=None, end_offset=None)
     p_stem = New_Stem(stem_type='class mult', semantic='1 mult', node=p_node,
                       face=NodeFace.LEFT, anchor=None, stem_name=p_phrase)
 

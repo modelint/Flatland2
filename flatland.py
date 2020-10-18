@@ -13,6 +13,7 @@ from straight_binary_connector import StraightBinaryConnector
 from bending_binary_connector import BendingBinaryConnector
 from connection_types import ConnectorName, OppositeFace, StemName
 from command_interface import New_Stem
+from text_block import TextBlock
 
 
 def gen_diagram(args):
@@ -62,25 +63,27 @@ def gen_diagram(args):
 
     rels = subsys[2]
     cp = layout.connector_placement
-    for r in rels:
+    for r in rels:  # r is the model data without any layout info
+        rlayout = cp[r.num]  # How this r is to be laid out on the diagram
         # Straight or bent connector?
-        tface=cp[r.rnum].t_data.face
-        pface=cp[r.rnum].p_data.face
+        tface = rlayout.t_data.face
+        pface = rlayout.p_data.face
         t_phrase = StemName(
-            text=r.rspec.t_side.phrase, side=cp[r.rnum].t_data.name_side,
+            text=TextBlock(r.rspec.t_side.phrase, wrap=rlayout.wrap),
+            side=rlayout.t_data.name_side,
             axis_offset=None, end_offset=None
         )
         t_stem = New_Stem(stem_type='class mult', semantic=r.rspec.t_side.mult + ' mult',
                           node=nodes[r.rspec.t_side.cname], face=tface,
-                          anchor=cp[r.rnum].t_data.shift, stem_name=t_phrase)
+                          anchor=rlayout.t_data.shift, stem_name=t_phrase)
         p_phrase = StemName(
-            text=r.rspec.p_side.phrase, side=cp[r.rnum].p_data.name_side,
+            text=TextBlock(r.rspec.p_side.phrase, wrap=rlayout.wrap), side=rlayout.p_data.name_side,
             axis_offset=None, end_offset=None
         )
         p_stem = New_Stem(stem_type='class mult', semantic=r.rspec.p_side.mult + ' mult',
                           node=nodes[r.rspec.p_side.cname], face=pface,
-                          anchor=cp[r.rnum].p_data.shift, stem_name=p_phrase)
-        rnum = ConnectorName(text=r.rnum, side=cp[r.rnum].name_side, bend=1)
+                          anchor=rlayout.p_data.shift, stem_name=p_phrase)
+        rnum = ConnectorName(text=r.rnum, side=rlayout.name_side, bend=1)
         # TODO: Re-evaluate usage of bend parameter (is it needed?)
         if OppositeFace[tface] == pface:
             StraightBinaryConnector(

@@ -16,6 +16,7 @@
       <sourceFolder url="file://$MODULE_DIR$/Decoration Subsystem" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Input" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/ParserPlay" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Text" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

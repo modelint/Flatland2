@@ -37,7 +37,7 @@ User specification of name text placed near a Stem
 
     Attributes
 
-    - text -- The text to be written
+    - text -- A TextBlock instance
     - side -- ( 1 | -1 ) Which side of the Stem (top bottom) or (right left)
     - axis_offset -- A positive or negative non-zero integer specifying axis side and distance from the axis
     - end_offset -- A positive integer specifying non-default offset distance from the end of the stem

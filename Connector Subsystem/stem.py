@@ -56,7 +56,7 @@ class Stem:
                 raise InvalidNameSide(self.Name.side)
             tablet = self.Connector.Diagram.Canvas.Tablet
             # Get size of name bounding box
-            self.Name_size = tablet.text_block_size(asset=self.Stem_type.Name + ' name', text_block=[self.Name.text])
+            self.Name_size = tablet.text_block_size(asset=self.Stem_type.Name + ' name', text_block=self.Name.text.text)
 
         # There are at most two rendered symbols (one on each end) of a Stem and usually none or one
         self.Root_rendered_symbol = None  # Default assumption until lookup a bit later
@@ -114,7 +114,7 @@ class Stem:
                 raise OutofDiagramBounds(object_type='text block', x_value=name_x, y_value=name_y)
 
             tablet.add_text_block(asset=self.Stem_type.Name + ' name', lower_left=Position(name_x, name_y),
-                                  text=self.Name.text)
+                                  text=self.Name.text.text)
 
         root_symbol_name = self.Stem_type.DecoratedStems[self.Semantic].Root_symbol
         vine_symbol_name = self.Stem_type.DecoratedStems[self.Semantic].Vine_symbol

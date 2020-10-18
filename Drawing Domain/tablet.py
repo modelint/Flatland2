@@ -163,7 +163,8 @@ class Tablet:
         )
         print('Text added')
 
-    def add_text_block(self, asset: str, lower_left: Position, text: List[str]):
+    def add_text_block(self, asset: str, lower_left: Position, text: List[str],
+                       right_align=False):
         """
         Add all lines of text to the tablet text render list each at the correct position
         on the tablet
@@ -171,6 +172,7 @@ class Tablet:
         :param asset:  To get the text style
         :param lower_left: Lower left corner of the text block on the Tablet
         :param text: One or more lines of text
+        :param right_align: Text is right aligned
         """
         style_name = StyleDB.text_presentation[asset]  # Look up the text style for this asset
         style = StyleDB.text_style[style_name]
@@ -287,7 +289,7 @@ class Tablet:
         longest_line = max(text_block, key=len)
         block_width = self.text_line_size(asset=asset, text_line=longest_line).width
 
-        block_height =  num_lines*spacing
+        block_height =  num_lines*font_height + num_lines-1*style.spacing
         return Rect_Size(width=block_width, height=block_height)
 
     def text_line_size(self, asset: str, text_line: str) -> Rect_Size:

@@ -5,7 +5,9 @@ from model_visitor import SubsystemVisitor
 from arpeggio import visit_parse_tree
 from arpeggio.cleanpeg import ParserPEG
 from collections import namedtuple
+from nocomment import nocomment
 import os
+from pathlib import Path
 
 ClassData = namedtuple('ClassData', 'name attributes methods')
 GenRelSpec = namedtuple('GenRelSpec', 'superclass subclasses')
@@ -27,7 +29,7 @@ class ModelParser:
         - model_grammar -- The model grammar text read from the system grammar file
         - model_text -- The input model text read from the user supplied text file
     """
-    grammar_file = 'Model Markup/model.peg'
+    grammar_file = Path(__file__).parent.parent / "Model Markup/model.peg"
     root_rule_name = 'subsystem'  # We don't draw a diagram larger than a single subsystem
 
     def __init__(self, model_file_path, debug=True):
@@ -42,13 +44,13 @@ class ModelParser:
 
         # Read the grammar file
         try:
-            self.model_grammar = open(ModelParser.grammar_file, 'r').read()
+            self.model_grammar = nocomment(open(ModelParser.grammar_file, 'r').read())
         except OSError as e:
             raise ModelGrammarFileOpen(ModelParser.grammar_file)
 
         # Read the model file
         try:
-            self.model_text = open(self.model_file_path, 'r').read()
+            self.model_text = nocomment(open(self.model_file_path, 'r').read())
         except OSError as e:
             raise ModelInputFileOpen(self.model_file_path)
 
@@ -93,4 +95,6 @@ class ModelParser:
 
 
 if __name__ == "__main__":
-    ModelParser(model_file_path='../Model Markup/test.xmm', debug=True)
+    markup_path = Path(__file__).parent.parent / 'Model Markup/test.xmm'
+    x = ModelParser(model_file_path=markup_path, debug=True)
+    x.parse()

@@ -6,7 +6,6 @@
 
 nl = "\n" // New line
 space = r'[ \t]+' // Required at least one space, no newlines
-ss = " " // Single space
 number = r'[1-9][0-9]*' // Always a positive integer
 indent = "    "  // For clarity
 wdelim = r'[ _]' // Word delimiter to separate words in a name
@@ -24,13 +23,16 @@ nodes_header = "nodes" nl
 node_placement = indent name space number ',' number nl
 node_block = nodes_header node_placement+
 
+face =  "t" / "b" / "l" / "r" // top, bottom, left or right node face
+dir = "+" / "-" // direction of increasing coord values, up and to the right is positive
+anchor = dir number // placement of stem anchor away from center in given direction a number of notches
+csep = space ':' space
+node_face = face anchor? "|" name
+sname_place = dir number  // Side of stem axis and number of text lines after wrapping in stem name text block
+cname_place = dir name // Side of connector axis and name of connector (since it is probably short)
+connector_layout = indent cname_place csep sname_place space node_face csep sname_place space node_face nl
 connectors_header = "connectors" nl
-face =  "t" / "b" / "l" / "r"
-dir = "+" / "-"
-shift = dir number
-anchor = dir number face shift? "|" name
-connector_placement = indent dir name space ":" space anchor space ":" space anchor nl
-connector_block = connectors_header connector_placement+
+connector_block = connectors_header connector_layout+
 
 // You can draw unconnected nodes, connected nodes or a blank sheet
 diagram_layout = layout_spec ((node_block connector_block) / (node_block))? EOF
