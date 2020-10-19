@@ -164,15 +164,16 @@ class Tablet:
         print('Text added')
 
     def add_text_block(self, asset: str, lower_left: Position, text: List[str],
-                       right_align=False):
+                       left_align=True):
         """
         Add all lines of text to the tablet text render list each at the correct position
-        on the tablet
+        on the tablet. Set the lower left x of each line based on right or left alignment
+        within the text block.  Assuming left alignment as default.
 
         :param asset:  To get the text style
         :param lower_left: Lower left corner of the text block on the Tablet
         :param text: One or more lines of text
-        :param right_align: Text is right aligned
+        :param left_align: Text is left aligned
         """
         style_name = StyleDB.text_presentation[asset]  # Look up the text style for this asset
         style = StyleDB.text_style[style_name]
@@ -181,8 +182,18 @@ class Tablet:
 
         # Get height of one line (any will do since they all use the same text style)
         xpos, ypos = lower_left  # Initialize at lower left corner
+        x_indent = 0  # Assumption for left aligned block
+        right_align = not left_align  # For readability
+        if right_align:
+            # We'll need the total width of the block as a reference point
+            longest_line = max(text, key=len)
+            block_width = self.text_line_size(asset=asset, text_line=longest_line).width
         for line in text[::-1]:  # Reverse order since we are positioning lines from the bottom up
-            self.add_text_line(asset=asset, lower_left=Position(xpos, ypos), text=line)
+            # always zero indent from xpos when left aligned
+            if right_align:
+                line_width = self.text_line_size(asset=asset, text_line=line).width
+                x_indent = block_width - line_width  # indent past xpos by the difference
+            self.add_text_line(asset=asset, lower_left=Position(xpos+x_indent, ypos), text=line)
             ypos += spacing
 
     def render_rects(self):
