@@ -52,11 +52,13 @@ def gen_diagram(args):
     nodes = {}
     np = layout.node_placement
     for c in classes:
+        nlayout = np[c.name]
+        name_block = TextBlock(c.name, nlayout.wrap).text
         nodes[c.name] = SingleCellNode(
             node_type_name='class',
-            content=[ [ c.name ], c.attributes ],
+            content=[ name_block, c.attributes ],
             grid=flatland_canvas.Diagram.Grid,
-            row=np[c.name][0], column=np[c.name][1]
+            row=nlayout.row, column=nlayout.column
         )
     # TODO:  Include method section in content
     # TODO:  Add support for axis offset on stem names
@@ -83,7 +85,7 @@ def gen_diagram(args):
         p_stem = New_Stem(stem_type='class mult', semantic=r.rspec.p_side.mult + ' mult',
                           node=nodes[r.rspec.p_side.cname], face=pface,
                           anchor=rlayout.p_data.anchor_at, stem_name=p_phrase)
-        rnum = ConnectorName(text=r.rnum, side=rlayout.name_side, bend=1)
+        rnum = ConnectorName(text=r.rnum, side=rlayout.name_side, bend=rlayout.bend)
         # TODO: Re-evaluate usage of bend parameter (is it needed?)
         if OppositeFace[tface] == pface:
             StraightBinaryConnector(

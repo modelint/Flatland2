@@ -4,7 +4,7 @@ stem.py
 
 from flatland_exceptions import InvalidNameSide, OutofDiagramBounds
 from stem_type import StemType
-from geometry_types import Position, Rect_Size
+from geometry_types import Position, HorizAlign
 from rendered_symbol import RenderedSymbol
 from connection_types import NodeFace, StemName
 
@@ -86,12 +86,12 @@ class Stem:
         tablet = self.Connector.Diagram.Canvas.Tablet
 
         if self.Name:
-            left_align = True  # Assume left alignment of text lines
+            align = HorizAlign.LEFT  # Assume left alignment of text lines
             name_spec = self.Stem_type.Name_spec
             if self.Vine_end.y == self.Root_end.y:
                 # Horizontal stem
                 if self.Node_face == NodeFace.LEFT:
-                    left_align = False  # Text is to the left of node face, so right align it
+                    align = HorizAlign.RIGHT  # Text is to the left of node face, so right align it
                     width_offset = -(self.Name_size.width + name_spec.end_buffer.horizontal)
                 else:
                     width_offset = name_spec.end_buffer.horizontal
@@ -101,7 +101,7 @@ class Stem:
             else:
                 # Vertical stem
                 if self.Name.side == -1:  # Text is to the left of vertical stem, so right align it
-                    left_align = False
+                    align = HorizAlign.RIGHT
                 if self.Node_face == NodeFace.BOTTOM:
                     height_offset = -(self.Name_size.height + name_spec.end_buffer.vertical)
                 else:
@@ -118,7 +118,7 @@ class Stem:
                 raise OutofDiagramBounds(object_type='text block', x_value=name_x, y_value=name_y)
 
             tablet.add_text_block(asset=self.Stem_type.Name + ' name', lower_left=Position(name_x, name_y),
-                                  text=self.Name.text.text, left_align=left_align)
+                                  text=self.Name.text.text, align=align)
 
         root_symbol_name = self.Stem_type.DecoratedStems[self.Semantic].Root_symbol
         vine_symbol_name = self.Stem_type.DecoratedStems[self.Semantic].Vine_symbol

@@ -31,7 +31,7 @@ def create_canvas(args):
     # Until markup parsing is supported, we will provide test data by hand crafting
     # the parsed output
     class_Aircraft = [
-        ['Aircraft'], [
+        ['Aircraft', 'Tower'], [
             'Tail number: ACAO {I}',
             'Altitude',
             'Airspeed : Knots',

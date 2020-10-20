@@ -43,9 +43,21 @@ class LayoutVisitor(PTNodeVisitor):
         """Keyword argument"""
         return children[0]
 
+    def visit_wrap(self, node, children):
+        """Number of lines to wrap"""
+        return int(children[0])
+
     def visit_node_placement(self, node, children):
-        """node_name, row, column"""
-        return [ children[0], int(children[1]), int(children[2])]
+        """node_name, wrap?, row, column"""
+        node_name = children[0]
+        wrap = None if len(children) == 3 else children[1]
+        offset = 1 if wrap else 0  # wrap is optional and offsets remaining items if supplied
+        row = int(children[1+offset])
+        col = int(children[2+offset])
+        items = [ node_name, row, col]  # We always have these
+        if wrap:
+            items.append(wrap)  # Tack optional item on the end if supplied to simplify downstream processing
+        return items
 
     def visit_node_block(self, node, children):
         """All node placements"""
@@ -62,7 +74,11 @@ class LayoutVisitor(PTNodeVisitor):
 
     def visit_sname_place(self, node, children):
         """Side of stem axis and number of lines in text block"""
-        return children[0], int(children[1])
+        return children
+
+    def visit_bend(self, node, children):
+        """Number of bend where cname appears"""
+        return int(children[0])
 
     def visit_cname_place(self, node, children):
         """Side of connector axis and name of connector"""

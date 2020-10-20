@@ -20,7 +20,7 @@ orientation = "orientation" space ("portrait" / "landscape") nl // The sheet ori
 layout_spec = (diagram notation presentation sheet orientation)# // Each of these in any order
 
 nodes_header = "nodes" nl
-node_placement = indent name space number ',' number nl
+node_placement = indent name wrap? space number ',' number nl
 node_block = nodes_header node_placement+
 
 face =  "t" / "b" / "l" / "r" // top, bottom, left or right node face
@@ -28,8 +28,10 @@ dir = "+" / "-" // direction of increasing coord values, up and to the right is 
 anchor = dir number // placement of stem anchor away from center in given direction a number of notches
 csep = space ':' space
 node_face = face anchor? "|" name
-sname_place = dir number  // Side of stem axis and number of text lines after wrapping in stem name text block
-cname_place = dir name // Side of connector axis and name of connector (since it is probably short)
+sname_place = dir wrap  // Side of stem axis and number of text lines after wrapping in stem name text block
+wrap = '/' number
+bend = '>' number
+cname_place = dir name bend? // Side of connector axis and name of connector (since it is probably short)
 connector_layout = indent cname_place csep sname_place space node_face csep sname_place space node_face nl
 connectors_header = "connectors" nl
 connector_block = connectors_header connector_layout+

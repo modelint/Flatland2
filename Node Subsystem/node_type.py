@@ -2,7 +2,7 @@
 node_type.py
 """
 
-from geometry_types import Rect_Size, Padding, Alignment
+from geometry_types import Rect_Size, Padding, HorizAlign
 from flatlanddb import FlatlandDB as fdb
 from sqlalchemy import select, and_
 from collections import namedtuple
@@ -31,8 +31,7 @@ class NodeType:
 
         # Load Compartment types
         comptype_t = fdb.MetaData.tables['Compartment Type']
-        r_p = [comptype_t.c.Name, comptype_t.c['Stack order'],
-               comptype_t.c['Vertical alignment'], comptype_t.c['Horizontal alignment'],
+        r_p = [comptype_t.c.Name, comptype_t.c['Stack order'], comptype_t.c['Horizontal alignment'],
                comptype_t.c['Pad top'], comptype_t.c['Pad bottom'],
                comptype_t.c['Pad right'], comptype_t.c['Pad left'], comptype_t.c['Text style']
                ]
@@ -45,7 +44,7 @@ class NodeType:
         for r in rows:
             self.Compartment_types.append( CompartmentType(
                 name=r.Name,
-                alignment=Alignment(vertical=r['Vertical alignment'], horizontal=r['Horizontal alignment']),
+                alignment=HorizAlign[r['Horizontal alignment']],
                 padding=Padding(top=r['Pad top'], bottom=r['Pad bottom'], left=r['Pad left'], right=r['Pad right']),
                 text_style=r['Text style'] )
             )
