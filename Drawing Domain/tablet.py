@@ -284,6 +284,7 @@ class Tablet:
 
     def text_block_size(self, asset: str, text_block: List[str]) -> Rect_Size:
         """
+        Determines the dimensions of a rectangle bounding the text to be drawn.
 
         :param asset:
         :param text_block:
@@ -293,14 +294,15 @@ class Tablet:
         style = StyleDB.text_style[style_name]
         font_height = style.size
         spacing = font_height*style.spacing
+        inter_line_spacing = spacing - font_height  # Space between two lines
 
         num_lines = len(text_block)
         assert num_lines > 0, "Text block size requested for empty text block"
         # The text block is the width of its longest line
         longest_line = max(text_block, key=len)
         block_width = self.text_line_size(asset=asset, text_line=longest_line).width
+        block_height = num_lines*spacing - inter_line_spacing  # Deduct that one unneeded line of spacing on the top
 
-        block_height =  num_lines*font_height + num_lines-1*style.spacing
         return Rect_Size(width=block_width, height=block_height)
 
     def text_line_size(self, asset: str, text_line: str) -> Rect_Size:

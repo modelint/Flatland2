@@ -10,11 +10,11 @@ population = [
      'Node type': 'class', 'Diagram type': 'class', 'Stack order': 1},
 
     {'Name': 'attributes', 'Vertical alignment': 'TOP', 'Horizontal alignment': 'LEFT',
-     'Pad top': 10, 'Pad bottom': 10, 'Pad left': 10, 'Pad right': 4, 'Text style': 'BODY',
+     'Pad top': 5, 'Pad bottom': 10, 'Pad left': 10, 'Pad right': 8, 'Text style': 'BODY',
      'Node type': 'class', 'Diagram type': 'class', 'Stack order': 2},
 
     {'Name': 'methods', 'Vertical alignment': 'TOP', 'Horizontal alignment': 'LEFT',
-     'Pad top': 10, 'Pad bottom': 4, 'Pad left': 4, 'Pad right': 4, 'Text style': 'BODY',
+     'Pad top': 5, 'Pad bottom': 4, 'Pad left': 4, 'Pad right': 8, 'Text style': 'BODY',
      'Node type': 'class', 'Diagram type': 'class', 'Stack order': 3},
 
     # Imported class
@@ -23,7 +23,7 @@ population = [
      'Node type': 'imported class', 'Diagram type': 'class', 'Stack order': 1},
 
     {'Name': 'attributes', 'Vertical alignment': 'TOP', 'Horizontal alignment': 'LEFT',
-     'Pad top': 10, 'Pad bottom': 10, 'Pad left': 10, 'Pad right': 4, 'Text style': 'BODY',
+     'Pad top': 5, 'Pad bottom': 10, 'Pad left': 10, 'Pad right': 8, 'Text style': 'BODY',
      'Node type': 'imported class', 'Diagram type': 'class', 'Stack order': 2},
 
     # State machine diagram
