@@ -11,7 +11,7 @@ from nocomment import nocomment
 
 DiagramLayout = namedtuple('DiagramLayout', 'layout_spec node_placement connector_placement')
 LayoutSpec = namedtuple('LayoutSpec', 'dtype pres notation sheet orientation')
-NodePlacement = namedtuple('NodePlacement', 'wrap row column')
+NodePlacement = namedtuple('NodePlacement', 'wrap row column halign valign')
 ConnPlacement = namedtuple('ConnPlacement', 'name_side bend t_data, p_data')
 StemSpec = namedtuple('StemSpec', 'name_side wrap face node anchor_at')
 
@@ -74,28 +74,8 @@ class LayoutParser:
         ld = result.results['layout_spec'][0] # layout data
         lspec = LayoutSpec(dtype=ld['diagram'][0], notation=ld['notation'][0], pres=ld['presentation'][0],
                            orientation=ld['orientation'][0], sheet=ld['sheet'][0])
-        node_pdict = {
-            n[0]: NodePlacement(
-                wrap=1 if len(n) == 3 else n[3], row=n[1], column=n[2]
-            ) for n in result.results['node_block'][0] }
-        conn_pdict = {}
-        for c in result.results['connector_block'][0]:
-            cname_side, c_name = c[0][:2]  # Connector name
-            c_bend = 1 if len(c[0]) == 2 else c[0][2]
-            t_name_side, t_num_lines = c[1]  # T stem (left or top)
-            p_name_side, p_num_lines = c[3]  # P stem (right or bottom)
-            t_face, t_node = c[2][:2]  # Face and node ref
-            p_face, p_node = c[4][:2]
-            t_anchor = 0 if len(c[2]) == 2 else c[2][2]  # Optional anchor position on node face if not centered at 0
-            p_anchor = 0 if len(c[4]) == 2 else c[4][2]
-            conn_pdict[c_name] = ConnPlacement(
-                name_side=cname_side,
-                bend=c_bend,
-                t_data=StemSpec(
-                    name_side=t_name_side, wrap=t_num_lines, face=t_face, node=t_node, anchor_at=t_anchor),
-                p_data=StemSpec(
-                    name_side=p_name_side, wrap=p_num_lines, face=p_face, node=p_node, anchor_at=p_anchor),
-            )
+        node_pdict = { n['node_name']: n for n in result.results['node_block'][0] }
+        conn_pdict = { c['cname']: c for c in result.results['connector_block'][0] }
         return DiagramLayout(layout_spec=lspec, node_placement=node_pdict, connector_placement=conn_pdict)
 
 

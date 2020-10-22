@@ -18,6 +18,9 @@ class LayoutVisitor(PTNodeVisitor):
         """Pos-neg direction"""
         return 1 if node.value == '+' else -1
 
+    def visit_number(self, node, children):
+        return int(node.value)
+
     def visit_name(self, node, children):
         """Words and delmiters joined to form a complete name"""
         name = ''.join(children)
@@ -45,18 +48,18 @@ class LayoutVisitor(PTNodeVisitor):
 
     def visit_wrap(self, node, children):
         """Number of lines to wrap"""
-        return int(children[0])
+        return {node.rule_name: int(children[0]) }
+
+    def visit_node_loc(self, node, children):
+        return {node.rule_name: children}
+
+    def visit_node_name(self, node, children):
+        return {node.rule_name: ''.join(children)}
 
     def visit_node_placement(self, node, children):
         """node_name, wrap?, row, column"""
-        node_name = children[0]
-        wrap = None if len(children) == 3 else children[1]
-        offset = 1 if wrap else 0  # wrap is optional and offsets remaining items if supplied
-        row = int(children[1+offset])
-        col = int(children[2+offset])
-        items = [ node_name, row, col]  # We always have these
-        if wrap:
-            items.append(wrap)  # Tack optional item on the end if supplied to simplify downstream processing
+        # Combine all child dictionaries
+        items = {k: v for d in children for k, v in d.items()}
         return items
 
     def visit_node_block(self, node, children):
@@ -67,26 +70,65 @@ class LayoutVisitor(PTNodeVisitor):
         """Placement of anchor position direction (1 or -1 * number of notches"""
         return children[0] * int(children[1])
 
+    def visit_valign(self, node, children):
+        """Vertical alignment of noce in its cell"""
+        return {node.rule_name: children[0].upper()}
+
+    def visit_halign(self, node, children):
+        """Horizontal alignment of noce in its cell"""
+        return {node.rule_name: children[0].upper()}
+
+    def visit_node_align(self, node, children):
+        """Vertical and/or horizontal alignment of node in its cell"""
+        if len(children) == 2:
+            # Merge the two dictionaries
+            return {**children[0], **children[1]}
+        else:
+            return children[0]
+
     def visit_node_face(self, node, children):
+        """Where connector attaches to node face"""
+        d = {'face': children[0]}
         if len(children) == 3:
-            return [ children[0], children[2], children[1] ]
-        return children
+            d.update({'anchor': children[1], 'cname':children[2]})
+        else:
+            d['cname'] = children[1]
+        return d
 
     def visit_sname_place(self, node, children):
         """Side of stem axis and number of lines in text block"""
-        return children
+        d = {'stem_dir': children[0]}  # initialize d
+        d.update(children[1]) # Add wrap key
+        return d
 
     def visit_bend(self, node, children):
         """Number of bend where cname appears"""
         return int(children[0])
 
+    def visit_tstem(self, node, children):
+        """T stem layout info"""
+        items = {k: v for d in children for k, v in d.items()}
+        d = {node.rule_name: items}
+        return d
+
+    def visit_pstem(self, node, children):
+        """P stem layout info"""
+        items = {k: v for d in children for k, v in d.items()}
+        d = {node.rule_name: items}
+        return d
+
     def visit_cname_place(self, node, children):
-        """Side of connector axis and name of connector"""
-        return children
+        """Side of connector axis and name of connector and optional bend where cname is placed"""
+        d = {'dir': children[0], 'cname': children[1]}
+        if len(children) == 3:
+            d['bend'] = children[2]
+        return d
 
     def visit_connector_layout(self, node, children):
-        """"""
-        return children
+        """All layout info for the connector"""
+        # Combine all child dictionaries
+        items = {k: v for d in children for k, v in d.items()}
+        return items
 
     def visit_connector_block(self, node, children):
         return children

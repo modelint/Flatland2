@@ -19,22 +19,31 @@ sheet = "sheet" space name nl // The sheet size name
 orientation = "orientation" space ("portrait" / "landscape") nl // The sheet orientation
 layout_spec = (diagram notation presentation sheet orientation)# // Each of these in any order
 
+valign = ">" ("up" / "down")
+halign = ">" ("right" / "left")
+node_align = valign space? halign / halign space? valign / valign / halign
+
 nodes_header = "nodes" nl
-node_placement = indent name wrap? space number ',' number nl
+node_loc = number ',' number  // Row and column
+node_name = name
+node_placement = indent node_name wrap? space node_loc (space node_align)? nl
 node_block = nodes_header node_placement+
 
 face =  "t" / "b" / "l" / "r" // top, bottom, left or right node face
 dir = "+" / "-" // direction of increasing coord values, up and to the right is positive
 anchor = dir number // placement of stem anchor away from center in given direction a number of notches
-csep = space ':' space
-node_face = face anchor? "|" name
+csep = space ':' space // argument separator
+node_face = face anchor? "|" name // Where a stem attaches to a node face
 sname_place = dir wrap  // Side of stem axis and number of text lines after wrapping in stem name text block
-wrap = '/' number
-bend = '>' number
+wrap = '/' number // Number of lines to wrap an associated string
+bend = '>' number // Bend in connector where 1 is at the tstem side increasing to the pstem side
 cname_place = dir name bend? // Side of connector axis and name of connector (since it is probably short)
-connector_layout = indent cname_place csep sname_place space node_face csep sname_place space node_face nl
-connectors_header = "connectors" nl
-connector_block = connectors_header connector_layout+
+stem_side = sname_place space node_face // Either the tstem or pstem layout
+tstem = stem_side // one stem in a binary connector (t and p are arbitary names)
+pstem = stem_side // the opposite stem in a binary connector
+connector_layout = indent cname_place csep tstem csep pstem nl // All layout info for a binary connector
+connectors_header = "connectors" nl // starts section where connector layout info is specified
+connector_block = connectors_header connector_layout+ // All
 
 // You can draw unconnected nodes, connected nodes or a blank sheet
 diagram_layout = layout_spec ((node_block connector_block) / (node_block))? EOF

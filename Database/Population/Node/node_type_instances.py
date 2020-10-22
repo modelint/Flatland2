@@ -5,7 +5,7 @@ population = [
     {'Name': 'class', 'About': 'Abstraction of a bunch of things with the same properies, ' +
                                'behavior and subject to same constraints and policies',
      'Corner rounding': 0, 'Border': 'Normal',
-     'Default height': 80, 'Default width': 110, 'Max height': 180, 'Max width': 144, 'Diagram type': 'class'},
+     'Default height': 80, 'Default width': 70, 'Max height': 180, 'Max width': 144, 'Diagram type': 'class'},
 
     {'Name': 'imported class', 'About': 'Used when you have a relationship to a class ' +
                                         'in some other subsystem of your domain.',

@@ -5,11 +5,11 @@ presentation diagnostic
 orientation landscape
 sheet tabloid
 nodes
-    // <node> <row>,<col>
+    // node [wrap] row,col align [ right | left ] [top | bottom]
     Sheet 1,1
     Canvas 3,1
     Diagram 3,3
-    Annotation Layout/2 2,3
+    Annotation Layout/2 2,3 >right
 connectors
     // <side><connector name>[>bend] : <side><lines> <face><anchor>|<node> : <side><lines> <face><anchor>|<node>
     -R14   : +/1 r|Canvas   : -/3  l|Diagram

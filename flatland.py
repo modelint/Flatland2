@@ -14,6 +14,7 @@ from bending_binary_connector import BendingBinaryConnector
 from connection_types import ConnectorName, OppositeFace, StemName
 from command_interface import New_Stem
 from text_block import TextBlock
+from geometry_types import Alignment, VertAlign, HorizAlign
 
 
 def gen_diagram(args):
@@ -53,12 +54,16 @@ def gen_diagram(args):
     np = layout.node_placement
     for c in classes:
         nlayout = np[c.name]
-        name_block = TextBlock(c.name, nlayout.wrap).text
+        nlayout['wrap'] = nlayout.get('wrap', 1)
+        name_block = TextBlock(c.name, nlayout['wrap'])
+        h = HorizAlign[nlayout.get('halign', 'CENTER')]
+        v = VertAlign[nlayout.get('valign', 'CENTER')]
         nodes[c.name] = SingleCellNode(
             node_type_name='class',
-            content=[ name_block, c.attributes ],
+            content=[ name_block.text, c.attributes ],
             grid=flatland_canvas.Diagram.Grid,
-            row=nlayout.row, column=nlayout.column
+            row=nlayout['node_loc'][0], column=nlayout['node_loc'][1],
+            local_alignment=Alignment(vertical=v, horizontal=h)
         )
     # TODO:  Include method section in content
     # TODO:  Add support for axis offset on stem names
@@ -68,26 +73,25 @@ def gen_diagram(args):
     for r in rels:  # r is the model data without any layout info
         rlayout = cp[r.rnum]  # How this r is to be laid out on the diagram
         # Straight or bent connector?
-        tface = rlayout.t_data.face
-        pface = rlayout.p_data.face
+        tstem = rlayout['tstem']
+        pstem = rlayout['pstem']
         t_phrase = StemName(
-            text=TextBlock(r.rspec.t_side.phrase, wrap=rlayout.t_data.wrap),
-            side=rlayout.t_data.name_side,
-            axis_offset=None, end_offset=None
+            text=TextBlock(r.rspec.t_side.phrase, wrap=tstem['wrap']),
+            side=tstem['stem_dir'], axis_offset=None, end_offset=None
         )
         t_stem = New_Stem(stem_type='class mult', semantic=r.rspec.t_side.mult + ' mult',
-                          node=nodes[r.rspec.t_side.cname], face=tface,
-                          anchor=rlayout.t_data.anchor_at, stem_name=t_phrase)
+                          node=nodes[r.rspec.t_side.cname], face=tstem['face'],
+                          anchor=tstem.get('anchor', 0), stem_name=t_phrase)
         p_phrase = StemName(
-            text=TextBlock(r.rspec.p_side.phrase, wrap=rlayout.p_data.wrap), side=rlayout.p_data.name_side,
-            axis_offset=None, end_offset=None
+            text=TextBlock(r.rspec.p_side.phrase, wrap=pstem['wrap']),
+            side=pstem['stem_dir'], axis_offset=None, end_offset=None
         )
         p_stem = New_Stem(stem_type='class mult', semantic=r.rspec.p_side.mult + ' mult',
-                          node=nodes[r.rspec.p_side.cname], face=pface,
-                          anchor=rlayout.p_data.anchor_at, stem_name=p_phrase)
-        rnum = ConnectorName(text=r.rnum, side=rlayout.name_side, bend=rlayout.bend)
-        # TODO: Re-evaluate usage of bend parameter (is it needed?)
-        if OppositeFace[tface] == pface:
+                          node=nodes[r.rspec.p_side.cname], face=pstem['face'],
+                          anchor=pstem.get('anchor', 0), stem_name=p_phrase)
+        rnum = ConnectorName(text=r.rnum, side=rlayout['dir'], bend=rlayout.get('bend', 1))
+
+        if OppositeFace[tstem['face']] == pstem['face']:
             StraightBinaryConnector(
                 diagram=flatland_canvas.Diagram,
                 connector_type='binary association',
