@@ -65,7 +65,8 @@ class Node:
         # For all compartments in this node, get the max height and width
         crects = [c.Text_block_size for c in self.Compartments]
         # Get the max of each compartment width and the default node type width
-        max_width = max([r.width for r in crects] + [self.Node_type.Default_size.width])
+        # max_width = max([r.width for r in crects] + [self.Node_type.Default_size.width])
+        max_width = max([r.width for r in crects])
         # Height is the sum of all compartment heights
         # Ignore the default node type height for now
         node_height = sum([r.height for r in crects])

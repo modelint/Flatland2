@@ -77,15 +77,16 @@ class ModelParser:
             methods = None if len(cblock) < 3 else cblock[2]
             class_record = ClassData(name=cblock[0], attributes=attrs, methods=methods)
             class_records.append(class_record)
-        for rel in result[2]:
-            if 'gen_rel' in rel.results.keys():
-                br = GenRelSpec(superclass=rel[1][0], subclasses=rel[1][1:])
-            else:
-                tside = RelSideSpec(phrase=rel[1][0][0], mult=rel[1][0][1], cname=rel[1][0][2])
-                pside = RelSideSpec(phrase=rel[1][1][0], mult=rel[1][1][1], cname=rel[1][1][2])
-                br = BinaryRelSpec(t_side=tside, p_side=pside)
-            rdata = RelData(rnum=rel[0], rspec=br)
-            rel_records.append(rdata)
+        if len(result) == 3:
+            for rel in result[2]:
+                if 'gen_rel' in rel.results.keys():
+                    br = GenRelSpec(superclass=rel[1][0], subclasses=rel[1][1:])
+                else:
+                    tside = RelSideSpec(phrase=rel[1][0][0], mult=rel[1][0][1], cname=rel[1][0][2])
+                    pside = RelSideSpec(phrase=rel[1][1][0], mult=rel[1][1][1], cname=rel[1][1][2])
+                    br = BinaryRelSpec(t_side=tside, p_side=pside)
+                rdata = RelData(rnum=rel[0], rspec=br)
+                rel_records.append(rdata)
         if self.debug:
             # Transform dot files into pdfs
             os.system('dot -Tpdf subsystem_parse_tree.dot -o subsys_tree.pdf')

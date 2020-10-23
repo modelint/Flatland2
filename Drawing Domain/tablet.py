@@ -300,9 +300,10 @@ class Tablet:
 
         num_lines = len(text_block)
         assert num_lines > 0, "Text block size requested for empty text block"
-        # The text block is the width of its longest line
-        longest_line = max(text_block, key=len)
-        block_width = self.text_line_size(asset=asset, text_line=longest_line).width
+        # The text block is the width of its widest ink render extent
+        widths = [self.text_line_size(asset, line).width for line in text_block]
+        widest_line = text_block[widths.index(max(widths))]
+        block_width = self.text_line_size(asset=asset, text_line=widest_line).width
         block_height = num_lines*spacing - inter_line_spacing  # Deduct that one unneeded line of spacing on the top
 
         return Rect_Size(width=block_width, height=block_height)

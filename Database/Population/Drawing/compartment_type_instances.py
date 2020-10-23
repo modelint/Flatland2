@@ -6,24 +6,24 @@ population = [
     # Class diagram
     # Class
     {'Name': 'class name', 'Horizontal alignment': 'CENTER',
-     'Pad top': 5, 'Pad bottom': 10, 'Pad left': 10, 'Pad right': 5, 'Text style': 'TITLE',
+     'Pad top': 5, 'Pad bottom': 10, 'Pad left': 5, 'Pad right': 5, 'Text style': 'TITLE',
      'Node type': 'class', 'Diagram type': 'class', 'Stack order': 1},
 
     {'Name': 'attributes', 'Horizontal alignment': 'LEFT',
-     'Pad top': 5, 'Pad bottom': 10, 'Pad left': 10, 'Pad right': 8, 'Text style': 'BODY',
+     'Pad top': 5, 'Pad bottom': 10, 'Pad left': 5, 'Pad right': 5, 'Text style': 'BODY',
      'Node type': 'class', 'Diagram type': 'class', 'Stack order': 2},
 
     {'Name': 'methods', 'Horizontal alignment': 'LEFT',
-     'Pad top': 5, 'Pad bottom': 4, 'Pad left': 4, 'Pad right': 8, 'Text style': 'BODY',
+     'Pad top': 5, 'Pad bottom': 4, 'Pad left': 5, 'Pad right': 5, 'Text style': 'BODY',
      'Node type': 'class', 'Diagram type': 'class', 'Stack order': 3},
 
     # Imported class
     {'Name': 'class name', 'Horizontal alignment': 'CENTER',
-     'Pad top': 5, 'Pad bottom': 10, 'Pad left': 10, 'Pad right': 5, 'Text style': 'TITLE',
+     'Pad top': 5, 'Pad bottom': 10, 'Pad left': 5, 'Pad right': 5, 'Text style': 'TITLE',
      'Node type': 'imported class', 'Diagram type': 'class', 'Stack order': 1},
 
     {'Name': 'attributes', 'Horizontal alignment': 'LEFT',
-     'Pad top': 5, 'Pad bottom': 10, 'Pad left': 10, 'Pad right': 8, 'Text style': 'BODY',
+     'Pad top': 5, 'Pad bottom': 10, 'Pad left': 5, 'Pad right': 5, 'Text style': 'BODY',
      'Node type': 'imported class', 'Diagram type': 'class', 'Stack order': 2},
 
     # State machine diagram
@@ -33,7 +33,7 @@ population = [
      'Node type': 'state', 'Diagram type': 'state machine', 'Stack order': 1},
 
     {'Name': 'activity', 'Horizontal alignment': 'LEFT',
-     'Pad top': 4, 'Pad bottom': 4, 'Pad left': 4, 'Pad right': 4, 'Text style': 'BODY',
+     'Pad top': 4, 'Pad bottom': 4, 'Pad left': 5, 'Pad right': 5, 'Text style': 'BODY',
      'Node type': 'state', 'Diagram type': 'state machine', 'Stack order': 2},
 
     # Domain diagram

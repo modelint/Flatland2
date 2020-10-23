@@ -69,47 +69,48 @@ def gen_diagram(args):
     # TODO:  Add support for axis offset on stem names
 
     rels = subsys[2]
-    cp = layout.connector_placement
-    for r in rels:  # r is the model data without any layout info
-        rlayout = cp[r.rnum]  # How this r is to be laid out on the diagram
-        # Straight or bent connector?
-        tstem = rlayout['tstem']
-        pstem = rlayout['pstem']
-        t_phrase = StemName(
-            text=TextBlock(r.rspec.t_side.phrase, wrap=tstem['wrap']),
-            side=tstem['stem_dir'], axis_offset=None, end_offset=None
-        )
-        t_stem = New_Stem(stem_type='class mult', semantic=r.rspec.t_side.mult + ' mult',
-                          node=nodes[r.rspec.t_side.cname], face=tstem['face'],
-                          anchor=tstem.get('anchor', 0), stem_name=t_phrase)
-        p_phrase = StemName(
-            text=TextBlock(r.rspec.p_side.phrase, wrap=pstem['wrap']),
-            side=pstem['stem_dir'], axis_offset=None, end_offset=None
-        )
-        p_stem = New_Stem(stem_type='class mult', semantic=r.rspec.p_side.mult + ' mult',
-                          node=nodes[r.rspec.p_side.cname], face=pstem['face'],
-                          anchor=pstem.get('anchor', 0), stem_name=p_phrase)
-        rnum = ConnectorName(text=r.rnum, side=rlayout['dir'], bend=rlayout.get('bend', 1))
-
-        if OppositeFace[tstem['face']] == pstem['face']:
-            StraightBinaryConnector(
-                diagram=flatland_canvas.Diagram,
-                connector_type='binary association',
-                projecting_stem=t_stem,
-                floating_stem=p_stem,
-                name=rnum
+    if rels:
+        cp = layout.connector_placement
+        for r in rels:  # r is the model data without any layout info
+            rlayout = cp[r.rnum]  # How this r is to be laid out on the diagram
+            # Straight or bent connector?
+            tstem = rlayout['tstem']
+            pstem = rlayout['pstem']
+            t_phrase = StemName(
+                text=TextBlock(r.rspec.t_side.phrase, wrap=tstem['wrap']),
+                side=tstem['stem_dir'], axis_offset=None, end_offset=None
             )
-            print("Straight connector")
-        else:
-            BendingBinaryConnector(
-                diagram=flatland_canvas.Diagram,
-                connector_type='binary association',
-                anchored_stem_p=p_stem,
-                anchored_stem_t=t_stem,
-                paths=None,
-                name=rnum)
-            print("Bending connector")
-        print()
+            t_stem = New_Stem(stem_type='class mult', semantic=r.rspec.t_side.mult + ' mult',
+                              node=nodes[r.rspec.t_side.cname], face=tstem['face'],
+                              anchor=tstem.get('anchor', 0), stem_name=t_phrase)
+            p_phrase = StemName(
+                text=TextBlock(r.rspec.p_side.phrase, wrap=pstem['wrap']),
+                side=pstem['stem_dir'], axis_offset=None, end_offset=None
+            )
+            p_stem = New_Stem(stem_type='class mult', semantic=r.rspec.p_side.mult + ' mult',
+                              node=nodes[r.rspec.p_side.cname], face=pstem['face'],
+                              anchor=pstem.get('anchor', 0), stem_name=p_phrase)
+            rnum = ConnectorName(text=r.rnum, side=rlayout['dir'], bend=rlayout.get('bend', 1))
+
+            if OppositeFace[tstem['face']] == pstem['face']:
+                StraightBinaryConnector(
+                    diagram=flatland_canvas.Diagram,
+                    connector_type='binary association',
+                    projecting_stem=t_stem,
+                    floating_stem=p_stem,
+                    name=rnum
+                )
+                print("Straight connector")
+            else:
+                BendingBinaryConnector(
+                    diagram=flatland_canvas.Diagram,
+                    connector_type='binary association',
+                    anchored_stem_p=p_stem,
+                    anchored_stem_t=t_stem,
+                    paths=None,
+                    name=rnum)
+                print("Bending connector")
+            print()
 
 
     flatland_canvas.render()

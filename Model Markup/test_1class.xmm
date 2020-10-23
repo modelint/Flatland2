@@ -1,0 +1,7 @@
+subsystem Node
+class Sheet
+attributes
+    Name : Name {I}
+    Size : Sheet Size
+    Units : US Metric
+--

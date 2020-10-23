@@ -75,7 +75,10 @@ class LayoutParser:
         lspec = LayoutSpec(dtype=ld['diagram'][0], notation=ld['notation'][0], pres=ld['presentation'][0],
                            orientation=ld['orientation'][0], sheet=ld['sheet'][0])
         node_pdict = { n['node_name']: n for n in result.results['node_block'][0] }
-        conn_pdict = { c['cname']: c for c in result.results['connector_block'][0] }
+        if 'connector_block' in result.results:
+            conn_pdict = { c['cname']: c for c in result.results['connector_block'][0] }
+        else:
+            conn_pdict = None
         return DiagramLayout(layout_spec=lspec, node_placement=node_pdict, connector_placement=conn_pdict)
 
 

@@ -39,4 +39,4 @@ relationship_header = "relationships" nl
 rel_section = relationship_header rel*  // All relationships in the subsystem
 
 subsystem_header = "subsystem" sp icaps_name nl  // Declares the name of the subsystem
-subsystem = subsystem_header class_set rel_section EOF
+subsystem = subsystem_header class_set rel_section? EOF
