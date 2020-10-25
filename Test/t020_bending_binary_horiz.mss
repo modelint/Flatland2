@@ -1,4 +1,4 @@
-// t001_straight_binary_horiz.mss – Two nodes and a single horizontal binary connector
+// t020_bending_binary_horiz.mss – Two nodes with a bending binary following a path
 diagram class
 notation Starr
 presentation diagnostic
@@ -10,4 +10,4 @@ nodes
     Pilot 1,3
 connectors
     // <side><connector name>[>bend] : <side><lines> <face><anchor>|<node> : <side><lines> <face><anchor>|<node>
-    -R1   : -/1 t|Aircraft  : +/1  t|Pilot : L2,R0
+    +R1>2   : -/1 t|Aircraft  : +/1  t|Pilot : L2,R-1

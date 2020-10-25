@@ -12,7 +12,7 @@ from single_cell_node import SingleCellNode
 from straight_binary_connector import StraightBinaryConnector
 from bending_binary_connector import BendingBinaryConnector
 from connection_types import ConnectorName, OppositeFace, StemName
-from command_interface import New_Stem
+from command_interface import New_Stem, New_Path
 from text_block import TextBlock
 from geometry_types import Alignment, VertAlign, HorizAlign
 from pathlib import Path
@@ -104,12 +104,13 @@ def gen_diagram(args):
                 )
                 print("Straight connector")
             else:
+                paths = [New_Path(lane=p['lane'], rut=p['rut']) for p in rlayout['paths']]
                 BendingBinaryConnector(
                     diagram=flatland_canvas.Diagram,
                     connector_type='binary association',
                     anchored_stem_p=p_stem,
                     anchored_stem_t=t_stem,
-                    paths=None,
+                    paths=paths,
                     name=rnum)
                 print("Bending connector")
             print()
@@ -127,10 +128,11 @@ if __name__ == "__main__":
     # so we supply some test input arg values and call the same top level
     # function that is called from the command line
 
-    selected_test = 0
+    selected_test = 1
 
     tests = [
         't001_straight_binary_horiz',
+        't020_bending_binary_horiz',
     ]
 
     model_file_path = (Path(__file__).parent / tests[selected_test]).with_suffix(".xmm")

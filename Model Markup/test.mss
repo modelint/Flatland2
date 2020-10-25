@@ -12,6 +12,6 @@ nodes
     Annotation Layout/2 2,3 >right
 connectors
     // <side><connector name>[>bend] : <side><lines> <face><anchor>|<node> : <side><lines> <face><anchor>|<node>
-    -R14   : +/1 r|Canvas   : -/3  l|Diagram
+    -R14   : +/1 r0|Canvas   : -/3  l|Diagram
     +R13   : -/2 b|Canvas   : -/2  t|Sheet
     -R16>2 : +/2 b+2|Canvas : -/2  l+2|Annotation Layout

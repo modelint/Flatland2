@@ -11,6 +11,7 @@ indent = "    "  // For clarity
 wdelim = r'[ _]' // Word delimiter to separate words in a name
 word = r'[A-Za-z][A-Za-z0-9]*' // String of alpahnumeric text with no whitespace starting with alpha char
 name = word (wdelim word)* // Sequence of delimited words forming a name
+notch = '0' / ('+' / '-') number // A unit of alignment, center, or a positive or negative integer
 
 diagram = "diagram" space name nl // The type of diagram to draw
 notation =  "notation" space name nl // The notation to use in the diagram
@@ -31,9 +32,8 @@ node_block = nodes_header node_placement+
 
 face =  "t" / "b" / "l" / "r" // top, bottom, left or right node face
 dir = "+" / "-" // direction of increasing coord values, up and to the right is positive
-anchor = dir number // placement of stem anchor away from center in given direction a number of notches
 csep = space ':' space // argument separator
-node_face = face anchor? "|" name // Where a stem attaches to a node face
+node_face = face notch? "|" name // Where a stem attaches to a node face
 sname_place = dir wrap  // Side of stem axis and number of text lines after wrapping in stem name text block
 wrap = '/' number // Number of lines to wrap an associated string
 bend = '>' number // Bend in connector where 1 is at the tstem side increasing to the pstem side
@@ -41,7 +41,9 @@ cname_place = dir name bend? // Side of connector axis and name of connector (si
 stem_side = sname_place space node_face // Either the tstem or pstem layout
 tstem = stem_side // one stem in a binary connector (t and p are arbitary names)
 pstem = stem_side // the opposite stem in a binary connector
-connector_layout = indent cname_place csep tstem csep pstem nl // All layout info for a binary connector
+path = 'L' number ',' 'R' notch
+paths = path (space path)*
+connector_layout = indent cname_place csep tstem csep pstem (csep paths)? nl // All layout info for a binary connector
 connectors_header = "connectors" nl // starts section where connector layout info is specified
 connector_block = connectors_header connector_layout+ // All
 

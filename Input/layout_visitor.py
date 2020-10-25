@@ -19,7 +19,16 @@ class LayoutVisitor(PTNodeVisitor):
         return 1 if node.value == '+' else -1
 
     def visit_number(self, node, children):
+        """Natural number"""
         return int(node.value)
+
+    def visit_notch(self, node, children):
+        """The digit 0 or a positive or negative number of notches"""
+        if children[0] == '0':
+            return 0
+        else:
+            scale = -1 if children[0] == '-' else 1
+            return int(children[1]) * scale
 
     def visit_name(self, node, children):
         """Words and delmiters joined to form a complete name"""
@@ -66,9 +75,12 @@ class LayoutVisitor(PTNodeVisitor):
         """All node placements"""
         return children
 
-    def visit_anchor(self, node, children):
-        """Placement of anchor position direction (1 or -1 * number of notches"""
-        return children[0] * int(children[1])
+    # def visit_anchor(self, node, children):
+    #     """Placement of anchor position direction (1 or -1 * number of notches"""
+    #     if len(children) == 1:
+    #         return 0
+    #     else:
+    #         return children[0] * int(children[1])
 
     def visit_valign(self, node, children):
         """Vertical alignment of noce in its cell"""
@@ -116,6 +128,14 @@ class LayoutVisitor(PTNodeVisitor):
         items = {k: v for d in children for k, v in d.items()}
         d = {node.rule_name: items}
         return d
+
+    def visit_path(self, node, children):
+        """Lane and rut followed by a connector bend"""
+        return {'lane': children[0], 'rut': children[1]}
+
+    def visit_paths(self, node, children):
+        """A sequence of one or more paths"""
+        return {node.rule_name: children}
 
     def visit_cname_place(self, node, children):
         """Side of connector axis and name of connector and optional bend where cname is placed"""

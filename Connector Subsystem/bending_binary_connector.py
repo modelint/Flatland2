@@ -63,7 +63,7 @@ class BendingBinaryConnector(BinaryConnector):
             semantic=anchored_stem_t.semantic,
             node=anchored_stem_t.node,
             face=anchored_stem_t.face,
-            anchor_position=anchored_stem_t.anchor,
+            anchor_position=anchored_stem_t.anchor if anchored_stem_t.anchor is not None else 0,
             name=anchored_stem_t.stem_name,
         )
         self.P_stem = AnchoredStem(
@@ -72,7 +72,7 @@ class BendingBinaryConnector(BinaryConnector):
             semantic=anchored_stem_p.semantic,
             node=anchored_stem_p.node,
             face=anchored_stem_p.face,
-            anchor_position=anchored_stem_p.anchor,
+            anchor_position=anchored_stem_p.anchor if anchored_stem_p.anchor is not None else 0,
             name=anchored_stem_p.stem_name,
         )
         self.Corners = self.compute_corners()
