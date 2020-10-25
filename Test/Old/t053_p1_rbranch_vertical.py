@@ -1,5 +1,5 @@
 """
-t051_rbranch_vertical.py - Draw a vertical rut branch
+t053_p1_rbranch_vertical.py - Pattern 1: Vertical Rut Branch
 """
 from single_cell_node import SingleCellNode
 from tree_connector import TreeConnector
@@ -57,21 +57,21 @@ def create_canvas(args):
     trunk_node = SingleCellNode(node_type_name='class', content=class_Trunk,
                                 grid=flatland_canvas.Diagram.Grid, row=2, column=1)
     l1_node = SingleCellNode(node_type_name='class', content=class_B1,
-                             grid=flatland_canvas.Diagram.Grid, row=3, column=4)
+                             grid=flatland_canvas.Diagram.Grid, row=3, column=3)
     l2_node = SingleCellNode(node_type_name='class', content=class_B2,
-                             grid=flatland_canvas.Diagram.Grid, row=1, column=4)
+                             grid=flatland_canvas.Diagram.Grid, row=1, column=3)
 
     trunk_stem = New_Stem(stem_type='superclass', semantic='superclass', node=trunk_node,
                           face=NodeFace.RIGHT, anchor=AnchorPosition(0), stem_name=None)
     leaf1_stem = New_Stem(stem_type='subclass', semantic='subclass', node=l1_node,
-                          face=NodeFace.LEFT, anchor=AnchorPosition(0), stem_name=None)
+                          face=NodeFace.LEFT, anchor=AnchorPosition(-2), stem_name=None)
     leaf2_stem = New_Stem(stem_type='subclass', semantic='subclass', node=l2_node,
                           face=NodeFace.LEFT, anchor=AnchorPosition(0), stem_name=None)
 
     trunk_branch = New_Trunk_Branch(
         trunk_stem=trunk_stem,
         leaf_stems={leaf1_stem, leaf2_stem},
-        graft=None, path=Path(lane=3, rut=1), floating_leaf_stem=None
+        graft=None, path=Path(lane=2, rut=1), floating_leaf_stem=None
     )
     branches = New_Branch_Set(trunk_branch=trunk_branch, offshoot_branches=[])
 
@@ -91,6 +91,6 @@ if __name__ == "__main__":
 
     test_input = Canvas_Args(
         diagram="class", notation="Starr", presentation="diagnostic", sheet="letter",
-        orientation="landscape", file="ftest.pdf"
+        orientation="landscape", file="../ftest.pdf"
     )
     create_canvas(args=test_input)

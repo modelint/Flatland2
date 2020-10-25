@@ -29,8 +29,11 @@ class ModelParser:
         - model_grammar -- The model grammar text read from the system grammar file
         - model_text -- The input model text read from the user supplied text file
     """
-    grammar_file = Path(__file__).parent.parent / "Model Markup/model.peg"
+    grammar_file_name = "Model Markup/model.peg"
+    grammar_file = Path(__file__).parent.parent / grammar_file_name
     root_rule_name = 'subsystem'  # We don't draw a diagram larger than a single subsystem
+    grammar_model_pdf = Path(__file__).parent.parent / "Diagnostics" / "subsystem_model.pdf"
+    parse_tree_pdf = Path(__file__).parent.parent / "Diagnostics" / "subsystem_parse_tree.pdf"
 
     def __init__(self, model_file_path, debug=True):
         """
@@ -89,8 +92,21 @@ class ModelParser:
                 rel_records.append(rdata)
         if self.debug:
             # Transform dot files into pdfs
-            os.system('dot -Tpdf subsystem_parse_tree.dot -o subsys_tree.pdf')
-            os.system('dot -Tpdf subsystem_peg_parser_model.dot -o subsys_model.pdf')
+            peg_tree_dot = Path("peggrammar_parse_tree.dot")
+            peg_model_dot = Path("peggrammar_parser_model.dot")
+            parse_tree_dot = Path("subsystem_parse_tree.dot")
+            parser_model_dot = Path("subsystem_peg_parser_model.dot")
+            os.system(f'dot -Tpdf {parse_tree_dot} -o {ModelParser.parse_tree_pdf}')
+            os.system(f'dot -Tpdf {parser_model_dot} -o {ModelParser.grammar_model_pdf}')
+            # Cleanup unneeded dot files, we just use the PDFs for now
+            if Path.exists(parse_tree_dot):
+                parse_tree_dot.unlink()
+            if Path.exists(parser_model_dot):
+                parser_model_dot.unlink()
+            if Path.exists(peg_tree_dot):
+                peg_tree_dot.unlink()
+            if Path.exists(peg_model_dot):
+                peg_model_dot.unlink()
         # Return the refined model data
         return Subsystem(name=result[0], classes=class_records, rels=rel_records)
 

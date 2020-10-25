@@ -1,11 +1,12 @@
 """
-t030_straight_binary_tertiary.py
+t001_straight_binary_horiz.py
 """
 from single_cell_node import SingleCellNode
 from straight_binary_connector import StraightBinaryConnector
 from connection_types import NodeFace, AnchorPosition, ConnectorName, StemName
 from command_interface import New_Stem
 from canvas import Canvas
+from text_block import TextBlock
 
 from flatlanddb import FlatlandDB
 
@@ -30,9 +31,9 @@ def create_canvas(args):
     # Until markup parsing is supported, we will provide test data by hand crafting
     # the parsed output
     class_Aircraft = [
-        ['Aircraft'], [
-            'Altitude',
+        ['Aircraft', 'Tower'], [
             'Tail number: ACAO {I}',
+            'Altitude',
             'Airspeed : Knots',
             'Heading'
         ]
@@ -46,33 +47,21 @@ def create_canvas(args):
         ]
     ]
 
-    class_Flight = [
-        ['Flight'], [
-            'Aircraft {I, R1}',
-            'Pilot  {I2, R1}',
-            'Flight time : Duration'
-        ]
-    ]
-
     t_node = SingleCellNode(node_type_name='class', content=class_Aircraft, grid=flatland_canvas.Diagram.Grid,
                             row=1, column=1)
     p_node = SingleCellNode(node_type_name='class', content=class_Pilot, grid=flatland_canvas.Diagram.Grid,
                             row=1, column=3)
-    a_node = SingleCellNode(node_type_name='class', content=class_Flight, grid=flatland_canvas.Diagram.Grid,
-                            row=2, column=2)
 
-    t_phrase = StemName(text='is flying', axis_offset=None, end_offset=None)
+    t_phrase = StemName(text=TextBlock('is flying really well so far', wrap=3), side=1, axis_offset=None, end_offset=None)
     t_stem = New_Stem(stem_type='class mult', semantic='1 mult', node=t_node,
-                      face=NodeFace.RIGHT, anchor=AnchorPosition(1), stem_name=t_phrase)
-    p_phrase = StemName(text='is flown by', axis_offset=None, end_offset=None)
-    p_stem = New_Stem(stem_type='class mult', semantic='1c mult', node=p_node,
+                      face=NodeFace.RIGHT, anchor=AnchorPosition(0), stem_name=t_phrase)
+    p_phrase = StemName(text=TextBlock('is flown by with amazing skill', wrap=3), side=-1, axis_offset=None, end_offset=None)
+    p_stem = New_Stem(stem_type='class mult', semantic='1 mult', node=p_node,
                       face=NodeFace.LEFT, anchor=None, stem_name=p_phrase)
-    a_stem = New_Stem(stem_type='associative mult', semantic='M mult', node=a_node,
-                      face=NodeFace.BOTTOM, anchor=AnchorPosition(-1), stem_name=None)
 
-    rnum = ConnectorName(text='R1', side=-1, bend=1)
+    rnum = ConnectorName(text='R1', side=1, bend=1)
     StraightBinaryConnector(diagram=flatland_canvas.Diagram, connector_type='binary association',
-                            projecting_stem=t_stem, floating_stem=p_stem, tertiary_stem=a_stem, name=rnum)
+                            projecting_stem=t_stem, floating_stem=p_stem, name=rnum)
 
     flatland_canvas.render()
 
@@ -87,6 +76,6 @@ if __name__ == "__main__":
 
     test_input = Canvas_Args(
         diagram="class", notation="Starr", presentation="diagnostic", sheet="letter",
-        orientation="landscape", file="ftest.pdf"
+        orientation="landscape", file="../ftest.pdf"
     )
     create_canvas(args=test_input)

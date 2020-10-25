@@ -1,12 +1,9 @@
 """
-t040_ibranch_horizontal.py
-
-Test:
-Draw a horizontal interpolated branch between a trunk node and two leaf nodes
+t050_rbranch_horiz.py - Draw a horizontal rut branch
 """
 from single_cell_node import SingleCellNode
 from tree_connector import TreeConnector
-from connection_types import NodeFace, AnchorPosition, ConnectorName
+from connection_types import NodeFace, AnchorPosition, Path, ConnectorName
 from command_interface import New_Stem, New_Branch_Set, New_Trunk_Branch
 from canvas import Canvas
 
@@ -58,7 +55,7 @@ def create_canvas(args):
     ]
 
     trunk_node = SingleCellNode(node_type_name='class', content=class_Trunk,
-                                grid=flatland_canvas.Diagram.Grid, row=3, column=2)
+                                grid=flatland_canvas.Diagram.Grid, row=4, column=2)
     l1_node = SingleCellNode(node_type_name='class', content=class_B1,
                              grid=flatland_canvas.Diagram.Grid, row=1, column=1)
     l2_node = SingleCellNode(node_type_name='class', content=class_B2,
@@ -74,7 +71,7 @@ def create_canvas(args):
     trunk_branch = New_Trunk_Branch(
         trunk_stem=trunk_stem,
         leaf_stems={leaf1_stem, leaf2_stem},
-        graft=None, path=None, floating_leaf_stem=None
+        graft=None, path=Path(lane=2, rut=-1), floating_leaf_stem=None
     )
     branches = New_Branch_Set(trunk_branch=trunk_branch, offshoot_branches=[])
 
@@ -94,6 +91,6 @@ if __name__ == "__main__":
 
     test_input = Canvas_Args(
         diagram="class", notation="Starr", presentation="diagnostic", sheet="letter",
-        orientation="landscape", file="ftest.pdf"
+        orientation="landscape", file="../ftest.pdf"
     )
     create_canvas(args=test_input)

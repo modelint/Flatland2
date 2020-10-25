@@ -28,6 +28,8 @@ class LayoutParser:
     grammar_file_name = "Model Markup/layout.peg"
     grammar_file = Path(__file__).parent.parent / grammar_file_name
     root_rule_name = "diagram_layout"
+    grammar_model_pdf = Path(__file__).parent.parent / "Diagnostics" / "layout_model.pdf"
+    parse_tree_pdf = Path(__file__).parent.parent / "Diagnostics" / "layout_parse_tree.pdf"
 
     def __init__(self, layout_file_path, debug=True):
         """
@@ -68,8 +70,21 @@ class LayoutParser:
         result = visit_parse_tree(parse_tree, LayoutVisitor(debug=self.debug))
         if self.debug:
             # Transform dot files into pdfs
-            os.system('dot -Tpdf diagram_layout_parse_tree.dot -o layout_tree.pdf')
-            os.system('dot -Tpdf diagram_layout_peg_parser_model.dot -o layout_model.pdf')
+            peg_tree_dot = Path("peggrammar_parse_tree.dot")
+            peg_model_dot = Path("peggrammar_parser_model.dot")
+            parse_tree_dot = Path("diagram_layout_parse_tree.dot")
+            parser_model_dot = Path("diagram_layout_peg_parser_model.dot")
+            os.system(f'dot -Tpdf {parse_tree_dot}-o {LayoutParser.parse_tree_pdf}')
+            os.system(f'dot -Tpdf {parser_model_dot} -o {LayoutParser.grammar_model_pdf}')
+            # Cleanup unneeded dot files, we just use the PDFs for now
+            if Path.exists(parse_tree_dot):
+                parse_tree_dot.unlink()
+            if Path.exists(parser_model_dot):
+                parser_model_dot.unlink()
+            if Path.exists(peg_tree_dot):
+                peg_tree_dot.unlink()
+            if Path.exists(peg_model_dot):
+                peg_model_dot.unlink()
         # Refine parsed result into something more useful for the client
         ld = result.results['layout_spec'][0] # layout data
         lspec = LayoutSpec(dtype=ld['diagram'][0], notation=ld['notation'][0], pres=ld['presentation'][0],

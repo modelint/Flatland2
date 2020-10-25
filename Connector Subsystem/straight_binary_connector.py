@@ -39,8 +39,8 @@ class StraightBinaryConnector(BinaryConnector):
           or Floating Stems) and extending until its Vine end attaches to the Binary Connector line
     """
 
-    def __init__(self, diagram: 'Diagram', connector_type: str, projecting_stem: New_Stem,
-                 floating_stem: New_Stem, name: Optional[ConnectorName] = None,
+    def __init__(self, diagram: 'Diagram', connector_type: str, t_stem: New_Stem,
+                 p_stem: New_Stem, name: Optional[ConnectorName] = None,
                  tertiary_stem: Optional[New_Stem] = None):
         """
         Constructor – see class description for meaning of the attributes
@@ -62,7 +62,26 @@ class StraightBinaryConnector(BinaryConnector):
         # Extract the user supplied connector name if any
         BinaryConnector.__init__(self, diagram=diagram, name=name, connector_type=ct)
 
-        # Unpack the user specification by loooking up the requested Stem Types loaded from our database
+        # One side or the other must supply an anchor position
+        if t_stem.anchor is not None or (t_stem.anchor is None and p_stem.anchor is None):
+            # If the t_stem anchor is specified or neither anchor is specified,
+            # make t_stem the projecting_stem
+            projecting_stem = t_stem
+            floating_stem = p_stem
+        else:
+            # Otherwise use the p_stem anchor
+            projecting_stem = p_stem
+            floating_stem = t_stem
+        # If no anchor is specified by either side, set it to zero (centered)
+        anchor = projecting_stem.anchor if projecting_stem.anchor is not None else 0
+
+        # WARN user if anchors were poorly specified
+        # TODO: Deal with warnings systematically via exceptions or logging
+        if floating_stem.anchor is not None:
+            anchor_warning = "Two anchors specified on straight binary connector. Ignoring P stem anchor"
+            print(f"Flatland warning: On connector {name.text}: {anchor_warning}")
+
+        # Unpack the user specification by looking up the requested Stem Types loaded from our database
         projecting_stem_type = self.Connector_type.Stem_type[projecting_stem.stem_type]
         floating_stem_type = self.Connector_type.Stem_type[floating_stem.stem_type]
         tertiary_stem_type = None
@@ -76,7 +95,7 @@ class StraightBinaryConnector(BinaryConnector):
             semantic=projecting_stem.semantic,
             node=projecting_stem.node,
             face=projecting_stem.face,
-            anchor_position=projecting_stem.anchor,
+            anchor_position=anchor,
             name=projecting_stem.stem_name
         )
         self.Floating_stem = FloatingBinaryStem(

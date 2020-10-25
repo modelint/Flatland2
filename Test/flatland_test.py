@@ -1,5 +1,5 @@
 """
-flatland.py – This is the Flatland main module
+flatland_test.py – This is the Flatland test driver
 """
 import sys
 from flatland_exceptions import FlatlandIOException
@@ -20,6 +20,7 @@ from pathlib import Path
 
 def gen_diagram(args):
     """Generate a flatland diagram of the requested type"""
+
     # Parse the model
     try:
         model = ModelParser(model_file_path=args.model_file, debug=True)
@@ -61,7 +62,7 @@ def gen_diagram(args):
         v = VertAlign[nlayout.get('valign', 'CENTER')]
         nodes[c.name] = SingleCellNode(
             node_type_name='class',
-            content=[ name_block.text, c.attributes ],
+            content=[name_block.text, c.attributes],
             grid=flatland_canvas.Diagram.Grid,
             row=nlayout['node_loc'][0], column=nlayout['node_loc'][1],
             local_alignment=Alignment(vertical=v, horizontal=h)
@@ -83,22 +84,22 @@ def gen_diagram(args):
             )
             t_stem = New_Stem(stem_type='class mult', semantic=r.rspec.t_side.mult + ' mult',
                               node=nodes[r.rspec.t_side.cname], face=tstem['face'],
-                              anchor=tstem.get('anchor', 0), stem_name=t_phrase)
+                              anchor=tstem.get('anchor', None), stem_name=t_phrase)
             p_phrase = StemName(
                 text=TextBlock(r.rspec.p_side.phrase, wrap=pstem['wrap']),
                 side=pstem['stem_dir'], axis_offset=None, end_offset=None
             )
             p_stem = New_Stem(stem_type='class mult', semantic=r.rspec.p_side.mult + ' mult',
                               node=nodes[r.rspec.p_side.cname], face=pstem['face'],
-                              anchor=pstem.get('anchor', 0), stem_name=p_phrase)
+                              anchor=pstem.get('anchor', None), stem_name=p_phrase)
             rnum = ConnectorName(text=r.rnum, side=rlayout['dir'], bend=rlayout.get('bend', 1))
 
             if OppositeFace[tstem['face']] == pstem['face']:
                 StraightBinaryConnector(
                     diagram=flatland_canvas.Diagram,
                     connector_type='binary association',
-                    projecting_stem=t_stem,
-                    floating_stem=p_stem,
+                    t_stem=t_stem,
+                    p_stem=p_stem,
                     name=rnum
                 )
                 print("Straight connector")
@@ -113,9 +114,7 @@ def gen_diagram(args):
                 print("Bending connector")
             print()
 
-
     flatland_canvas.render()
-
     print("No problemo")
 
     # create the canvas
@@ -128,20 +127,22 @@ if __name__ == "__main__":
     # so we supply some test input arg values and call the same top level
     # function that is called from the command line
 
-    tests = {
-        't001': 'straight_binary_horiz',
-    }
+    selected_test = 0
 
-    model_file_path = Path(__file__).parent / 'Model Markup/test.xmm'
-    layout_file_path = Path(__file__).parent / "Model Markup/test.mss"
+    tests = [
+        't001_straight_binary_horiz',
+    ]
 
-    output_file_path = Path(__file__).parent / "Model Markup/test.mss"
+    model_file_path = (Path(__file__).parent / tests[selected_test]).with_suffix(".xmm")
+    layout_file_path = (Path(__file__).parent / tests[selected_test]).with_suffix(".mss")
+
+    diagram_file_path = (Path(__file__).parent.parent / "Diagnostics" / "ftest").with_suffix(".pdf")
 
     DrawArgs = namedtuple("DrawArgs", "layout_file model_file output_file")
 
     test_input = DrawArgs(
         layout_file=layout_file_path,
         model_file=model_file_path,
-        output_file="ftest.pdf"
+        output_file=diagram_file_path
     )
     gen_diagram(test_input)

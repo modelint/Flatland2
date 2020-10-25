@@ -19,7 +19,7 @@ sheet = "sheet" space name nl // The sheet size name
 orientation = "orientation" space ("portrait" / "landscape") nl // The sheet orientation
 layout_spec = (diagram notation presentation sheet orientation)# // Each of these in any order
 
-valign = ">" ("up" / "down")
+valign = ">" ("top" / "bottom")
 halign = ">" ("right" / "left")
 node_align = valign space? halign / halign space? valign / valign / halign
 

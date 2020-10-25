@@ -1,11 +1,13 @@
 """
-t020_bending_binary_horizontal.py
+t002_straight_binary_horiz_compsym.py
+Straight horizontal binary connector with composite symbols (Starr notation)
 """
 from single_cell_node import SingleCellNode
-from bending_binary_connector import BendingBinaryConnector
+from straight_binary_connector import StraightBinaryConnector
 from connection_types import NodeFace, AnchorPosition, ConnectorName, StemName
-from command_interface import New_Stem, New_Path
+from command_interface import New_Stem
 from canvas import Canvas
+
 from flatlanddb import FlatlandDB
 
 FlatlandDB()
@@ -51,16 +53,16 @@ def create_canvas(args):
                             row=1, column=3)
 
     t_phrase = StemName(text=['is flying'], side=-1, axis_offset=None, end_offset=None)
-    t_stem = New_Stem(stem_type='class mult', semantic='Mc mult', node=t_node,
-                      face=NodeFace.TOP, anchor=AnchorPosition(0), stem_name=t_phrase)
-    p_phrase = StemName(text=['is flown by'], side=1, axis_offset=None, end_offset=None)
-    p_stem = New_Stem(stem_type='class mult', semantic='1 mult', node=p_node,
-                      face=NodeFace.TOP, anchor=AnchorPosition(0), stem_name=p_phrase)
-    p = [New_Path(lane=2, rut=0)]
+    t_stem = New_Stem(stem_type='class mult', semantic='1 mult', node=t_node,
+                      face=NodeFace.RIGHT, anchor=AnchorPosition(0), stem_name=t_phrase)
+    p_phrase = StemName(text=['is flown by'], side=-1, axis_offset=None, end_offset=None)
+    p_stem = New_Stem(stem_type='class mult', semantic='1c mult', node=p_node,
+                      face=NodeFace.LEFT, anchor=None, stem_name=p_phrase)
 
-    rnum = ConnectorName(text='R1', side=1, bend=2)
-    BendingBinaryConnector(diagram=flatland_canvas.Diagram, connector_type='binary association',
-                           anchored_stem_p=p_stem, anchored_stem_t=t_stem, paths=p, name=rnum)
+    rnum = ConnectorName(text='R1', side=1, bend=1)
+    StraightBinaryConnector(diagram=flatland_canvas.Diagram, connector_type='binary association',
+                            projecting_stem=t_stem, floating_stem=p_stem, name=rnum)
+
     flatland_canvas.render()
 
 
@@ -73,7 +75,7 @@ if __name__ == "__main__":
     Canvas_Args = namedtuple("Canvas_Args", "diagram notation presentation sheet orientation file")
 
     test_input = Canvas_Args(
-        diagram="class", notation="Starr", presentation="diagnostic", sheet="letter",
-        orientation="landscape", file="ftest.pdf"
+        diagram="class", notation="Starr", presentation="default", sheet="letter",
+        orientation="landscape", file="../ftest.pdf"
     )
     create_canvas(args=test_input)

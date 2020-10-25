@@ -75,6 +75,6 @@ if __name__ == "__main__":
 
     test_input = Canvas_Args(
         diagram="class", notation="xUML", presentation="default", sheet="letter",
-        orientation="landscape", file="ftest.pdf"
+        orientation="landscape", file="../ftest.pdf"
     )
     create_canvas(args=test_input)
