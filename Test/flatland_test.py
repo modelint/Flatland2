@@ -128,15 +128,16 @@ if __name__ == "__main__":
     # so we supply some test input arg values and call the same top level
     # function that is called from the command line
 
-    selected_test = 1
+    selected_test = 't023'
 
-    tests = [
-        't001_straight_binary_horiz',
-        't020_bending_binary_horiz',
-    ]
+    tests = {
+        't001': ('aircraft2', 't001_straight_binary_horiz'),
+        't020': ('aircraft2', 't020_bending_binary_horiz'),
+        't023': ('aircraft2', 't023_bending_binary_twice'),
+    }
 
-    model_file_path = (Path(__file__).parent / tests[selected_test]).with_suffix(".xmm")
-    layout_file_path = (Path(__file__).parent / tests[selected_test]).with_suffix(".mss")
+    model_file_path = (Path(__file__).parent / tests[selected_test][0]).with_suffix(".xmm")
+    layout_file_path = (Path(__file__).parent / tests[selected_test][1]).with_suffix(".mss")
 
     diagram_file_path = (Path(__file__).parent.parent / "Diagnostics" / "ftest").with_suffix(".pdf")
 
