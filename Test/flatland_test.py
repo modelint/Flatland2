@@ -110,7 +110,8 @@ def gen_diagram(args):
                 )
                 print("Straight connector")
             else:
-                paths = [New_Path(lane=p['lane'], rut=p['rut']) for p in rlayout['paths']]
+                paths = None if not rlayout.get('paths', None) else \
+                    [New_Path(lane=p['lane'], rut=p['rut']) for p in rlayout['paths']]
                 BendingBinaryConnector(
                     diagram=flatland_canvas.Diagram,
                     connector_type='binary association',
@@ -135,13 +136,15 @@ if __name__ == "__main__":
     # so we supply some test input arg values and call the same top level
     # function that is called from the command line
 
-    selected_test = 't030'
+    selected_test = 't032'
 
     tests = {
         't001': ('aircraft2', 't001_straight_binary_horiz'),
         't020': ('aircraft2', 't020_bending_binary_horiz'),
         't023': ('aircraft2', 't023_bending_binary_twice'),
         't030': ('aircraft3', 't030_straight_binary_tertiary'),
+        't031': ('aircraft3', 't031_straight_binary_tertiary_horizontal'),
+        't032': ('aircraft3', 't032_1bend_tertiary_left'),
     }
 
     model_file_path = (Path(__file__).parent / tests[selected_test][0]).with_suffix(".xmm")

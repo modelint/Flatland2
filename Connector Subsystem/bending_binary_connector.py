@@ -91,7 +91,7 @@ class BendingBinaryConnector(BinaryConnector):
                 semantic=tertiary_stem.semantic,
                 node=tertiary_stem.node,
                 face=tertiary_stem.face,
-                anchor_position=tertiary_stem.anchor,
+                anchor_position=tertiary_stem.anchor if tertiary_stem.anchor is not None else 0,
                 name=tertiary_stem.stem_name,
                 parallel_segs=parallel_segs
             )
