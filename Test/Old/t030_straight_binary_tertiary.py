@@ -72,7 +72,7 @@ def create_canvas(args):
 
     rnum = ConnectorName(text='R1', side=-1, bend=1)
     StraightBinaryConnector(diagram=flatland_canvas.Diagram, connector_type='binary association',
-                            projecting_stem=t_stem, floating_stem=p_stem, tertiary_stem=a_stem, name=rnum)
+                            t_stem=t_stem, p_stem=p_stem, tertiary_stem=a_stem, name=rnum)
 
     flatland_canvas.render()
 

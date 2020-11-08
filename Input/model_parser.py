@@ -9,13 +9,7 @@ from nocomment import nocomment
 import os
 from pathlib import Path
 
-ClassData = namedtuple('ClassData', 'name attributes methods')
-GenRelSpec = namedtuple('GenRelSpec', 'superclass subclasses')
-RelSideSpec = namedtuple('RelSideSpec', 'phrase mult cname')
-BinaryRelSpec = namedtuple('BinaryRelSpec', 't_side p_side')
-RelData = namedtuple('RelData', 'rnum rspec')
 Subsystem = namedtuple('Subsystem', 'name classes rels')
-
 
 class ModelParser:
     """
@@ -73,23 +67,6 @@ class ModelParser:
         # Transform that into a result that is better organized with grammar artifacts filtered out
         result = visit_parse_tree(parse_tree, SubsystemVisitor(debug=self.debug))
         # Make it even nicer using easy to reference named tuples
-        class_records = []
-        rel_records = []
-        for cblock in result[1]:
-            attrs = None if len(cblock) < 2 else cblock[1]
-            methods = None if len(cblock) < 3 else cblock[2]
-            class_record = ClassData(name=cblock[0], attributes=attrs, methods=methods)
-            class_records.append(class_record)
-        if len(result) == 3:
-            for rel in result[2]:
-                if 'gen_rel' in rel.results.keys():
-                    br = GenRelSpec(superclass=rel[1][0], subclasses=rel[1][1:])
-                else:
-                    tside = RelSideSpec(phrase=rel[1][0][0], mult=rel[1][0][1], cname=rel[1][0][2])
-                    pside = RelSideSpec(phrase=rel[1][1][0], mult=rel[1][1][1], cname=rel[1][1][2])
-                    br = BinaryRelSpec(t_side=tside, p_side=pside)
-                rdata = RelData(rnum=rel[0], rspec=br)
-                rel_records.append(rdata)
         if self.debug:
             # Transform dot files into pdfs
             peg_tree_dot = Path("peggrammar_parse_tree.dot")
@@ -108,10 +85,10 @@ class ModelParser:
             if Path.exists(peg_model_dot):
                 peg_model_dot.unlink()
         # Return the refined model data
-        return Subsystem(name=result[0], classes=class_records, rels=rel_records)
+        return Subsystem(name=result[0], classes=result[1], rels=result[2])
 
 
 if __name__ == "__main__":
-    markup_path = Path(__file__).parent.parent / 'Model Markup/test.xmm'
+    markup_path = Path(__file__).parent.parent / 'Test/aircraft3.xmm'
     x = ModelParser(model_file_path=markup_path, debug=True)
     x.parse()

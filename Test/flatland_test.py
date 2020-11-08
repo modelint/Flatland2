@@ -51,18 +51,18 @@ def gen_diagram(args):
     )
 
     # Draw all of the classes using subsys[1]
-    classes = subsys[1]
     nodes = {}
     np = layout.node_placement
-    for c in classes:
-        nlayout = np[c.name]
+    for c in subsys.classes:
+        cname = c['name']
+        nlayout = np[cname]
         nlayout['wrap'] = nlayout.get('wrap', 1)
-        name_block = TextBlock(c.name, nlayout['wrap'])
+        name_block = TextBlock(cname, nlayout['wrap'])
         h = HorizAlign[nlayout.get('halign', 'CENTER')]
         v = VertAlign[nlayout.get('valign', 'CENTER')]
-        nodes[c.name] = SingleCellNode(
+        nodes[cname] = SingleCellNode(
             node_type_name='class',
-            content=[name_block.text, c.attributes],
+            content=[name_block.text, c['attributes']],
             grid=flatland_canvas.Diagram.Grid,
             row=nlayout['node_loc'][0], column=nlayout['node_loc'][1],
             local_alignment=Alignment(vertical=v, horizontal=h)
@@ -70,29 +70,34 @@ def gen_diagram(args):
     # TODO:  Include method section in content
     # TODO:  Add support for axis offset on stem names
 
-    rels = subsys[2]
-    if rels:
+    if subsys.rels:
         cp = layout.connector_placement
-        for r in rels:  # r is the model data without any layout info
-            rlayout = cp[r.rnum]  # How this r is to be laid out on the diagram
+        for r in subsys.rels:  # r is the model data without any layout info
+            rnum = r['rnum']
+            rlayout = cp[rnum]  # How this r is to be laid out on the diagram
             # Straight or bent connector?
             tstem = rlayout['tstem']
             pstem = rlayout['pstem']
+            astem = rlayout['tertiary_node']
+            t_side = r['t_side']
             t_phrase = StemName(
-                text=TextBlock(r.rspec.t_side.phrase, wrap=tstem['wrap']),
+                text=TextBlock(t_side['phrase'], wrap=tstem['wrap']),
                 side=tstem['stem_dir'], axis_offset=None, end_offset=None
             )
-            t_stem = New_Stem(stem_type='class mult', semantic=r.rspec.t_side.mult + ' mult',
-                              node=nodes[r.rspec.t_side.cname], face=tstem['face'],
+            t_stem = New_Stem(stem_type='class mult', semantic=t_side['mult'] + ' mult',
+                              node=nodes[t_side['cname']], face=tstem['face'],
                               anchor=tstem.get('anchor', None), stem_name=t_phrase)
+            p_side = r['p_side']
             p_phrase = StemName(
-                text=TextBlock(r.rspec.p_side.phrase, wrap=pstem['wrap']),
+                text=TextBlock(p_side['phrase'], wrap=pstem['wrap']),
                 side=pstem['stem_dir'], axis_offset=None, end_offset=None
             )
-            p_stem = New_Stem(stem_type='class mult', semantic=r.rspec.p_side.mult + ' mult',
-                              node=nodes[r.rspec.p_side.cname], face=pstem['face'],
+            p_stem = New_Stem(stem_type='class mult', semantic=p_side['mult'] + ' mult',
+                              node=nodes[p_side['cname']], face=pstem['face'],
                               anchor=pstem.get('anchor', None), stem_name=p_phrase)
-            rnum = ConnectorName(text=r.rnum, side=rlayout['dir'], bend=rlayout.get('bend', 1))
+            a_stem = New_Stem(stem_type='associative mult', semantic=r['assoc_mult'] + ' mult',
+                              node=nodes[r['assoc_cname']], face=astem['face'], anchor=astem.get('anchor', None), stem_name=None)
+            rnum_data = ConnectorName(text=rnum, side=rlayout['dir'], bend=rlayout.get('bend', 1))
 
             if OppositeFace[tstem['face']] == pstem['face']:
                 StraightBinaryConnector(
@@ -100,7 +105,8 @@ def gen_diagram(args):
                     connector_type='binary association',
                     t_stem=t_stem,
                     p_stem=p_stem,
-                    name=rnum
+                    tertiary_stem=a_stem,
+                    name=rnum_data
                 )
                 print("Straight connector")
             else:
@@ -110,8 +116,9 @@ def gen_diagram(args):
                     connector_type='binary association',
                     anchored_stem_p=p_stem,
                     anchored_stem_t=t_stem,
+                    tertiary_stem=a_stem,
                     paths=paths,
-                    name=rnum)
+                    name=rnum_data)
                 print("Bending connector")
             print()
 
@@ -128,12 +135,13 @@ if __name__ == "__main__":
     # so we supply some test input arg values and call the same top level
     # function that is called from the command line
 
-    selected_test = 't023'
+    selected_test = 't030'
 
     tests = {
         't001': ('aircraft2', 't001_straight_binary_horiz'),
         't020': ('aircraft2', 't020_bending_binary_horiz'),
         't023': ('aircraft2', 't023_bending_binary_twice'),
+        't030': ('aircraft3', 't030_straight_binary_tertiary'),
     }
 
     model_file_path = (Path(__file__).parent / tests[selected_test][0]).with_suffix(".xmm")

@@ -74,7 +74,7 @@ class LayoutParser:
             peg_model_dot = Path("peggrammar_parser_model.dot")
             parse_tree_dot = Path("diagram_layout_parse_tree.dot")
             parser_model_dot = Path("diagram_layout_peg_parser_model.dot")
-            os.system(f'dot -Tpdf {parse_tree_dot}-o {LayoutParser.parse_tree_pdf}')
+            os.system(f'dot -Tpdf {parse_tree_dot} -o {LayoutParser.parse_tree_pdf}')
             os.system(f'dot -Tpdf {parser_model_dot} -o {LayoutParser.grammar_model_pdf}')
             # Cleanup unneeded dot files, we just use the PDFs for now
             if Path.exists(parse_tree_dot):
@@ -99,6 +99,6 @@ class LayoutParser:
 
 if __name__ == "__main__":
     # For diagnostics
-    layout_path = Path(__file__).parent.parent / 'Model Markup/test.mss'
+    layout_path = Path(__file__).parent.parent / 'Test/t030_straight_binary_tertiary.mss'
     x = LayoutParser(layout_file_path=layout_path, debug=True)
     x.parse()

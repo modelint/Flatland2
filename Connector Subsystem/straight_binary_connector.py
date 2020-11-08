@@ -47,8 +47,8 @@ class StraightBinaryConnector(BinaryConnector):
 
         :param diagram: Reference to the Diagram
         :param connector_type: Name of connector type
-        :param projecting_stem: A user supplied form requesting a projecting stem
-        :param floating_stem: A user supplied form requesting a floating stem
+        :param t_stem: T side of the association (T and P are arbitrary side names, could have been A and B)
+        :param p_stem: P side of the association
         :param name: User supplied name of the Connector
         :param tertiary_stem: An optional user supplied form requesting a tertiary stem
         """
@@ -111,13 +111,14 @@ class StraightBinaryConnector(BinaryConnector):
         # between the two opposing Stems
         self.Tertiary_stem = None
         if tertiary_stem:
+            anchor = tertiary_stem.anchor if tertiary_stem.anchor is not None else 0
             self.Tertiary_stem = TertiaryStem(
                 connector=self,
                 stem_type=tertiary_stem_type,
                 semantic=tertiary_stem.semantic,
                 node=tertiary_stem.node,
                 face=tertiary_stem.face,
-                anchor_position=tertiary_stem.anchor,
+                anchor_position=anchor,
                 name=tertiary_stem.stem_name,
                 parallel_segs={(self.Projecting_stem.Vine_end, self.Floating_stem.Vine_end)}
             )

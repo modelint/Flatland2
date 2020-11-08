@@ -129,6 +129,10 @@ class LayoutVisitor(PTNodeVisitor):
         d = {node.rule_name: items}
         return d
 
+    def visit_tertiary_node(self, node, children):
+        """Tertiary node face and anchor"""
+        return {node.rule_name: children[0]}
+
     def visit_path(self, node, children):
         """Lane and rut followed by a connector bend"""
         return {'lane': children[0], 'rut': children[1]}
