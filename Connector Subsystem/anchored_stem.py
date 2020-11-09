@@ -71,6 +71,7 @@ class AnchoredStem(Stem):
         :param anchor_position: The user specified point on the Node face where the Stem is attached
         :param name: Optional name to be placed next to vine end of stem
         """
+        # The anchor is resolved to an x,y coordinate on the node face
         anchor = anchor_to_position(node, face, anchor_position)
 
         # Anchored position is used to compute the root end position

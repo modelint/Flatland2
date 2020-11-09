@@ -35,6 +35,7 @@ class TertiaryStem(AnchoredStem):
         :param name: Optional name to be drawn next to stem vine end
         """
         AnchoredStem.__init__(self, connector, stem_type, semantic, node, face, anchor_position, name)
+        # At this point the anchor_position has been resolved to an x,y coordinate on the node face
 
         self.Root_start = None
         self.Vine_start = None
@@ -45,6 +46,9 @@ class TertiaryStem(AnchoredStem):
             if face == NodeFace.TOP:
                 # Find all parallel line segments above node face
                 isegs = {s for s in parallel_segs if s[0].y > self.Root_end.y}
+                # Filter out those isegs that intersect
+                isegs = {s for s in isegs if s[0].x <= self.Root_end.x <= s[1].x}
+
                 # Get y value of line segment closest to the node face
                 yval = min({s[0].y for s in isegs})
             elif face == NodeFace.BOTTOM:

@@ -135,7 +135,7 @@ class LayoutVisitor(PTNodeVisitor):
 
     def visit_path(self, node, children):
         """Lane and rut followed by a connector bend"""
-        return {'lane': children[0], 'rut': children[1]}
+        return {'lane': children[0], 'rut': children.results.get('notch', [0])[0]}  # Rut is 0 by default
 
     def visit_paths(self, node, children):
         """A sequence of one or more paths"""
@@ -143,9 +143,8 @@ class LayoutVisitor(PTNodeVisitor):
 
     def visit_cname_place(self, node, children):
         """Side of connector axis and name of connector and optional bend where cname is placed"""
-        d = {'dir': children[0], 'cname': children[1]}
-        if len(children) == 3:
-            d['bend'] = children[2]
+        d = {'cname': children.results['name'][0], 'bend': children.results.get('bend', [1])[0],
+             'dir': children.results.get('dir', [1])[0]}
         return d
 
     def visit_connector_layout(self, node, children):

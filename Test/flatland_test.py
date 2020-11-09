@@ -78,7 +78,7 @@ def gen_diagram(args):
             # Straight or bent connector?
             tstem = rlayout['tstem']
             pstem = rlayout['pstem']
-            astem = rlayout['tertiary_node']
+            astem = rlayout.get('tertiary_node', None)
             t_side = r['t_side']
             t_phrase = StemName(
                 text=TextBlock(t_side['phrase'], wrap=tstem['wrap']),
@@ -95,8 +95,11 @@ def gen_diagram(args):
             p_stem = New_Stem(stem_type='class mult', semantic=p_side['mult'] + ' mult',
                               node=nodes[p_side['cname']], face=pstem['face'],
                               anchor=pstem.get('anchor', None), stem_name=p_phrase)
-            a_stem = New_Stem(stem_type='associative mult', semantic=r['assoc_mult'] + ' mult',
-                              node=nodes[r['assoc_cname']], face=astem['face'], anchor=astem.get('anchor', None), stem_name=None)
+            if astem:
+                a_stem = New_Stem(stem_type='associative mult', semantic=r['assoc_mult'] + ' mult',
+                                  node=nodes[r['assoc_cname']], face=astem['face'], anchor=astem.get('anchor', None), stem_name=None)
+            else:
+                a_stem = None
             rnum_data = ConnectorName(text=rnum, side=rlayout['dir'], bend=rlayout.get('bend', 1))
 
             if OppositeFace[tstem['face']] == pstem['face']:
@@ -136,7 +139,7 @@ if __name__ == "__main__":
     # so we supply some test input arg values and call the same top level
     # function that is called from the command line
 
-    selected_test = 't032'
+    selected_test = 't033'
 
     tests = {
         't001': ('aircraft2', 't001_straight_binary_horiz'),
@@ -145,6 +148,7 @@ if __name__ == "__main__":
         't030': ('aircraft3', 't030_straight_binary_tertiary'),
         't031': ('aircraft3', 't031_straight_binary_tertiary_horizontal'),
         't032': ('aircraft3', 't032_1bend_tertiary_left'),
+        't033': ('aircraft3', 't033_2bend_tertiary_bottom'),
     }
 
     model_file_path = (Path(__file__).parent / tests[selected_test][0]).with_suffix(".xmm")
