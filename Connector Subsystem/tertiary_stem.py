@@ -52,15 +52,24 @@ class TertiaryStem(AnchoredStem):
                 # Get y value of line segment closest to the node face
                 yval = min({s[0].y for s in isegs})
             elif face == NodeFace.BOTTOM:
+                # Find all parallel line segments below node face
                 isegs = {s for s in parallel_segs if s[0].y < self.Root_end.y}
+                # Filter out those isegs that intersect
+                isegs = {s for s in isegs if s[0].x <= self.Root_end.x <= s[1].x}
                 yval = max({s[0].y for s in isegs})
             self.Vine_end = Position(self.Root_end.x, yval)
         else:
             if face == NodeFace.RIGHT:
+                # Find all parallel line segments to the right of the node face
                 isegs = {s for s in parallel_segs if s[0].x > self.Root_end.x}
+                # Filter out those isegs that intersect
+                isegs = {s for s in isegs if s[0].y <= self.Root_end.y <= s[1].y}
                 xval = min({s[0].x for s in isegs})
             elif face == NodeFace.LEFT:
+                # Find all parallel line segments to the left of the node face
                 isegs = {s for s in parallel_segs if s[0].x < self.Root_end.x}
+                # Filter out those isegs that intersect
+                isegs = {s for s in isegs if s[0].y <= self.Root_end.y <= s[1].y}
                 xval = max({s[0].x for s in isegs})
             self.Vine_end = Position(xval, self.Root_end.y)
 

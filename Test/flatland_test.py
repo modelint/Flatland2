@@ -102,7 +102,10 @@ def gen_diagram(args):
                 a_stem = None
             rnum_data = ConnectorName(text=rnum, side=rlayout['dir'], bend=rlayout.get('bend', 1))
 
-            if OppositeFace[tstem['face']] == pstem['face']:
+            paths = None if not rlayout.get('paths', None) else \
+                [New_Path(lane=p['lane'], rut=p['rut']) for p in rlayout['paths']]
+
+            if not paths and OppositeFace[tstem['face']] == pstem['face']:
                 StraightBinaryConnector(
                     diagram=flatland_canvas.Diagram,
                     connector_type='binary association',
@@ -113,8 +116,6 @@ def gen_diagram(args):
                 )
                 print("Straight connector")
             else:
-                paths = None if not rlayout.get('paths', None) else \
-                    [New_Path(lane=p['lane'], rut=p['rut']) for p in rlayout['paths']]
                 BendingBinaryConnector(
                     diagram=flatland_canvas.Diagram,
                     connector_type='binary association',
@@ -139,7 +140,7 @@ if __name__ == "__main__":
     # so we supply some test input arg values and call the same top level
     # function that is called from the command line
 
-    selected_test = 't033'
+    selected_test = 't034'
 
     tests = {
         't001': ('aircraft2', 't001_straight_binary_horiz'),
@@ -149,6 +150,7 @@ if __name__ == "__main__":
         't031': ('aircraft3', 't031_straight_binary_tertiary_horizontal'),
         't032': ('aircraft3', 't032_1bend_tertiary_left'),
         't033': ('aircraft3', 't033_2bend_tertiary_bottom'),
+        't034': ('aircraft3', 't034_2bend_tertiary_top'),
     }
 
     model_file_path = (Path(__file__).parent / tests[selected_test][0]).with_suffix(".xmm")
