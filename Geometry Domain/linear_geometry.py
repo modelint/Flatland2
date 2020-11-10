@@ -6,8 +6,46 @@ This makes it possible to apply the same type of logic to horizontal and vertica
 the need to differentiate between the two.
 
 """
+from geometry_types import Position
+from typing import List, Set
 
 scale = 2  # For float rounding errors (change to 3 or 4 if errors are visible on drawings)
+
+def nearest_parallel_segment(psegs: Set[tuple], point: Position, ascending: bool) -> float:
+    """
+    Given a set of parallel segments a point and a +/- direction, find the segment that yields the
+    shortest perpendicular segment in the indicated direction to the point. If the parallel segments
+    are vertical, each will share the same x value, y otherwise. This shared value represents the segment
+    axis. Distance from the axis to the point is relative to the corresponding coordinate. Thus the
+    distance from the point's x coordinate is measured relative to each segment x if the segments are vertical.
+    
+    :param psegs: Set of parallel segments
+    :param point: Find perpendicular segment to this point
+    :param ascending: If true, each parallel segment axis is higher than the point x or y coordinate
+    :return: x if vertical segs or or y if horizontal of closest intersecting parallel segment
+    """
+    s = list(psegs)[0]  # Select arbitary segment so we can determine axis orientation (they must all be the same)
+    vertical_axis = (s[0].x == s[1].x)  # If two x's in a segment are the same, it's a vertical segmenet
+    # Establish the axis and extend coordinates based on orientation
+    # 0 and 1 are indices that match the x and y components of the Position tuple that defines each point
+    axis_coord, extent_coord = (0,1) if vertical_axis else (1,0)  # So basically, swap 'x' and 'y' based on orientation
+    if ascending:
+        # Facing segs are those less than the point's axis coordinate (to the left or below the point)
+        fsegs = [s for s in psegs if s[0][axis_coord] > point[axis_coord]]
+    else:
+        # Facing segs are greater (above or the right)  Remember we assume Cartesian coordinates throughout
+        fsegs = [s for s in psegs if s[0][axis_coord] < point[axis_coord]]
+    isegs = []  # Those segments that overlap the point along the axis (so that a normal segment will intersect)
+    for s in fsegs:
+        a, b = sorted([s[0][extent_coord], s[1][extent_coord]])  # Order all segment extents along axis low to high
+        if a <= point[extent_coord] <= b:
+            isegs.append(s)  # It's possible to intersect the point from this segment
+    if ascending:  # Now select the closest axis value to the point
+        axis_value = min({s[0][axis_coord] for s in isegs})
+    else:
+        axis_value = max({s[0][axis_coord] for s in isegs})
+    return axis_value
+
 
 
 def step_edge_distance(num_of_steps, extent, step):
@@ -81,3 +119,18 @@ def align_on_axis(axis_alignment: int, boundaries, from_grid_unit, to_grid_unit,
             return boundaries[to_grid_unit] - node_extent - to_padding
     else:
         return from_padding + boundaries[from_grid_unit -1]
+
+
+if __name__ == "__main__":
+    segs = {
+        (Position(1,0), Position(1,15)),
+        (Position(5, 15), Position(5, 25)),
+        (Position(10, 7), Position(10, 25)),
+        (Position(12, 2), Position(12, 11)),
+        (Position(13, 20), Position(13, 29)),
+        (Position(20, 7), Position(20, 17)),
+        (Position(25, 20), Position(25, 32)),
+        (Position(30, 7), Position(30, 27)),
+    }
+    v = nearest_parallel_segment(psegs=segs, point=Position(15,17), ascending=False)
+    print(v)

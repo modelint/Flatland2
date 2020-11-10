@@ -6,6 +6,7 @@ from anchored_stem import AnchoredStem
 from stem_type import StemType
 from connection_types import HorizontalFace, NodeFace, AnchorPosition, StemName
 from geometry_types import Position
+from linear_geometry import nearest_parallel_segment
 from typing import TYPE_CHECKING, Set, Optional
 
 if TYPE_CHECKING:
@@ -42,36 +43,9 @@ class TertiaryStem(AnchoredStem):
 
         # Compute the vine end so that it touches the closest Binary Connector bend line segment
         # away from the root node face
-        if face in HorizontalFace:
-            if face == NodeFace.TOP:
-                # Find all parallel line segments above node face
-                isegs = {s for s in parallel_segs if s[0].y > self.Root_end.y}
-                # Filter out those isegs that intersect
-                isegs = {s for s in isegs if s[0].x <= self.Root_end.x <= s[1].x}
-
-                # Get y value of line segment closest to the node face
-                yval = min({s[0].y for s in isegs})
-            elif face == NodeFace.BOTTOM:
-                # Find all parallel line segments below node face
-                isegs = {s for s in parallel_segs if s[0].y < self.Root_end.y}
-                # Filter out those isegs that intersect
-                isegs = {s for s in isegs if s[0].x <= self.Root_end.x <= s[1].x}
-                yval = max({s[0].y for s in isegs})
-            self.Vine_end = Position(self.Root_end.x, yval)
-        else:
-            if face == NodeFace.RIGHT:
-                # Find all parallel line segments to the right of the node face
-                isegs = {s for s in parallel_segs if s[0].x > self.Root_end.x}
-                # Filter out those isegs that intersect
-                isegs = {s for s in isegs if s[0].y <= self.Root_end.y <= s[1].y}
-                xval = min({s[0].x for s in isegs})
-            elif face == NodeFace.LEFT:
-                # Find all parallel line segments to the left of the node face
-                isegs = {s for s in parallel_segs if s[0].x < self.Root_end.x}
-                # Filter out those isegs that intersect
-                isegs = {s for s in isegs if s[0].y <= self.Root_end.y <= s[1].y}
-                xval = max({s[0].x for s in isegs})
-            self.Vine_end = Position(xval, self.Root_end.y)
+        asc = True if face in {NodeFace.TOP, NodeFace.RIGHT} else False
+        axis = nearest_parallel_segment(psegs=parallel_segs, point=self.Root_end, ascending=asc)
+        self.Vine_end = Position(self.Root_end.x, axis) if face in HorizontalFace else Position(axis, self.Root_end.y)
 
     def render(self):
         """

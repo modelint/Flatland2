@@ -140,7 +140,7 @@ if __name__ == "__main__":
     # so we supply some test input arg values and call the same top level
     # function that is called from the command line
 
-    selected_test = 't034'
+    selected_test = 't035'
 
     tests = {
         't001': ('aircraft2', 't001_straight_binary_horiz'),
@@ -149,8 +149,10 @@ if __name__ == "__main__":
         't030': ('aircraft3', 't030_straight_binary_tertiary'),
         't031': ('aircraft3', 't031_straight_binary_tertiary_horizontal'),
         't032': ('aircraft3', 't032_1bend_tertiary_left'),
-        't033': ('aircraft3', 't033_2bend_tertiary_bottom'),
-        't034': ('aircraft3', 't034_2bend_tertiary_top'),
+        't033': ('aircraft3', 't033_2bend_tertiary_below'),
+        't034': ('aircraft3', 't034_2bend_tertiary_above'),
+        't035': ('aircraft3', 't035_2bend_tertiary_right'),
+        't036': ('aircraft3', 't036_2bend_tertiary_left'),
     }
 
     model_file_path = (Path(__file__).parent / tests[selected_test][0]).with_suffix(".xmm")

@@ -1,4 +1,4 @@
-// t034_2bend_tertiary_top.mss –
+// t034_2bend_tertiary_top.mss – Tertiary is above a multiple bend connector
 diagram class
 notation Starr
 presentation diagnostic
