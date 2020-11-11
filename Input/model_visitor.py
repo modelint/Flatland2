@@ -63,20 +63,15 @@ class SubsystemVisitor(PTNodeVisitor):
 
     def visit_superclass(self, node, children):
         """Superclass in a generalization relationship"""
-        superclass_name = children[0]
-        # TODO: Change generalization to dictionary form
-        return superclass_name
+        return children[0]
 
     def visit_subclass(self, node, children):
         """Subclass in a generalization relationship"""
-        subclass_name = children[0]
-        # TODO: Change generalization to dictionary form
-        return subclass_name
+        return children[0]
 
     def visit_gen_rel(self, node, children):
         """Generalization relationship"""
-        # TODO: Change generalization to dictionary form
-        return children
+        return {"superclass": children[0], "subclasses": children[1:]}
 
     def visit_binary_rel(self, node, children):
         """Binary relationship with or without an association class"""

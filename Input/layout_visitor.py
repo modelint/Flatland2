@@ -75,13 +75,6 @@ class LayoutVisitor(PTNodeVisitor):
         """All node placements"""
         return children
 
-    # def visit_anchor(self, node, children):
-    #     """Placement of anchor position direction (1 or -1 * number of notches"""
-    #     if len(children) == 1:
-    #         return 0
-    #     else:
-    #         return children[0] * int(children[1])
-
     def visit_valign(self, node, children):
         """Vertical alignment of noce in its cell"""
         return {node.rule_name: children[0].upper()}
@@ -100,12 +93,7 @@ class LayoutVisitor(PTNodeVisitor):
 
     def visit_node_face(self, node, children):
         """Where connector attaches to node face"""
-        d = {'face': children[0]}
-        if len(children) == 3:
-            d.update({'anchor': children[1], 'cname':children[2]})
-        else:
-            d['cname'] = children[1]
-        return d
+        return {k:v[0] for k,v in children.results.items()}
 
     def visit_sname_place(self, node, children):
         """Side of stem axis and number of lines in text block"""
@@ -146,6 +134,36 @@ class LayoutVisitor(PTNodeVisitor):
         d = {'cname': children.results['name'][0], 'bend': children.results.get('bend', [1])[0],
              'dir': children.results.get('dir', [1])[0]}
         return d
+
+    def visit_trunk_face(self, node, children):
+        """A single trunk node at the top of the tree layout"""
+        r = children.results
+        if 'notch' in r:
+            r['anchor'] = r.pop('notch')  # In this context, notch represents an anchor
+        d = {node.rule_name: {k:v[0] for k,v in r.items()}}
+        return d
+
+    def visit_leaf_faces(self, node, children):
+        """All layout info for the tree connector"""
+        d = {}
+        for r in children:
+            n = r.pop('name')
+            if 'notch' in r:
+                r['anchor'] = r.pop('notch')  # In this context, notch represents an anchor
+            d[n] = r
+        return d
+
+    def visit_tree_layout(self, node, children):
+        """All layout info for the tree connector"""
+        # Combine all child dictionaries
+        items = {k: v for d in children for k, v in d.items()}
+        return items
+
+    def visit_binary_layout(self, node, children):
+        """All layout info for the binary connector"""
+        # Combine all child dictionaries
+        items = {k: v for d in children for k, v in d.items()}
+        return items
 
     def visit_connector_layout(self, node, children):
         """All layout info for the connector"""

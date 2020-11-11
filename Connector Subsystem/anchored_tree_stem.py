@@ -19,7 +19,7 @@ class AnchoredTreeStem(AnchoredStem):
     """
     def __init__(self, connector: 'Connector', stem_type: StemType, semantic: str,
                  node: 'Node', face: NodeFace, anchor_position: AnchorPosition):
-        AnchoredStem.__init__(self, connector, stem_type, semantic, node, face, anchor_position)
+        AnchoredStem.__init__(self, connector, stem_type, semantic, node, face, anchor_position, name=None)
 
         # Nothing special going on here yet
 

@@ -89,6 +89,6 @@ class ModelParser:
 
 
 if __name__ == "__main__":
-    markup_path = Path(__file__).parent.parent / 'Test/aircraft3.xmm'
+    markup_path = Path(__file__).parent.parent / 'Test/aircraft_tree1.xmm'
     x = ModelParser(model_file_path=markup_path, debug=True)
     x.parse()

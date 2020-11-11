@@ -99,6 +99,6 @@ class LayoutParser:
 
 if __name__ == "__main__":
     # For diagnostics
-    layout_path = Path(__file__).parent.parent / 'Test/t030_straight_binary_tertiary.mss'
+    layout_path = Path(__file__).parent.parent / 'Test/t040_ibranch_horiz.mss'
     x = LayoutParser(layout_file_path=layout_path, debug=True)
     x.parse()

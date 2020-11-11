@@ -11,12 +11,85 @@ from canvas import Canvas
 from single_cell_node import SingleCellNode
 from straight_binary_connector import StraightBinaryConnector
 from bending_binary_connector import BendingBinaryConnector
+from tree_connector import TreeConnector
 from connection_types import ConnectorName, OppositeFace, StemName
-from command_interface import New_Stem, New_Path
+from command_interface import New_Stem, New_Path, New_Trunk_Branch, New_Offshoot_Branch, New_Branch_Set
 from text_block import TextBlock
 from geometry_types import Alignment, VertAlign, HorizAlign
 from pathlib import Path
 
+def layout_generalization(diagram, nodes, rnum, generalization, tree_layout):
+    super_name = generalization['superclass']
+    trunk_node = nodes[super_name]
+    leaf_nodes = {name: nodes[name] for name in generalization['subclasses']}
+    trunk_layout = tree_layout['trunk_face']
+
+    trunk_stem = New_Stem(stem_type='superclass', semantic='superclass', node=trunk_node,
+                          face=trunk_layout['face'], anchor=trunk_layout.get('anchor', 0), stem_name=None)
+    leaf_stems = { New_Stem(stem_type='subclass', semantic='subclass', node=leaf_nodes[n],
+                            face=tree_layout[n]['face'], anchor=tree_layout[n].get('anchor', 0),
+                            stem_name=None) for n in leaf_nodes.keys() }
+    trunk_branch = New_Trunk_Branch(
+        trunk_stem=trunk_stem, leaf_stems=leaf_stems, graft=None, path=None, floating_leaf_stem=None )
+    branches = New_Branch_Set(trunk_branch=trunk_branch, offshoot_branches=[])
+    rnum_data = ConnectorName(text=rnum, side=tree_layout['dir'], bend=None)
+    TreeConnector(diagram=diagram, connector_type='generalization', branches=branches, name=rnum_data)
+
+
+
+def layout_association(diagram, nodes, rnum, association, binary_layout):
+    # Straight or bent connector?
+    tstem = binary_layout['tstem']
+    pstem = binary_layout['pstem']
+    astem = binary_layout.get('tertiary_node', None)
+    t_side = association['t_side']
+    t_phrase = StemName(
+        text=TextBlock(t_side['phrase'], wrap=tstem['wrap']),
+        side=tstem['stem_dir'], axis_offset=None, end_offset=None
+    )
+    t_stem = New_Stem(stem_type='class mult', semantic=t_side['mult'] + ' mult',
+                      node=nodes[t_side['cname']], face=tstem['face'],
+                      anchor=tstem.get('anchor', None), stem_name=t_phrase)
+    p_side = association['p_side']
+    p_phrase = StemName(
+        text=TextBlock(p_side['phrase'], wrap=pstem['wrap']),
+        side=pstem['stem_dir'], axis_offset=None, end_offset=None
+    )
+    p_stem = New_Stem(stem_type='class mult', semantic=p_side['mult'] + ' mult',
+                      node=nodes[p_side['cname']], face=pstem['face'],
+                      anchor=pstem.get('anchor', None), stem_name=p_phrase)
+    if astem:
+        a_stem = New_Stem(stem_type='associative mult', semantic=association['assoc_mult'] + ' mult',
+                          node=nodes[association['assoc_cname']], face=astem['face'], anchor=astem.get('anchor', None),
+                          stem_name=None)
+    else:
+        a_stem = None
+    rnum_data = ConnectorName(text=rnum, side=binary_layout['dir'], bend=binary_layout.get('bend', 1))
+
+    paths = None if not binary_layout.get('paths', None) else \
+        [New_Path(lane=p['lane'], rut=p['rut']) for p in binary_layout['paths']]
+
+    if not paths and OppositeFace[tstem['face']] == pstem['face']:
+        StraightBinaryConnector(
+            diagram=diagram,
+            connector_type='binary association',
+            t_stem=t_stem,
+            p_stem=p_stem,
+            tertiary_stem=a_stem,
+            name=rnum_data
+        )
+        print("Straight connector")
+    else:
+        BendingBinaryConnector(
+            diagram=diagram,
+            connector_type='binary association',
+            anchored_stem_p=p_stem,
+            anchored_stem_t=t_stem,
+            tertiary_stem=a_stem,
+            paths=paths,
+            name=rnum_data)
+        print("Bending connector")
+    print()
 
 def gen_diagram(args):
     """Generate a flatland diagram of the requested type"""
@@ -75,57 +148,12 @@ def gen_diagram(args):
         for r in subsys.rels:  # r is the model data without any layout info
             rnum = r['rnum']
             rlayout = cp[rnum]  # How this r is to be laid out on the diagram
-            # Straight or bent connector?
-            tstem = rlayout['tstem']
-            pstem = rlayout['pstem']
-            astem = rlayout.get('tertiary_node', None)
-            t_side = r['t_side']
-            t_phrase = StemName(
-                text=TextBlock(t_side['phrase'], wrap=tstem['wrap']),
-                side=tstem['stem_dir'], axis_offset=None, end_offset=None
-            )
-            t_stem = New_Stem(stem_type='class mult', semantic=t_side['mult'] + ' mult',
-                              node=nodes[t_side['cname']], face=tstem['face'],
-                              anchor=tstem.get('anchor', None), stem_name=t_phrase)
-            p_side = r['p_side']
-            p_phrase = StemName(
-                text=TextBlock(p_side['phrase'], wrap=pstem['wrap']),
-                side=pstem['stem_dir'], axis_offset=None, end_offset=None
-            )
-            p_stem = New_Stem(stem_type='class mult', semantic=p_side['mult'] + ' mult',
-                              node=nodes[p_side['cname']], face=pstem['face'],
-                              anchor=pstem.get('anchor', None), stem_name=p_phrase)
-            if astem:
-                a_stem = New_Stem(stem_type='associative mult', semantic=r['assoc_mult'] + ' mult',
-                                  node=nodes[r['assoc_cname']], face=astem['face'], anchor=astem.get('anchor', None), stem_name=None)
+            if 'superclass' in r.keys():
+                layout_generalization(diagram=flatland_canvas.Diagram,
+                                      nodes=nodes, rnum=rnum, generalization=r, tree_layout=rlayout)
             else:
-                a_stem = None
-            rnum_data = ConnectorName(text=rnum, side=rlayout['dir'], bend=rlayout.get('bend', 1))
-
-            paths = None if not rlayout.get('paths', None) else \
-                [New_Path(lane=p['lane'], rut=p['rut']) for p in rlayout['paths']]
-
-            if not paths and OppositeFace[tstem['face']] == pstem['face']:
-                StraightBinaryConnector(
-                    diagram=flatland_canvas.Diagram,
-                    connector_type='binary association',
-                    t_stem=t_stem,
-                    p_stem=p_stem,
-                    tertiary_stem=a_stem,
-                    name=rnum_data
-                )
-                print("Straight connector")
-            else:
-                BendingBinaryConnector(
-                    diagram=flatland_canvas.Diagram,
-                    connector_type='binary association',
-                    anchored_stem_p=p_stem,
-                    anchored_stem_t=t_stem,
-                    tertiary_stem=a_stem,
-                    paths=paths,
-                    name=rnum_data)
-                print("Bending connector")
-            print()
+                layout_association(diagram=flatland_canvas.Diagram,
+                                   nodes=nodes, rnum=rnum, association=r, binary_layout=rlayout)
 
     flatland_canvas.render()
     print("No problemo")
@@ -140,7 +168,7 @@ if __name__ == "__main__":
     # so we supply some test input arg values and call the same top level
     # function that is called from the command line
 
-    selected_test = 't035'
+    selected_test = 't040'
 
     tests = {
         't001': ('aircraft2', 't001_straight_binary_horiz'),
@@ -153,6 +181,7 @@ if __name__ == "__main__":
         't034': ('aircraft3', 't034_2bend_tertiary_above'),
         't035': ('aircraft3', 't035_2bend_tertiary_right'),
         't036': ('aircraft3', 't036_2bend_tertiary_left'),
+        't040': ('aircraft_tree1', 't040_ibranch_horiz'),
     }
 
     model_file_path = (Path(__file__).parent / tests[selected_test][0]).with_suffix(".xmm")

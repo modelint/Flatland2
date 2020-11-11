@@ -44,7 +44,11 @@ tstem = stem_side // one stem in a binary connector (t and p are arbitary names)
 pstem = stem_side // the opposite stem in a binary connector
 path = 'L' number (',' 'R' notch)?
 paths = path (space path)*
-connector_layout = indent cname_place csep tstem csep pstem tertiary_node? (csep paths)? nl // All layout info for a binary connector
+leaf_faces = '[ ' node_face (', ' node_face)* ' ]'
+trunk_face = node_face
+tree_layout = trunk_face space leaf_faces
+binary_layout = tstem csep pstem tertiary_node? (csep paths)? // All layout info for a binary connector
+connector_layout = indent cname_place csep (tree_layout / binary_layout) nl
 connectors_header = "connectors" nl // starts section where connector layout info is specified
 connector_block = connectors_header connector_layout+ // All
 
