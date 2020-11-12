@@ -155,8 +155,11 @@ class LayoutVisitor(PTNodeVisitor):
 
     def visit_tree_layout(self, node, children):
         """All layout info for the tree connector"""
-        # Combine all child dictionaries
-        items = {k: v for d in children for k, v in d.items()}
+        # First two elements layout trunk and leaf nodes with an optional path
+        # Create a single key dictionary with the path data if any is specified
+        p = { 'path': None if 'path' not in children.results.keys() else children.results['path'][0] }
+        # Fold trunk, leaf and path dictionaries together
+        items = {**children[0], **children[1], **p}
         return items
 
     def visit_binary_layout(self, node, children):

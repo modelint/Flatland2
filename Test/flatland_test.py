@@ -24,13 +24,17 @@ def layout_generalization(diagram, nodes, rnum, generalization, tree_layout):
     leaf_nodes = {name: nodes[name] for name in generalization['subclasses']}
     trunk_layout = tree_layout['trunk_face']
 
+
     trunk_stem = New_Stem(stem_type='superclass', semantic='superclass', node=trunk_node,
                           face=trunk_layout['face'], anchor=trunk_layout.get('anchor', 0), stem_name=None)
     leaf_stems = { New_Stem(stem_type='subclass', semantic='subclass', node=leaf_nodes[n],
                             face=tree_layout[n]['face'], anchor=tree_layout[n].get('anchor', 0),
                             stem_name=None) for n in leaf_nodes.keys() }
+    path = None if not tree_layout['path'] else New_Path(**tree_layout['path'])
     trunk_branch = New_Trunk_Branch(
-        trunk_stem=trunk_stem, leaf_stems=leaf_stems, graft=None, path=None, floating_leaf_stem=None )
+        trunk_stem=trunk_stem, leaf_stems=leaf_stems,
+        graft=None, path=path, floating_leaf_stem=None
+    )
     branches = New_Branch_Set(trunk_branch=trunk_branch, offshoot_branches=[])
     rnum_data = ConnectorName(text=rnum, side=tree_layout['dir'], bend=None)
     TreeConnector(diagram=diagram, connector_type='generalization', branches=branches, name=rnum_data)
@@ -168,8 +172,6 @@ if __name__ == "__main__":
     # so we supply some test input arg values and call the same top level
     # function that is called from the command line
 
-    selected_test = 't041'
-
     tests = {
         't001': ('aircraft2', 't001_straight_binary_horiz'),
         't020': ('aircraft2', 't020_bending_binary_horiz'),
@@ -183,7 +185,10 @@ if __name__ == "__main__":
         't036': ('aircraft3', 't036_2bend_tertiary_left'),
         't040': ('aircraft_tree1', 't040_ibranch_horiz'),
         't041': ('aircraft_tree1', 't041_ibranch_vert'),
+        't050': ('aircraft_tree1', 't050_rbranch_horiz'),
+        't051': ('aircraft_tree1', 't051_rbranch_vert'),
     }
+    selected_test = 't051'
 
     model_file_path = (Path(__file__).parent / tests[selected_test][0]).with_suffix(".xmm")
     layout_file_path = (Path(__file__).parent / tests[selected_test][1]).with_suffix(".mss")
