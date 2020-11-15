@@ -10,4 +10,4 @@ nodes
     Pilot 2,4
 connectors
     // <side><connector name>[>bend] : <side><lines> <face><anchor>|<node> : <side><lines> <face><anchor>|<node>
-    -R1>4   : +/1 t|Aircraft  : +/1  l|Pilot : L3,R-1 L3,R0
+    -R1.4   : +/1 t|Aircraft  : +/1  l|Pilot : L3,R-1 L3,R0

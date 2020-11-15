@@ -5,36 +5,37 @@ from connection_types import NodeFace
 face_map = {'r': NodeFace.RIGHT, 'l': NodeFace.LEFT, 't': NodeFace.TOP, 'b': NodeFace.BOTTOM}
 
 class LayoutVisitor(PTNodeVisitor):
+    """
+    Organized in the same categories commented in the clean peg grammar file.
 
+        Some conventions:
+
+        - Comment each visit with parsing semantics
+        - Descriptive named variables if processing is required
+        - Use *node.rule_name* in case the rule name changes
+        - Combine values into dictionaries for stability, ease of interpretation and to avoid mistakes
+        - Assigining result to a variable that is returned for ease of debugging
+    """
+
+    # Elements
     def visit_space(self, node, children):
         """Discard spaces"""
         return None
 
-    def visit_face(self, node, children):
-        """Face character"""
-        return face_map[node.value]
-
-    def visit_dir(self, node, children):
-        """Pos-neg direction"""
-        return 1 if node.value == '+' else -1
-
     def visit_number(self, node, children):
         """Natural number"""
         return int(node.value)
-
-    def visit_notch(self, node, children):
-        """The digit 0 or a positive or negative number of notches"""
-        if children[0] == '0':
-            return 0
-        else:
-            scale = -1 if children[0] == '-' else 1
-            return int(children[1]) * scale
 
     def visit_name(self, node, children):
         """Words and delmiters joined to form a complete name"""
         name = ''.join(children)
         return name
 
+    def visit_wrap(self, node, children):
+        """Number of lines to wrap"""
+        return {node.rule_name: int(children[0]) }
+
+    # Diagram
     def visit_diagram(self, node, children):
         """Keyword argument"""
         return children[0]
@@ -55,25 +56,33 @@ class LayoutVisitor(PTNodeVisitor):
         """Keyword argument"""
         return children[0]
 
-    def visit_wrap(self, node, children):
-        """Number of lines to wrap"""
-        return {node.rule_name: int(children[0]) }
+    # Face attachment
+    def visit_face(self, node, children):
+        """Face character"""
+        return face_map[node.value]
 
-    def visit_node_loc(self, node, children):
-        return {node.rule_name: children}
+    def visit_dir(self, node, children):
+        """Pos-neg direction"""
+        return 1 if node.value == '+' else -1
 
-    def visit_node_name(self, node, children):
-        return {node.rule_name: ''.join(children)}
+    def visit_anchor(self, node, children):
+        """Anchor position"""
+        anchor = 'float' if children[0] == '*' else children[0]
+        return anchor
 
-    def visit_node_placement(self, node, children):
-        """node_name, wrap?, row, column"""
-        # Combine all child dictionaries
-        items = {k: v for d in children for k, v in d.items()}
-        return items
+    def visit_node_face(self, node, children):
+        """Where connector attaches to node face"""
+        nface = {k:v[0] for k,v in children.results.items()}
+        return nface
 
-    def visit_node_block(self, node, children):
-        """All node placements"""
-        return children
+    # Alignment
+    def visit_notch(self, node, children):
+        """The digit 0 or a positive or negative number of notches"""
+        if children[0] == '0':
+            return 0
+        else:
+            scale = -1 if children[0] == '-' else 1
+            return int(children[1]) * scale
 
     def visit_valign(self, node, children):
         """Vertical alignment of noce in its cell"""
@@ -91,9 +100,33 @@ class LayoutVisitor(PTNodeVisitor):
         else:
             return children[0]
 
-    def visit_node_face(self, node, children):
-        """Where connector attaches to node face"""
-        return {k:v[0] for k,v in children.results.items()}
+    def visit_path(self, node, children):
+        """Lane and rut followed by a connector bend"""
+        # Rut is zero by default
+        path = {node.rule_name: {'lane': children[0], 'rut': children.results.get('notch', [0])[0]} }
+        return path  # { path: { lane: <lane_num>, rut: <rut_displacement> }
+
+    # Node
+    def visit_node_loc(self, node, children):
+        return {node.rule_name: children}
+
+    def visit_node_name(self, node, children):
+        return {node.rule_name: ''.join(children)}
+
+    def visit_node_placement(self, node, children):
+        """node_name, wrap?, row, column"""
+        # Combine all child dictionaries
+        items = {k: v for d in children for k, v in d.items()}
+        return items
+
+    def visit_node_block(self, node, children):
+        """All node placements"""
+        return children
+
+    # Binary connector
+    def visit_tertiary_node(self, node, children):
+        """Tertiary node face and anchor"""
+        return {node.rule_name: children[0]}
 
     def visit_sname_place(self, node, children):
         """Side of stem axis and number of lines in text block"""
@@ -108,65 +141,65 @@ class LayoutVisitor(PTNodeVisitor):
     def visit_tstem(self, node, children):
         """T stem layout info"""
         items = {k: v for d in children for k, v in d.items()}
-        d = {node.rule_name: items}
-        return d
+        tstem = {node.rule_name: items}
+        return tstem
 
     def visit_pstem(self, node, children):
         """P stem layout info"""
         items = {k: v for d in children for k, v in d.items()}
-        d = {node.rule_name: items}
-        return d
-
-    def visit_tertiary_node(self, node, children):
-        """Tertiary node face and anchor"""
-        return {node.rule_name: children[0]}
-
-    def visit_path(self, node, children):
-        """Lane and rut followed by a connector bend"""
-        return {'lane': children[0], 'rut': children.results.get('notch', [0])[0]}  # Rut is 0 by default
+        pstem = {node.rule_name: items}
+        return pstem
 
     def visit_paths(self, node, children):
-        """A sequence of one or more paths"""
+        """A sequence of one or more paths since a binary connector may bend multiple times"""
         return {node.rule_name: children}
-
-    def visit_cname_place(self, node, children):
-        """Side of connector axis and name of connector and optional bend where cname is placed"""
-        d = {'cname': children.results['name'][0], 'bend': children.results.get('bend', [1])[0],
-             'dir': children.results.get('dir', [1])[0]}
-        return d
-
-    def visit_trunk_face(self, node, children):
-        """A single trunk node at the top of the tree layout"""
-        r = children.results
-        if 'notch' in r:
-            r['anchor'] = r.pop('notch')  # In this context, notch represents an anchor
-        d = {node.rule_name: {k:v[0] for k,v in r.items()}}
-        return d
-
-    def visit_leaf_faces(self, node, children):
-        """All layout info for the tree connector"""
-        d = {}
-        for r in children:
-            n = r.pop('name')
-            if 'notch' in r:
-                r['anchor'] = r.pop('notch')  # In this context, notch represents an anchor
-            d[n] = r
-        return d
-
-    def visit_tree_layout(self, node, children):
-        """All layout info for the tree connector"""
-        # First two elements layout trunk and leaf nodes with an optional path
-        # Create a single key dictionary with the path data if any is specified
-        p = { 'path': None if 'path' not in children.results.keys() else children.results['path'][0] }
-        # Fold trunk, leaf and path dictionaries together
-        items = {**children[0], **children[1], **p}
-        return items
 
     def visit_binary_layout(self, node, children):
         """All layout info for the binary connector"""
         # Combine all child dictionaries
         items = {k: v for d in children for k, v in d.items()}
         return items
+
+    # Tree connector
+    def visit_trunk_face(self, node, children):
+        """A single trunk node at the top of the tree layout. It may or may not graft its branch."""
+        face = children[0]  # Face, node and optional notch
+        graft = False if len(children) == 1 else True
+        tface = { 'trunk_face': { 'name': face.pop('name'), **face } }
+        return tface
+
+    def visit_leaf_face(self, node, children):
+        """Branch face that may be a graft to its branch (local) or the (next) branch"""
+        lface = children[0]
+        graft = None
+        if len(children) == 2:
+            graft = 'local' if children[1] == '>' else 'next'
+        lface['graft'] = graft
+        name = lface.pop('name')
+        return { name: lface }  # Single element dictionary indexed by the node name
+
+    def visit_leaf_faces(self, node, children):
+        """Combine into dictionary of each leaf face indexed by node name"""
+        items = {k: v for d in children for k, v in d.items()}
+        return { node.rule_name: items }
+
+    def visit_branch(self, node, children):
+        """A tree connector branch"""
+        items = {k: v for d in children for k, v in d.items()}
+        # Dictionary of leaf faces and an optional path
+        return { node.rule_name: items }
+
+    def visit_tree_layout(self, node, children):
+        """All layout info for the tree connector"""
+        tlayout = children[0]
+        tlayout['branches'] = [c['branch'] for c in children[1:]]
+        return tlayout
+
+    # Connector
+    def visit_cname_place(self, node, children):
+        """Name of connector and the side of the connector axis where it is placed"""
+        cplace = {'cname': children.results['name'][0], 'dir': children.results.get('dir', [1])[0]}
+        return cplace
 
     def visit_connector_layout(self, node, children):
         """All layout info for the connector"""
@@ -180,6 +213,7 @@ class LayoutVisitor(PTNodeVisitor):
     def visit_layout_spec(self, node, children):
         return children.results
 
+    # Root
     def visit_diagram_layout(self, node, children):
         return children
 
