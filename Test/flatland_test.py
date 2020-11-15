@@ -2,7 +2,7 @@
 flatland_test.py – This is the Flatland test driver
 """
 import sys
-from flatland_exceptions import FlatlandIOException
+from flatland_exceptions import FlatlandIOException, ConflictingTreeLayoutGraft
 from collections import namedtuple
 from model_parser import ModelParser
 from layout_parser import LayoutParser
@@ -18,27 +18,58 @@ from text_block import TextBlock
 from geometry_types import Alignment, VertAlign, HorizAlign
 from pathlib import Path
 
+
 def layout_generalization(diagram, nodes, rnum, generalization, tree_layout):
     super_name = generalization['superclass']
     trunk_node = nodes[super_name]
-    leaf_nodes = {name: nodes[name] for name in generalization['subclasses']}
     trunk_layout = tree_layout['trunk_face']
 
-
+    # Process trunk branch
     trunk_stem = New_Stem(stem_type='superclass', semantic='superclass', node=trunk_node,
-                          face=trunk_layout['face'], anchor=trunk_layout.get('anchor', 0), stem_name=None)
-    leaf_stems = { New_Stem(stem_type='subclass', semantic='subclass', node=leaf_nodes[n],
-                            face=tree_layout[n]['face'], anchor=tree_layout[n].get('anchor', 0),
-                            stem_name=None) for n in leaf_nodes.keys() }
-    path = None if not tree_layout['path'] else New_Path(**tree_layout['path'])
+                          face=trunk_layout['face'], anchor=trunk_layout['anchor'], stem_name=None)
+    tbranch = tree_layout['branches'][0]  # First branch is required and it is the trunk branch
+    lfaces = tbranch['leaf_faces']
+    path_fields = tbranch.get('path', None)
+    tbranch_path = None if not path_fields else New_Path(**path_fields)
+    leaf_stems = set()
+    graft = trunk_stem if trunk_layout['graft'] else None
+    local_leaf_graft = None
+    next_branch_graft = None
+    floating_leaf_stem = None
+    for name in lfaces.keys():
+        leaf_stems.add(New_Stem(stem_type='subclass', semantic='subclass', node=nodes[name],
+                                      face=lfaces[name]['face'], anchor=lfaces[name]['anchor'],
+                                      stem_name=None))
+        if lfaces[name]['graft'] == 'local':
+            if tbranch['graft']:
+                raise ConflictingTreeLayoutGraft(stem=lfaces[name])
+            else:
+                local_leaf_graft = leaf_stems[name]
+        elif lfaces[name]['graft'] == 'next':
+            next_branch_graft = leaf_stems[name]
+    graft = graft if graft else local_leaf_graft if local_leaf_graft else None
     trunk_branch = New_Trunk_Branch(
         trunk_stem=trunk_stem, leaf_stems=leaf_stems,
-        graft=None, path=path, floating_leaf_stem=None
+        graft=graft, path=tbranch_path, floating_leaf_stem=floating_leaf_stem
     )
+    pass
+    # for branch in trunk_layout['branches'][1:]:
+    #     lfaces = branch['leaf faces']
+    #     path_fields = branch.get('path', None)
+    #     leaf_stems = {}
+    #     leaf_graft = {}
+    #     for name in lfaces.keys():
+    #         leaf_stems['name'] = New_Stem(stem_type='subclass', semantic='subclass', node=nodes[name],
+    #                            face=lfaces[name]['face'], anchor=lfaces[name]['anchor'],
+    #                            stem_name=None)
+    #     path = None if not path_fields else New_Path(**path_fields)
+    #     graft = None
+
+
+
     branches = New_Branch_Set(trunk_branch=trunk_branch, offshoot_branches=[])
     rnum_data = ConnectorName(text=rnum, side=tree_layout['dir'], bend=None)
     TreeConnector(diagram=diagram, connector_type='generalization', branches=branches, name=rnum_data)
-
 
 
 def layout_association(diagram, nodes, rnum, association, binary_layout):
@@ -94,6 +125,7 @@ def layout_association(diagram, nodes, rnum, association, binary_layout):
             name=rnum_data)
         print("Bending connector")
     print()
+
 
 def gen_diagram(args):
     """Generate a flatland diagram of the requested type"""
@@ -187,8 +219,9 @@ if __name__ == "__main__":
         't041': ('aircraft_tree1', 't041_ibranch_vert'),
         't050': ('aircraft_tree1', 't050_rbranch_horiz'),
         't051': ('aircraft_tree1', 't051_rbranch_vert'),
+        't052': ('aircraft_tree1', 't052_rbranch_vert_corner'),
     }
-    selected_test = 't051'
+    selected_test = 't052'
 
     model_file_path = (Path(__file__).parent / tests[selected_test][0]).with_suffix(".xmm")
     layout_file_path = (Path(__file__).parent / tests[selected_test][1]).with_suffix(".mss")

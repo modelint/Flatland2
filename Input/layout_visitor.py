@@ -165,13 +165,17 @@ class LayoutVisitor(PTNodeVisitor):
         """A single trunk node at the top of the tree layout. It may or may not graft its branch."""
         face = children[0]  # Face, node and optional notch
         graft = False if len(children) == 1 else True
-        tface = { 'trunk_face': { 'name': face.pop('name'), **face } }
+        if 'anchor' not in face.keys():
+            face['anchor'] = 0  # A Trunk face is never grafted, so an unspecified anchor is 0
+        tface = { 'trunk_face': { 'name': face.pop('name'), **face, 'graft': graft } }
         return tface
 
     def visit_leaf_face(self, node, children):
         """Branch face that may be a graft to its branch (local) or the (next) branch"""
         lface = children[0]
         graft = None
+        if 'anchor' not in lface.keys():
+            lface['anchor'] = 0  # If not float or a number, it must be zero in a tree layout
         if len(children) == 2:
             graft = 'local' if children[1] == '>' else 'next'
         lface['graft'] = graft

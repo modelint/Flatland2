@@ -15,7 +15,12 @@ nodes
 connectors
     // Binary connector examples:
     // <side><connector name>[>bend] : <side><lines> <face><anchor>|<node> : <side><lines> <face><anchor>|<node>
+    //
     // Trunk connector examples:
     //
+    // +R1 : b|Aircraft { t|Helicopter, t|Fixed Wing : L1R-2 } { l|Hybrid Wing : L3 }
+    // Connector name R1 on right side, node named "Aircraft" is the trunk node connecting from bottom face center
+    // first branch: two nodes connected on center top faces with branch running through lane 1, rut -2
+    // second branch: one node connected on center left face with branch running through lane 3 center
     //
-    +R1 : b|Aircraft { t+1|Helicopter>>, t|Fixed Wing : L1R-2 } { l|Hybrid Wing : L3 }
+    +R1 : b|Aircraft { t|Helicopter, t|Fixed Wing } { l|Hybrid Wing : L4 }

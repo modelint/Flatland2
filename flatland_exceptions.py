@@ -25,6 +25,14 @@ class FlatlandUserInputException(FlatlandException):
 class UnknownSheetGroup(FlatlandDBException):
     pass
 
+class ConflictingTreeLayoutGraft(FlatlandUserInputException):
+    def __init__(self, stem):
+        self.stem = stem
+
+    def __str__(self):
+        return f'{pre}Conflicting graft instructions at: "{self.stem}"{post}'
+
+
 class ModelInputFileOpen(FlatlandIOException):
     def __init__(self, path):
         self.path = path
