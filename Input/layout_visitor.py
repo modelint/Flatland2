@@ -1,6 +1,9 @@
 """ layout_visitor.py """
 from arpeggio import PTNodeVisitor
 from connection_types import NodeFace
+from flatland_exceptions import ConflictingGraftFloat, MultipleGraftsInSameBranch, ExternalLocalGraftConflict
+from flatland_exceptions import MultipleFloatsInSameBranch, TrunkLeafGraftConflict, GraftRutBranchConflict
+from flatland_exceptions import ExternalGraftOnLastBranch
 
 face_map = {'r': NodeFace.RIGHT, 'l': NodeFace.LEFT, 't': NodeFace.TOP, 'b': NodeFace.BOTTOM}
 
@@ -178,25 +181,59 @@ class LayoutVisitor(PTNodeVisitor):
             lface['anchor'] = 0  # If not float or a number, it must be zero in a tree layout
         if len(children) == 2:
             graft = 'local' if children[1] == '>' else 'next'
+        if lface['anchor'] == 'float' and graft:
+            raise ConflictingGraftFloat(stem=lface['name'])
         lface['graft'] = graft
         name = lface.pop('name')
         return { name: lface }  # Single element dictionary indexed by the node name
 
     def visit_leaf_faces(self, node, children):
         """Combine into dictionary of each leaf face indexed by node name"""
-        items = {k: v for d in children for k, v in d.items()}
-        return { node.rule_name: items }
+        lfaces = {k: v for d in children for k, v in d.items()}
+        if len([lfaces[n]['graft'] for n in lfaces if lfaces[n]['graft']]) > 1:
+            raise MultipleGraftsInSameBranch(branch=set(lfaces.keys()))
+        if len([lfaces[n]['anchor'] for n in lfaces if lfaces[n]['anchor'] == 'float']) > 1:
+            raise MultipleFloatsInSameBranch(branch=set(lfaces.keys()))
+        return { node.rule_name: lfaces }
 
     def visit_branch(self, node, children):
         """A tree connector branch"""
-        items = {k: v for d in children for k, v in d.items()}
-        # Dictionary of leaf faces and an optional path
-        return { node.rule_name: items }
+        branch = {k: v for d in children for k, v in d.items()}
+        # Verify that this is either an interpolated, rut or graft branch and not an illegal mix
+        # If a path is specified it is a rut branch or if there is a local graft it is a grafted branch
+        # If both path and local graft are present in the same branch it is illegal
+        if branch.get('path', None):  # Path specified, so there should be no local grafts in this branch
+            lf = branch['leaf_faces']
+            local_graft = [lf[n]['graft'] for n in lf if lf[n]['graft'] == 'local']
+            if local_graft:
+                raise GraftRutBranchConflict(branch=set(lf.keys()))
+        # Return dictionary of leaf faces and an optional path keyed to the local rule
+        return { node.rule_name: branch }
 
     def visit_tree_layout(self, node, children):
         """All layout info for the tree connector"""
         tlayout = children[0]
+        # If the trunk is grafting (>), there can be no other leaf stem grafting locally (>)
         tlayout['branches'] = [c['branch'] for c in children[1:]]
+        tgraft = tlayout['trunk_face']['graft']
+        tleaves = tlayout['branches'][0]['leaf_faces']
+        if tgraft and [tleaves[n]['graft'] for n in tleaves if tleaves[n]['graft'] == 'local']:
+            raise TrunkLeafGraftConflict()  # In the first branch (trunk branch) both trunk and some leaf are grafting
+        # For all offshoot (non-trunk) branches, there can be no local graft (>) if the preceding branch
+        # is grafting externally (>>).  In other words, no more than one graft per branch.
+        for b, next_b in zip(tlayout['branches'], tlayout['branches'][1:]):
+            lf = b['leaf_faces']
+            external_graft = [lf[n]['graft'] for n in lf if lf[n]['graft'] == 'next']
+            if external_graft:
+                next_lf = next_b['leaf_faces']
+                if [next_lf[n]['graft'] for n in next_lf if next_lf[n]['graft'] == 'local']:
+                    # External graft conflicts with local branch
+                    raise ExternalLocalGraftConflict(set(lf.keys()))
+        # Check for dangling external graft in last branch
+        last_lf = tlayout['branches'][-1]['leaf_faces']
+        external_graft = [last_lf[n]['graft'] for n in last_lf if last_lf[n]['graft'] == 'next']
+        if external_graft:
+            raise ExternalGraftOnLastBranch(branch=set(last_lf.keys()))
         return tlayout
 
     # Connector

@@ -37,37 +37,52 @@ def layout_generalization(diagram, nodes, rnum, generalization, tree_layout):
     next_branch_graft = None
     floating_leaf_stem = None
     for name in lfaces.keys():
-        leaf_stems.add(New_Stem(stem_type='subclass', semantic='subclass', node=nodes[name],
-                                      face=lfaces[name]['face'], anchor=lfaces[name]['anchor'],
-                                      stem_name=None))
+        lstem = New_Stem(stem_type='subclass', semantic='subclass', node=nodes[name],
+                         face=lfaces[name]['face'], anchor=lfaces[name]['anchor'],
+                         stem_name=None)
+        leaf_stems.add(lstem)
+        if lfaces['anchor'] == 'float':
+            floating_leaf_stem = lstem
         if lfaces[name]['graft'] == 'local':
             if tbranch['graft']:
                 raise ConflictingTreeLayoutGraft(stem=lfaces[name])
             else:
-                local_leaf_graft = leaf_stems[name]
+                local_leaf_graft = lstem
         elif lfaces[name]['graft'] == 'next':
-            next_branch_graft = leaf_stems[name]
+            next_branch_graft = lstem
     graft = graft if graft else local_leaf_graft if local_leaf_graft else None
     trunk_branch = New_Trunk_Branch(
         trunk_stem=trunk_stem, leaf_stems=leaf_stems,
         graft=graft, path=tbranch_path, floating_leaf_stem=floating_leaf_stem
     )
-    pass
-    # for branch in trunk_layout['branches'][1:]:
-    #     lfaces = branch['leaf faces']
-    #     path_fields = branch.get('path', None)
-    #     leaf_stems = {}
-    #     leaf_graft = {}
-    #     for name in lfaces.keys():
-    #         leaf_stems['name'] = New_Stem(stem_type='subclass', semantic='subclass', node=nodes[name],
-    #                            face=lfaces[name]['face'], anchor=lfaces[name]['anchor'],
-    #                            stem_name=None)
-    #     path = None if not path_fields else New_Path(**path_fields)
-    #     graft = None
 
+    # Process any other offshoot branches
+    obranches = []
+    for branch in tree_layout['branches'][1:]:
+        graft = next_branch_graft
+        next_branch_graft = None
+        lfaces = branch['leaf faces']
+        path_fields = branch.get('path', None)
+        leaf_stems = set()
+        local_leaf_graft = None
+        next_branch_graft = None
+        floating_leaf_stem = None
+        for name in lfaces.keys():
+            leaf_stems.add(New_Stem(stem_type='subclass', semantic='subclass', node=nodes[name],
+                                    face=lfaces[name]['face'], anchor=lfaces[name]['anchor'],
+                                    stem_name=None))
+        path = None if not path_fields else New_Path(**path_fields)
+        if lfaces[name]['graft'] == 'local':
+            local_leaf_graft = leaf_stems[name]
+        elif lfaces[name]['graft'] == 'next':
+            next_branch_graft = leaf_stems[name]
+        graft = graft if graft else local_leaf_graft if local_leaf_graft else None
+        graft = None
+        obranches.add(
+            New_Offshoot_Branch(leaf_stems=leaf_stems, graft=graft, path=path, floating_leaf_stem=floating_leaf_stem)
+        )
 
-
-    branches = New_Branch_Set(trunk_branch=trunk_branch, offshoot_branches=[])
+    branches = New_Branch_Set(trunk_branch=trunk_branch, offshoot_branches=obranches)
     rnum_data = ConnectorName(text=rnum, side=tree_layout['dir'], bend=None)
     TreeConnector(diagram=diagram, connector_type='generalization', branches=branches, name=rnum_data)
 

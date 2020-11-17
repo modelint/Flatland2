@@ -25,12 +25,51 @@ class FlatlandUserInputException(FlatlandException):
 class UnknownSheetGroup(FlatlandDBException):
     pass
 
-class ConflictingTreeLayoutGraft(FlatlandUserInputException):
+class ConflictingGraftFloat(FlatlandUserInputException):
     def __init__(self, stem):
         self.stem = stem
 
     def __str__(self):
-        return f'{pre}Conflicting graft instructions at: "{self.stem}"{post}'
+        return f'{pre}A floating anchor(*) may not graft (>, >>): "{self.stem}"{post}'
+
+class MultipleGraftsInSameBranch(FlatlandUserInputException):
+    def __init__(self, branch):
+        self.branch = branch
+
+    def __str__(self):
+        return f'{pre}There may be at most one graft (>, >>) per branch: "{self.branch}"{post}'
+
+class TrunkLeafGraftConflict(FlatlandUserInputException):
+    def __str__(self):
+        return f'{pre}Leaf may not graft locally (>) if Trunk is grafting (>) {post}'
+
+class ExternalLocalGraftConflict(FlatlandUserInputException):
+    def __init__(self, branch):
+        self.branch = branch
+
+    def __str__(self):
+        return f'{pre}Branch has local (>) graft with conflicting external graft (>>) in preceding branch: "{self.branch}"{post}'
+
+class ExternalGraftOnLastBranch(FlatlandUserInputException):
+    def __init__(self, branch):
+        self.branch = branch
+
+    def __str__(self):
+        return f'{pre}Last branch in tree layout has a superfluous external (>>) graft: "{self.branch}"{post}'
+
+class GraftRutBranchConflict(FlatlandUserInputException):
+    def __init__(self, branch):
+        self.branch = branch
+
+    def __str__(self):
+        return f'{pre}A rut branch, with (: Ln[R+/-n]), may not include a local graft(>): "{self.branch}"{post}'
+
+class MultipleFloatsInSameBranch(FlatlandUserInputException):
+    def __init__(self, branch):
+        self.branch = branch
+
+    def __str__(self):
+        return f'{pre}There may be at most one floating anchor (*) per branch: "{self.branch}"{post}'
 
 
 class ModelInputFileOpen(FlatlandIOException):

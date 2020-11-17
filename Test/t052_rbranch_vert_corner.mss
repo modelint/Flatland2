@@ -23,4 +23,4 @@ connectors
     // first branch: two nodes connected on center top faces with branch running through lane 1, rut -2
     // second branch: one node connected on center left face with branch running through lane 3 center
     //
-    +R1 : b|Aircraft { t|Helicopter, t|Fixed Wing } { l|Hybrid Wing : L4 }
+    R1 : b|Aircraft { t|Helicopter, t|Fixed Wing : L1 } { l|Hybrid Wing : L4 }
