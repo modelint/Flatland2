@@ -133,19 +133,20 @@ class TreeConnector(Connector):
         for leaf_stem in new_leaves:
             # Lookup the StemType object
             leaf_stem_type = self.Connector_type.Stem_type[leaf_stem.stem_type]
-            anchored_hanging_leaf = AnchoredLeafStem(
-                connector=self,
-                stem_type=leaf_stem_type,
-                semantic=leaf_stem.semantic,
-                node=leaf_stem.node,
-                face=leaf_stem.face,
-                anchor_position=leaf_stem.anchor
-            )
-            hanging_leaves.add(anchored_hanging_leaf)
-            # Check to see if this is a grafting stem, if so register this newly created leaf as such
-            if not hanging_graft_leaf and leaf_stem == new_graft_leaf:
-                # There can only be one, so do this assignment at most once per new_leaves set
-                hanging_graft_leaf = anchored_hanging_leaf
+            if leaf_stem.anchor is not None:
+                anchored_hanging_leaf = AnchoredLeafStem(
+                    connector=self,
+                    stem_type=leaf_stem_type,
+                    semantic=leaf_stem.semantic,
+                    node=leaf_stem.node,
+                    face=leaf_stem.face,
+                    anchor_position=leaf_stem.anchor
+                )
+                hanging_leaves.add(anchored_hanging_leaf)
+                # Check to see if this is a grafting stem, if so register this newly created leaf as such
+                if not hanging_graft_leaf and leaf_stem == new_graft_leaf:
+                    # There can only be one, so do this assignment at most once per new_leaves set
+                    hanging_graft_leaf = anchored_hanging_leaf
         return LeafGroup(hleaves=hanging_leaves, gleaf=hanging_graft_leaf)
 
     def unpack_trunk(self, new_trunk: New_Stem) -> TrunkStem:

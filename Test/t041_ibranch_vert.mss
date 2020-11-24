@@ -11,4 +11,4 @@ nodes
     Fixed Wing 3,3
 connectors
     // <side><connector name>[>bend] : <side><lines> <face><anchor>|<node> : <side><lines> <face><anchor>|<node>
-    +R1 : r+2|Aircraft [ l|Helicopter, l-1|Fixed Wing ]
+    +R1 : r+2|Aircraft { l|Helicopter, l-1|Fixed Wing }

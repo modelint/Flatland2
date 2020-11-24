@@ -10,8 +10,10 @@ nodes
     // node [wrap] row,col align [ right | left ] [top | bottom]
     Aircraft 3,2
     Helicopter 1,1
-    Fixed Wing 1,3
-    Hybrid Wing 4,5
+    Fixed Wing 3,4
+    Hybrid Wing 4,4
+    X Wing 6,2
+    Tie Fighter 5,1
 connectors
     // Binary connector examples:
     // <side><connector name>[>bend] : <side><lines> <face><anchor>|<node> : <side><lines> <face><anchor>|<node>
@@ -23,4 +25,4 @@ connectors
     // first branch: two nodes connected on center top faces with branch running through lane 1, rut -2
     // second branch: one node connected on center left face with branch running through lane 3 center
     //
-    +R1 : b|Aircraft { t|Helicopter, t|Fixed Wing } { l|Hybrid Wing : L4 }
+    -R1 : b|Aircraft { t|Helicopter } { l|Fixed Wing : L3R-1 } { l|Hybrid Wing>, b|X Wing, b|Tie Fighter }

@@ -8,10 +8,11 @@ nodes
     // Node placement examples
     // Aircraft 3,2     :: Node named "Aircraft" positioned at row 3, column 2
     // node [wrap] row,col align [ right | left ] [top | bottom]
-    Aircraft 3,2
-    Helicopter 1,1
-    Fixed Wing 1,3
-    Hybrid Wing 4,5
+    Aircraft 3,1
+    Helicopter 5,2
+    Fixed Wing 4,4
+    Hybrid Wing 3,3
+    X Wing 1,3
 connectors
     // Binary connector examples:
     // <side><connector name>[>bend] : <side><lines> <face><anchor>|<node> : <side><lines> <face><anchor>|<node>
@@ -23,4 +24,4 @@ connectors
     // first branch: two nodes connected on center top faces with branch running through lane 1, rut -2
     // second branch: one node connected on center left face with branch running through lane 3 center
     //
-    +R1 : b|Aircraft { t|Helicopter, t|Fixed Wing } { l|Hybrid Wing : L4 }
+    -R1 : r|Aircraft { b-1|Helicopter>, l|Fixed Wing, l|Hybrid Wing, l|X Wing }

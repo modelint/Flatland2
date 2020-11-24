@@ -2,7 +2,7 @@
 floating_stem.py
 """
 
-from stem import Stem
+from stem import Stem, StemName
 from stem_type import StemType
 from connection_types import NodeFace
 from geometry_types import Position
@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 class FloatingStem(Stem):
     def __init__(self, connector: 'Connector', stem_type: StemType, semantic: str,
-                 node: 'Node', face: NodeFace, root_position: Position ):
+                 node: 'Node', face: NodeFace, root_position: Position, name: StemName = None):
         """
         Constructor
 
@@ -26,4 +26,4 @@ class FloatingStem(Stem):
         :param face:
         :param root_position:
         """
-        Stem.__init__(self, connector, stem_type, semantic, node, face, root_position )
+        Stem.__init__(self, connector, stem_type, semantic, node, face, root_position, name)

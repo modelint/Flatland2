@@ -1,5 +1,5 @@
 """
-flatland_test.py – This is the Flatland test driver
+xUML_gen.py – Here we generate only xUML diagrams
 """
 import sys
 from flatland_exceptions import FlatlandIOException, ConflictingTreeLayoutGraft

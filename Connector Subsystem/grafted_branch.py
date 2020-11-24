@@ -92,7 +92,8 @@ class GraftedBranch(Branch):
             node=new_floating_leaf.node,
             face=new_floating_leaf.face,
             grafted_branch=grafting_stem,
-            root_position=root_position
+            root_position=root_position,
+            name=None
         )
 
     @property
