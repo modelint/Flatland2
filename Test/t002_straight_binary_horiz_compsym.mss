@@ -1,4 +1,4 @@
-// t001_straight_binary_horiz.mss – Two nodes and a single horizontal binary connector, 2-line wrap
+// t001_straight_binary_horiz.mss – Two nodes and a single horizontal binary connector
 diagram class
 notation Starr
 presentation diagnostic
@@ -10,4 +10,4 @@ nodes
     Pilot 1,3
 connectors
     // <side><connector name>[>bend] : <side><lines> <face><anchor>|<node> : <side><lines> <face><anchor>|<node>
-    -R1 : +/1 r|Aircraft : +/2 l*|Pilot
+    R1 : -/1 r|Aircraft : -/1  l|Pilot

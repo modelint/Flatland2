@@ -1,5 +1,5 @@
 """
-t060_straight_binary_horiz_names.py
+t005_straight_binary_horiz_names.py
 """
 from single_cell_node import SingleCellNode
 from straight_binary_connector import StraightBinaryConnector

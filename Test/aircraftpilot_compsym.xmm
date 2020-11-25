@@ -1,4 +1,3 @@
-/// aircraft 2 – One binary, non-composite symbols
 subsystem Test
 class Aircraft
 attributes
@@ -15,6 +14,6 @@ attributes
 --
 relationships
     R1
-    is flying, 1 Aircraft
-    is flown by, 1 Pilot
+    is flying, M Aircraft
+    is flown by, Mc Pilot
 --

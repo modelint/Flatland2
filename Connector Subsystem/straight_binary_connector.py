@@ -1,7 +1,8 @@
 """
 straight_binary_connector.py
 """
-from flatland_exceptions import UnsupportedConnectorType
+from flatland_exceptions import UnsupportedConnectorType, MultipleFloatsInSameStraightConnector
+from flatland_exceptions import NoFloatInStraightConnector
 from binary_connector import BinaryConnector
 from anchored_stem import AnchoredStem
 from connection_types import HorizontalFace, ConnectorName
@@ -62,24 +63,15 @@ class StraightBinaryConnector(BinaryConnector):
         # Extract the user supplied connector name if any
         BinaryConnector.__init__(self, diagram=diagram, name=name, connector_type=ct)
 
-        # One side or the other must supply an anchor position
-        if t_stem.anchor is not None or (t_stem.anchor is None and p_stem.anchor is None):
-            # If the t_stem anchor is specified or neither anchor is specified,
-            # make t_stem the projecting_stem
-            projecting_stem = t_stem
-            floating_stem = p_stem
-        else:
-            # Otherwise use the p_stem anchor
-            projecting_stem = p_stem
-            floating_stem = t_stem
-        # If no anchor is specified by either side, set it to zero (centered)
-        anchor = projecting_stem.anchor if projecting_stem.anchor is not None else 0
+        # One side (t or p) must be the anchor and the other floats
+        if t_stem.anchor == 'float' and p_stem.anchor == 'float':
+            raise MultipleFloatsInSameStraightConnector(name)  # Can't have two floats
+        if 'float' not in {t_stem.anchor, p_stem.anchor}:
+            raise NoFloatInStraightConnector(name)  # Can't have two anchors
 
-        # WARN user if anchors were poorly specified
-        # TODO: Deal with warnings systematically via exceptions or logging
-        if floating_stem.anchor is not None:
-            anchor_warning = "Two anchors specified on straight binary connector. Ignoring P stem anchor"
-            print(f"Flatland warning: On connector {name.text}: {anchor_warning}")
+        # Anchored side is the projecting stem and floating side is the floating stem
+        projecting_stem = t_stem if t_stem.anchor != 'float' else p_stem
+        floating_stem = p_stem if projecting_stem is t_stem else t_stem
 
         # Unpack the user specification by looking up the requested Stem Types loaded from our database
         projecting_stem_type = self.Connector_type.Stem_type[projecting_stem.stem_type]
@@ -95,7 +87,7 @@ class StraightBinaryConnector(BinaryConnector):
             semantic=projecting_stem.semantic,
             node=projecting_stem.node,
             face=projecting_stem.face,
-            anchor_position=anchor,
+            anchor_position=projecting_stem.anchor,
             name=projecting_stem.stem_name
         )
         self.Floating_stem = FloatingBinaryStem(

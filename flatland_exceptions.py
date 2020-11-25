@@ -64,6 +64,20 @@ class GraftRutBranchConflict(FlatlandUserInputException):
     def __str__(self):
         return f'{pre}A rut branch, with (: Ln[R+/-n]), may not include a local graft(>): "{self.branch}"{post}'
 
+class NoFloatInStraightConnector(FlatlandUserInputException):
+    def __init__(self, name):
+        self.name = name
+
+    def __str__(self):
+        return f'{pre}Straight connector "{self.name}" has no floating anchor (*). Specify one.{post}'
+
+class MultipleFloatsInSameStraightConnector(FlatlandUserInputException):
+    def __init__(self, name):
+        self.name = name
+
+    def __str__(self):
+        return f'{pre}Straight connector "{self.name}" has two floating anchors (*). Specify one.{post}'
+
 class MultipleFloatsInSameBranch(FlatlandUserInputException):
     def __init__(self, branch):
         self.branch = branch

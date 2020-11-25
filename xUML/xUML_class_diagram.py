@@ -9,13 +9,17 @@ from layout_parser import LayoutParser
 from flatlanddb import FlatlandDB
 from canvas import Canvas
 from single_cell_node import SingleCellNode
-from connection_types import ConnectorName, OppositeFace, StemName
 from tree_connector import TreeConnector
+from command_interface import New_Stem, New_Path
 from text_block import TextBlock
 from geometry_types import Alignment, VertAlign, HorizAlign
 from command_interface import New_Stem, New_Path, New_Trunk_Branch, New_Offshoot_Branch, New_Branch_Set
-from typing import Optional, Set, List, Dict
+from typing import Optional, Dict
 from collections import namedtuple
+from straight_binary_connector import StraightBinaryConnector
+from bending_binary_connector import BendingBinaryConnector
+from connection_types import ConnectorName, OppositeFace, StemName
+from text_block import TextBlock
 
 BranchLeaves = namedtuple('BranchLeaves', 'leaf_stems local_graft next_graft floating_leaf_stem')
 
@@ -102,7 +106,56 @@ class XumlClassDiagram:
 
     def draw_association(self, rnum, association, binary_layout):
         """Draw the binary association"""
-        pass
+        # Straight or bent connector?
+        tstem = binary_layout['tstem']
+        pstem = binary_layout['pstem']
+        astem = binary_layout.get('tertiary_node', None)
+        t_side = association['t_side']
+        t_phrase = StemName(
+            text=TextBlock(t_side['phrase'], wrap=tstem['wrap']),
+            side=tstem['stem_dir'], axis_offset=None, end_offset=None
+        )
+        t_stem = New_Stem(stem_type='class mult', semantic=t_side['mult'] + ' mult',
+                          node=self.nodes[t_side['cname']], face=tstem['face'],
+                          anchor=tstem.get('anchor', None), stem_name=t_phrase)
+        p_side = association['p_side']
+        p_phrase = StemName(
+            text=TextBlock(p_side['phrase'], wrap=pstem['wrap']),
+            side=pstem['stem_dir'], axis_offset=None, end_offset=None
+        )
+        p_stem = New_Stem(stem_type='class mult', semantic=p_side['mult'] + ' mult',
+                          node=self.nodes[p_side['cname']], face=pstem['face'],
+                          anchor=pstem.get('anchor', None), stem_name=p_phrase)
+        if astem:
+            a_stem = New_Stem(stem_type='associative mult', semantic=association['assoc_mult'] + ' mult',
+                              node=self.nodes[association['assoc_cname']], face=astem['face'], anchor=astem.get('anchor', None),
+                              stem_name=None)
+        else:
+            a_stem = None
+        rnum_data = ConnectorName(text=rnum, side=binary_layout['dir'], bend=binary_layout.get('bend', 1))
+
+        paths = None if not binary_layout.get('paths', None) else \
+            [New_Path(lane=p['lane'], rut=p['rut']) for p in binary_layout['paths']]
+
+        if not paths and OppositeFace[tstem['face']] == pstem['face']:
+            StraightBinaryConnector(
+                diagram=self.flatland_canvas.Diagram,
+                connector_type='binary association',
+                t_stem=t_stem,
+                p_stem=p_stem,
+                tertiary_stem=a_stem,
+                name=rnum_data
+            )
+            print("Straight connector")
+        else:
+            BendingBinaryConnector(
+                diagram=self.flatland_canvas.Diagram,
+                connector_type='binary association',
+                anchored_stem_p=p_stem,
+                anchored_stem_t=t_stem,
+                tertiary_stem=a_stem,
+                paths=paths,
+                name=rnum_data)
 
     def process_leaf_stems(self, lfaces, preceeding_graft: Optional[New_Stem]) -> BranchLeaves:
         """

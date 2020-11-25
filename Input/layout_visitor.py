@@ -144,12 +144,14 @@ class LayoutVisitor(PTNodeVisitor):
     def visit_tstem(self, node, children):
         """T stem layout info"""
         items = {k: v for d in children for k, v in d.items()}
+        items['anchor'] = items.get('anchor', 0)
         tstem = {node.rule_name: items}
         return tstem
 
     def visit_pstem(self, node, children):
         """P stem layout info"""
         items = {k: v for d in children for k, v in d.items()}
+        items['anchor'] = items.get('anchor', 0)
         pstem = {node.rule_name: items}
         return pstem
 
