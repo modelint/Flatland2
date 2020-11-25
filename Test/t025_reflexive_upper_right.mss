@@ -9,4 +9,4 @@ nodes
     Waypoint 1,1
 connectors
     // <side><connector name>[>bend] : <side><lines> <face><anchor>|<node> : <side><lines> <face><anchor>|<node>
-    +R1.3 : -/1 t+2|Aircraft : -/1 l+2|Pilot : L2R-2 L2R-2
+    +R1.3 : -/1 t+2|Aircraft : -/1 r+2|Pilot : L2R-2 L2R-2

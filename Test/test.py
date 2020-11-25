@@ -37,7 +37,7 @@ tests = {
     't056': ('aircraft_tree4', 't056_p3_single_branch_graft_float'),
 }
 
-selected_test = 't031'  # The combination we are going to run
+selected_test = 't025'  # The combination we are going to run
 
 # We using the selected_test key, we compose our model and layout file names
 model_file_path = (Path(__file__).parent / tests[selected_test][0]).with_suffix(".xmm")
