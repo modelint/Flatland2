@@ -11,4 +11,4 @@ nodes
     Flight 2,2
 connectors
     // <side><connector name>[>bend] : <side><lines> <face><anchor>|<node> : <side><lines> <face><anchor>|<node>
-    -R1 : +/1 b|Aircraft : +/1 t|Pilot, l|Flight
+    -R1 : +/1 b|Aircraft : +/1 t*|Pilot, l|Flight

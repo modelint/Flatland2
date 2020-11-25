@@ -1,12 +1,14 @@
 """ model_parser.py – First attempt to parse class block """
 
 from flatland_exceptions import ModelGrammarFileOpen, ModelInputFileOpen, ModelInputFileEmpty
+from flatland_exceptions import ModelParseError
 from model_visitor import SubsystemVisitor
-from arpeggio import visit_parse_tree
+from arpeggio import visit_parse_tree, NoMatch
 from arpeggio.cleanpeg import ParserPEG
 from collections import namedtuple
 from nocomment import nocomment
 import os
+import sys
 from pathlib import Path
 
 Subsystem = namedtuple('Subsystem', 'name classes rels')
@@ -63,7 +65,10 @@ class ModelParser:
         # We interpret newlines and indents in our grammar, so whitespace must be preserved
         parser = ParserPEG(self.model_grammar, ModelParser.root_rule_name, skipws=False, debug=self.debug)
         # Now create an abstract syntax tree from our model text
-        parse_tree = parser.parse(self.model_text)
+        try:
+            parse_tree = parser.parse(self.model_text)
+        except NoMatch as e:
+            raise ModelParseError(self.model_file_path.name, e) from None
         # Transform that into a result that is better organized with grammar artifacts filtered out
         result = visit_parse_tree(parse_tree, SubsystemVisitor(debug=self.debug))
         # Make it even nicer using easy to reference named tuples
@@ -84,8 +89,12 @@ class ModelParser:
                 peg_tree_dot.unlink()
             if Path.exists(peg_model_dot):
                 peg_model_dot.unlink()
-        # Return the refined model data
-        return Subsystem(name=result[0], classes=result[1], rels=result[2])
+        # Return the refined model data, checking sequence length
+        subsys_name = result[0]  # Required by model parser
+        class_data = result[1]  # Required by model parser
+        rel_data = None if len(result) < 3 else result[2]  # Optional
+        # You can draw classes without rels, but not the other way around!
+        return Subsystem(name=subsys_name, classes=class_data, rels=rel_data)
 
 
 if __name__ == "__main__":

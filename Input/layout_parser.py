@@ -1,8 +1,8 @@
 """ layout_parser.py """
 
-from flatland_exceptions import LayoutGrammarFileOpen, LayoutFileOpen, LayoutFileEmpty
+from flatland_exceptions import LayoutGrammarFileOpen, LayoutFileOpen, LayoutFileEmpty, LayoutParseError
 from layout_visitor import LayoutVisitor
-from arpeggio import visit_parse_tree
+from arpeggio import visit_parse_tree, NoMatch
 from arpeggio.cleanpeg import ParserPEG
 from pathlib import Path
 import os
@@ -65,7 +65,10 @@ class LayoutParser:
         # We interpret newlines and indents in our grammar, so whitespace must be preserved
         parser = ParserPEG(self.layout_grammar, LayoutParser.root_rule_name, skipws=False, debug=self.debug)
         # Now create an abstract syntax tree from our layout text
-        parse_tree = parser.parse(self.layout_text)
+        try:
+            parse_tree = parser.parse(self.layout_text)
+        except NoMatch as e:
+            raise LayoutParseError(self.layout_file_path.name, e) from None
         # Transform that into a result that is better organized with grammar artifacts filtered out
         result = visit_parse_tree(parse_tree, LayoutVisitor(debug=self.debug))
         if self.debug:

@@ -1,4 +1,4 @@
-// t030_straight_binary_tertiary.mss –
+// t030_straight_binary_tertiary.mss – Horizontal straight with tertiary above
 diagram class
 notation Starr
 presentation diagnostic
@@ -11,4 +11,4 @@ nodes
     Flight 2,2
 connectors
     // <side><connector name>[>bend] : <side><lines> <face><anchor>|<node> : <side><lines> <face><anchor>|<node>
-    -R1 : +/1 r|Aircraft : +/1 l|Pilot, b|Flight
+    -R1 : +/1 r|Aircraft : +/1 l*|Pilot, b|Flight

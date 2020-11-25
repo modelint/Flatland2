@@ -10,8 +10,14 @@ tests = {
     # Binary connectors (associations)
     't001': ('aircraft2', 't001_straight_binary_horiz'),
     't002': ('aircraftpilot_compsym', 't002_straight_binary_horiz_compsym.py'),
+    't003': ('aircraft2', 't003_straight_binary_vert'),
+    't004': ('tall_class', 't004_single_cell_node_tall'),
+    't006': ('no_class_data', 't004_single_cell_node_tall'),
     't020': ('aircraft2', 't020_bending_binary_horiz'),
+    't021': ('aircraft2', 't021_bending_binary_vert'),
+    't022': ('aircraft2', 't022_bending_binary_horizontal_d1'),
     't023': ('aircraft2', 't023_bending_binary_twice'),
+    't025': ('waypoint', 't025_reflexive_upper_right'),
     't030': ('aircraft3', 't030_straight_binary_tertiary'),
     't031': ('aircraft3', 't031_straight_binary_tertiary_horizontal'),
     't032': ('aircraft3', 't032_1bend_tertiary_left'),
@@ -31,7 +37,7 @@ tests = {
     't056': ('aircraft_tree4', 't056_p3_single_branch_graft_float'),
 }
 
-selected_test = 't001'  # The combination we are going to run
+selected_test = 't031'  # The combination we are going to run
 
 # We using the selected_test key, we compose our model and layout file names
 model_file_path = (Path(__file__).parent / tests[selected_test][0]).with_suffix(".xmm")

@@ -132,7 +132,7 @@ class XumlClassDiagram:
                               stem_name=None)
         else:
             a_stem = None
-        rnum_data = ConnectorName(text=rnum, side=binary_layout['dir'], bend=binary_layout.get('bend', 1))
+        rnum_data = ConnectorName(text=rnum, side=binary_layout['dir'], bend=binary_layout['bend'])
 
         paths = None if not binary_layout.get('paths', None) else \
             [New_Path(lane=p['lane'], rut=p['rut']) for p in binary_layout['paths']]

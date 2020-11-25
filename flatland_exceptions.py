@@ -25,6 +25,22 @@ class FlatlandUserInputException(FlatlandException):
 class UnknownSheetGroup(FlatlandDBException):
     pass
 
+class LayoutParseError(FlatlandUserInputException):
+    def __init__(self, layout_file, e):
+        self.layout_file = layout_file
+        self.e = e
+
+    def __str__(self):
+        return f'{pre}Parse error in layout "{self.layout_file}" : {self.e}"{post}'
+
+class ModelParseError(FlatlandUserInputException):
+    def __init__(self, model_file, e):
+        self.model_file = model_file
+        self.e = e
+
+    def __str__(self):
+        return f'{pre}Parse error in model "{self.model_file}" : {self.e}"{post}'
+
 class ConflictingGraftFloat(FlatlandUserInputException):
     def __init__(self, stem):
         self.stem = stem

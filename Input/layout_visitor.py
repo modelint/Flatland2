@@ -139,7 +139,7 @@ class LayoutVisitor(PTNodeVisitor):
 
     def visit_bend(self, node, children):
         """Number of bend where cname appears"""
-        return int(children[0])
+        return {node.rule_name: int(children[0])}
 
     def visit_tstem(self, node, children):
         """T stem layout info"""
@@ -157,7 +157,8 @@ class LayoutVisitor(PTNodeVisitor):
 
     def visit_paths(self, node, children):
         """A sequence of one or more paths since a binary connector may bend multiple times"""
-        return {node.rule_name: children}
+        paths = { node.rule_name : [p['path'] for p in children] }
+        return paths
 
     def visit_binary_layout(self, node, children):
         """All layout info for the binary connector"""
@@ -248,6 +249,7 @@ class LayoutVisitor(PTNodeVisitor):
         """All layout info for the connector"""
         # Combine all child dictionaries
         items = {k: v for d in children for k, v in d.items()}
+        items['bend'] = items.get('bend', 1)  # No bend supplied, assume 1
         return items
 
     def visit_connector_block(self, node, children):
